@@ -1,5 +1,6 @@
 # Xcode
 #
+kaldi-iPhoneOS-armv7.a
 build/
 *.pbxuser
 !default.pbxuser
