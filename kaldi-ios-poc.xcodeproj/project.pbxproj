@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EE529AD21A1BDD59009096B0 /* kaldi-iPhoneOS-armv7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EE529AD11A1BDD59009096B0 /* kaldi-iPhoneOS-armv7.a */; };
 		EE529AD51A1BE6F8009096B0 /* online_nnet2_decoding.conf in Resources */ = {isa = PBXBuildFile; fileRef = EE529AD41A1BE6F8009096B0 /* online_nnet2_decoding.conf */; };
 		EE529AEC1A1BF854009096B0 /* ivector_extractor.conf in Resources */ = {isa = PBXBuildFile; fileRef = EE529AE81A1BF854009096B0 /* ivector_extractor.conf */; };
 		EE529AED1A1BF854009096B0 /* mfcc.conf in Resources */ = {isa = PBXBuildFile; fileRef = EE529AE91A1BF854009096B0 /* mfcc.conf */; };
@@ -36,6 +35,7 @@
 		EE8BB5EE1A2CE517001B4679 /* monday.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE8BB5EA1A2CE517001B4679 /* monday.wav */; };
 		EE8BB5EF1A2CE517001B4679 /* tuesday.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE8BB5EB1A2CE517001B4679 /* tuesday.wav */; };
 		EE8BB5F01A2CE517001B4679 /* wednesday.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE8BB5EC1A2CE517001B4679 /* wednesday.wav */; };
+		EE8BB5F31A2D2B73001B4679 /* kaldi-iPhoneOS-armv7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EE8BB5F21A2D2B73001B4679 /* kaldi-iPhoneOS-armv7.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,7 +49,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		EE529AD11A1BDD59009096B0 /* kaldi-iPhoneOS-armv7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "kaldi-iPhoneOS-armv7.a"; sourceTree = "<group>"; };
 		EE529AD41A1BE6F8009096B0 /* online_nnet2_decoding.conf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = online_nnet2_decoding.conf; sourceTree = "<group>"; };
 		EE529AE81A1BF854009096B0 /* ivector_extractor.conf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ivector_extractor.conf; sourceTree = "<group>"; };
 		EE529AE91A1BF854009096B0 /* mfcc.conf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mfcc.conf; sourceTree = "<group>"; };
@@ -488,6 +487,7 @@
 		EE8BB5EA1A2CE517001B4679 /* monday.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = monday.wav; sourceTree = "<group>"; };
 		EE8BB5EB1A2CE517001B4679 /* tuesday.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = tuesday.wav; sourceTree = "<group>"; };
 		EE8BB5EC1A2CE517001B4679 /* wednesday.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = wednesday.wav; sourceTree = "<group>"; };
+		EE8BB5F21A2D2B73001B4679 /* kaldi-iPhoneOS-armv7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "kaldi-iPhoneOS-armv7.a"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -496,7 +496,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EE8B80E81A16C92B007F455E /* Accelerate.framework in Frameworks */,
-				EE529AD21A1BDD59009096B0 /* kaldi-iPhoneOS-armv7.a in Frameworks */,
+				EE8BB5F31A2D2B73001B4679 /* kaldi-iPhoneOS-armv7.a in Frameworks */,
 				EE8B80261A16C568007F455E /* libfst.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -544,13 +544,13 @@
 		EE8B7FED1A16A3A9007F455E = {
 			isa = PBXGroup;
 			children = (
+				EE8BB5F21A2D2B73001B4679 /* kaldi-iPhoneOS-armv7.a */,
 				EE8BB5F11A2CEF7B001B4679 /* includes */,
 				EE529AF81A1C00BF009096B0 /* kaldi-util */,
 				EE529AD31A1BE69F009096B0 /* ASR Resources */,
 				EE8BB5E81A2CE4F9001B4679 /* WAVs */,
 				EE8B80E71A16C92B007F455E /* Accelerate.framework */,
 				EE8B80251A16C568007F455E /* libfst.a */,
-				EE529AD11A1BDD59009096B0 /* kaldi-iPhoneOS-armv7.a */,
 				EE8B7FF81A16A3A9007F455E /* kaldi-ios-poc */,
 				EE8B80121A16A3A9007F455E /* kaldi-ios-pocTests */,
 				EE8B7FF71A16A3A9007F455E /* Products */,

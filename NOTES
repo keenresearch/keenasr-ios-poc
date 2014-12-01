@@ -63,7 +63,7 @@ Build Settings:
 
 kaldi-util group contains two kaldi source file that were modified to address IO on the iOS platform. These files will take presedence over the same .o files in the kaldi static library.
 
-The project already includes two static libraries: libfst.a and kaldi-iPhoneOS-armv7.a, which are currently built only for the device, so the simulator won't run properly. If you want to rebuild these two libraries, follow these steps:
+The project already includes openfst.a static library; Kaldi static library is too large for github, so you will need to compile it and add it to the project by following the directions below. Both libraries are currently built only for the device, so the simulator won't run properly. Steps for building these two libraries:
 
 Download Kaldi source code in kaldi/ directory and this project in kaldi-ios-pos/ directory.
 
@@ -71,13 +71,6 @@ Kaldi
 =====
 1) Build Kaldi dependencies for Mac OS first
 - cd kaldi-trunk/tools/
-
-XX TODO try again (this should not be needed according to the Daniel Povey); we build kaldi tools because Kaldi configure won't run otherwise
-setenv DEVROOT `xcode-select --print-path`
-setenv SDKROOT $DEVROOT/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/
-setenv CXXFLAGS "-I $SDKROOT//usr/include/c++/4.2.1/"
-setenv CXX "clang++ -std=c++11 -stdlib=libstdc++"
-
 make
 
 2) Build kaldi-ios static library
@@ -85,6 +78,9 @@ make
 - cp kaldi-ios-poc/extras/build-kaldi-ios.sh .
 - ./configure
 - ./build-kaldi-ios.sh iphone   TODO - cleanup this script
+
+You can also direct compiler to optimize the code (CXXFLAGS = "-O3 -DNDEBUG")
+
 
 FST for iOS
 ===========
