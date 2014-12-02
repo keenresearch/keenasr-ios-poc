@@ -13,7 +13,7 @@ A simple example grammar that listens for a day of week is used in the app. It r
 
 "includes" group contains OpenFST and Kaldi include files.
 
-The project already includes openfst.a static library; Kaldi static library is too large for github, so you will need to compile it and add it to the project by following directions below. Both libraries are currently built only for the device, so the simulator won't run properly. 
+The project already includes openfst.a static library; Kaldi static library is too large for github, so you will need to compile it and add it to the project by following directions below. Both libraries are currently built only for the device, so the simulator build won't work. 
 
 ##Steps for building OpenFST and Kaldi libraries for iOS
 
