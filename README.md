@@ -15,11 +15,11 @@ A simple example grammar that listens for a day of week is used in the app. It r
 
 The project already includes openfst.a static library; Kaldi static library is too large for github, so you will need to compile it and add it to the project by following directions below. Both libraries are currently built only for the device, so the simulator won't run properly. 
 
-Steps for building OpenFST and Kaldi libraries for iOS:
+##Steps for building OpenFST and Kaldi libraries for iOS:
 
 Download Kaldi source code in kaldi/ directory and this project in kaldi-ios-pos/ directory.
 
-##Building Kaldi iOS Library
+###Building Kaldi iOS Library
 1) Build Kaldi dependencies for Mac OS first
 
     cd kaldi-trunk/tools/
@@ -34,7 +34,7 @@ Download Kaldi source code in kaldi/ directory and this project in kaldi-ios-pos
 
 You can also direct compiler to optimize the code (CXXFLAGS = "-O3 -DNDEBUG")
 
-##Building OpenFST iOS Library
+###Building OpenFST iOS Library
 ```
 cd kaldi-trunk/tools/
 cp kaldi-ios-pos/extras/build-openfst-ios.sh .
@@ -51,7 +51,7 @@ static SymbolTable* ReadText(const string& filename, ifstream& strm,
      return ReadText(strm, filename, opts);
 }
 ```
-(TODO - this should be done in build-openfst-ios.sh script)
+(TODO - symbol-table.h update should be done in build-openfst-ios.sh script)
 
 ##App Build Settings
 - check Search Paths for all the additional paths that need to be set
