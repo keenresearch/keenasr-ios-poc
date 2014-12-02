@@ -15,7 +15,7 @@ A simple example grammar that listens for a day of week is used in the app. It r
 
 The project already includes openfst.a static library; Kaldi static library is too large for github, so you will need to compile it and add it to the project by following directions below. Both libraries are currently built only for the device, so the simulator won't run properly. 
 
-##Steps for building OpenFST and Kaldi libraries for iOS:
+##Steps for building OpenFST and Kaldi libraries for iOS
 
 Download Kaldi source code in kaldi/ directory and this project in kaldi-ios-pos/ directory.
 
