@@ -11,6 +11,8 @@ A simple example grammar that listens for a day of week is used in the app. It r
 
 "kaldi-util" group contains two kaldi source files and corresponding header files that were modified to address IO on the iOS platform. These files will take presedence over the same .o files in the kaldi static library.
 
+"includes" group contains OpenFST and Kaldi include files.
+
 The project already includes openfst.a static library; Kaldi static library is too large for github, so you will need to compile it and add it to the project by following directions below. Both libraries are currently built only for the device, so the simulator won't run properly. 
 
 Steps for building OpenFST and Kaldi libraries for iOS:
@@ -33,9 +35,23 @@ Download Kaldi source code in kaldi/ directory and this project in kaldi-ios-pos
 You can also direct compiler to optimize the code (CXXFLAGS = "-O3 -DNDEBUG")
 
 ##Building OpenFST iOS Library
-    cd kaldi-trunk/tools/
-    cp kaldi-ios-pos/extras/build-openfst-ios.sh .
-    ./build-openfst-ios.sh
+```
+cd kaldi-trunk/tools/
+cp kaldi-ios-pos/extras/build-openfst-ios.sh .
+./build-openfst-ios.sh
+```
+Add the following ReadText method to the symbol-table.h file (either in kaldi-trunk/tools/openfst/src/include/fst/symbol-table.h or when you add these files to the iOS project):
+```
+static SymbolTable* ReadText(const string& filename, ifstream& strm,
+                            const SymbolTableTextOptions &opts = SymbolTableTextOptions()) {
+     if (!strm) {
+      LOG(ERROR) << "SymbolTable::ReadText: Can't open file ";
+       return 0;
+     }
+     return ReadText(strm, filename, opts);
+}
+```
+(TODO - this should be done in build-openfst-ios.sh script)
 
 ##App Build Settings
 - check Search Paths for all the additional paths that need to be set
