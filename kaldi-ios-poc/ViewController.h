@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "KaldiIOS/KaldiIOS.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <KIOSRecognizerDelegate>
 
 
 @end
