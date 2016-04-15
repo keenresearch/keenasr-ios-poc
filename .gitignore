@@ -1,6 +1,7 @@
 # Xcode
 #
-kaldi-iPhoneOS-armv7.a
+.DS_Store
+*.xcuserstate
 build/
 *.pbxuser
 !default.pbxuser
