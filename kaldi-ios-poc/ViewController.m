@@ -13,7 +13,7 @@
 @interface ViewController ()
 
 @property (nonatomic, strong) UILabel *resultsLabel, *instructionsLabel;
-@property(nonatomic, strong) KIOSNNetRecognizer *recognizer;
+@property(nonatomic, strong) KIOSRecognizer *recognizer;
 @property(nonatomic, strong) UIButton *startButton;
 
 @end
@@ -63,19 +63,25 @@
   [self.view addSubview:self.instructionsLabel];
 
   if (! [KIOSRecognizer sharedInstance]) {
-    [KIOSRecognizer initWithType:KIOSRecognizerTypeNNet andBundle:@"librispeech-nnet2"];
+//    [KIOSRecognizer initWithRecognizerType:KIOSRecognizerTypeNNet andASRBundle:@"librispeech-nnet2" andDecodingGraph:@"HCLG.fst"];
+    [KIOSRecognizer initWithRecognizerType:KIOSRecognizerTypeGMM andASRBundle:@"librispeech-gmm" andDecodingGraph:@"HCLG.fst"];
     [KIOSRecognizer sharedInstance].createAudioRecordings = FALSE;
   }
-  self.recognizer = (KIOSNNetRecognizer *)[KIOSRecognizer sharedInstance];
+  self.recognizer = [KIOSRecognizer sharedInstance];
   self.recognizer.delegate = self;
+  self.recognizer.createAudioRecordings = YES;
 }
 
 
 - (void)startButtonTapped:(id)sender {
-  NSLog(@"starting to listen");
   self.startButton.enabled = NO;
   self.resultsLabel.text = @"";
-  [self.recognizer startListening];
+  // since we are using only a single decoding graph here, we can just call startListening
+//  [self.recognizer startListening];
+  // if we were dynamically switching decodingGraphs, we would startListeningWithDecodingGraph
+  // passing paths to different graphs
+//  [self.recognizer startListeningWithDecodingGraph:@"librispeech-nnet2/HCLG.fst"];
+  [self.recognizer startListeningWithDecodingGraph:@"librispeech-gmm/HCLG.fst"];
 }
 
 
@@ -88,7 +94,8 @@
 }
 
 - (void)recognizerFinalResult:(KIOSRecognizer *)recognizer result:(KIOSResult *)result {
-  NSLog(@"Final Result: %@ (%@)", result.cleanText, result.text);
+  NSLog(@"Final Result: %@ (%@, conf: %@)", result.cleanText, result.text, result.confidence);
+  NSLog(@"Audio recording is in %@", recognizer.lastRecordingFilename);
   self.resultsLabel.textColor = [UIColor blackColor];
   self.resultsLabel.text = result.cleanText;
   // stop recognition

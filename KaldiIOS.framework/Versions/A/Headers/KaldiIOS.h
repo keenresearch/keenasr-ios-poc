@@ -9,5 +9,3 @@
 #import <Foundation/Foundation.h>
 
 #import "KaldiIOS/KIOSRecognizer.h"
-#import "KaldiIOS/KIOSGMMRecognizer.h"
-#import "KaldiIOS/KIOSNNetRecognizer.h"
