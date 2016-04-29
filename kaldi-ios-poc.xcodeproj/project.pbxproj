@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EE7410AA1CCEE59D009E72FF /* librispeech-gmm in Resources */ = {isa = PBXBuildFile; fileRef = EE7410A91CCEE59D009E72FF /* librispeech-gmm */; };
+		EE0D551A1CD41DCD00B37356 /* librispeech-nnet2-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE0D55181CD41DCD00B37356 /* librispeech-nnet2-en-us */; };
+		EE0D551B1CD41DCD00B37356 /* librispeech-gmm-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE0D55191CD41DCD00B37356 /* librispeech-gmm-en-us */; };
 		EE8B7FFC1A16A3A9007F455E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B7FFB1A16A3A9007F455E /* main.m */; };
 		EE8B7FFF1A16A3A9007F455E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B7FFE1A16A3A9007F455E /* AppDelegate.m */; };
 		EE8B80021A16A3A9007F455E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B80011A16A3A9007F455E /* ViewController.m */; };
@@ -18,7 +19,6 @@
 		EE8B80E81A16C92B007F455E /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE8B80E71A16C92B007F455E /* Accelerate.framework */; };
 		EEB44DFB1CB58202009F432C /* KaldiIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EEB44DF81CB58202009F432C /* KaldiIOS.framework */; };
 		EEB44DFF1CB5ABE1009F432C /* libstdc++.6.0.9.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EEB44DFE1CB5ABE1009F432C /* libstdc++.6.0.9.tbd */; };
-		EEB44E091CBCC0FA009F432C /* librispeech-nnet2 in Resources */ = {isa = PBXBuildFile; fileRef = EEB44E081CBCC0FA009F432C /* librispeech-nnet2 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,7 +32,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		EE7410A91CCEE59D009E72FF /* librispeech-gmm */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "librispeech-gmm"; sourceTree = "<group>"; };
+		EE0D55181CD41DCD00B37356 /* librispeech-nnet2-en-us */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "librispeech-nnet2-en-us"; sourceTree = "<group>"; };
+		EE0D55191CD41DCD00B37356 /* librispeech-gmm-en-us */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "librispeech-gmm-en-us"; sourceTree = "<group>"; };
 		EE8B7FF61A16A3A9007F455E /* kaldi-ios-poc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "kaldi-ios-poc.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE8B7FFA1A16A3A9007F455E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EE8B7FFB1A16A3A9007F455E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -49,7 +50,6 @@
 		EE8B80E71A16C92B007F455E /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		EEB44DF81CB58202009F432C /* KaldiIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = KaldiIOS.framework; sourceTree = "<group>"; };
 		EEB44DFE1CB5ABE1009F432C /* libstdc++.6.0.9.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.6.0.9.tbd"; path = "usr/lib/libstdc++.6.0.9.tbd"; sourceTree = SDKROOT; };
-		EEB44E081CBCC0FA009F432C /* librispeech-nnet2 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "librispeech-nnet2"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,8 +86,8 @@
 		EE8B7FED1A16A3A9007F455E = {
 			isa = PBXGroup;
 			children = (
-				EE7410A91CCEE59D009E72FF /* librispeech-gmm */,
-				EEB44E081CBCC0FA009F432C /* librispeech-nnet2 */,
+				EE0D55181CD41DCD00B37356 /* librispeech-nnet2-en-us */,
+				EE0D55191CD41DCD00B37356 /* librispeech-gmm-en-us */,
 				EE8B7FF81A16A3A9007F455E /* kaldi-ios-poc */,
 				EE8B80121A16A3A9007F455E /* kaldi-ios-pocTests */,
 				EE8B7FF71A16A3A9007F455E /* Products */,
@@ -226,10 +226,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				EE8B80051A16A3A9007F455E /* Main.storyboard in Resources */,
+				EE0D551B1CD41DCD00B37356 /* librispeech-gmm-en-us in Resources */,
 				EE8B800A1A16A3A9007F455E /* LaunchScreen.xib in Resources */,
+				EE0D551A1CD41DCD00B37356 /* librispeech-nnet2-en-us in Resources */,
 				EE8B80071A16A3A9007F455E /* Images.xcassets in Resources */,
-				EE7410AA1CCEE59D009E72FF /* librispeech-gmm in Resources */,
-				EEB44E091CBCC0FA009F432C /* librispeech-nnet2 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -63,8 +63,8 @@
   [self.view addSubview:self.instructionsLabel];
 
   if (! [KIOSRecognizer sharedInstance]) {
-//    [KIOSRecognizer initWithRecognizerType:KIOSRecognizerTypeNNet andASRBundle:@"librispeech-nnet2" andDecodingGraph:@"HCLG.fst"];
-    [KIOSRecognizer initWithRecognizerType:KIOSRecognizerTypeGMM andASRBundle:@"librispeech-gmm" andDecodingGraph:@"HCLG.fst"];
+    [KIOSRecognizer initWithRecognizerType:KIOSRecognizerTypeNNet andASRBundle:@"librispeech-nnet2-en-us" andDecodingGraph:@"librispeech-nnet2-en-us/HCLG.fst"];
+//    [KIOSRecognizer initWithRecognizerType:KIOSRecognizerTypeGMM andASRBundle:@"librispeech-gmm-en-us" andDecodingGraph:@"librispeech-gmm-en-us/HCLG.fst"];
     [KIOSRecognizer sharedInstance].createAudioRecordings = FALSE;
   }
   self.recognizer = [KIOSRecognizer sharedInstance];
@@ -78,22 +78,23 @@
   self.resultsLabel.text = @"";
   // since we are using only a single decoding graph here, we can just call startListening
 //  [self.recognizer startListening];
+
   // if we were dynamically switching decodingGraphs, we would startListeningWithDecodingGraph
   // passing paths to different graphs
-//  [self.recognizer startListeningWithDecodingGraph:@"librispeech-nnet2/HCLG.fst"];
-  [self.recognizer startListeningWithDecodingGraph:@"librispeech-gmm/HCLG.fst"];
+  [self.recognizer startListeningWithDecodingGraph:@"librispeech-nnet2-en-us/HCLG.fst"];
+//  [self.recognizer startListeningWithDecodingGraph:@"librispeech-gmm-en-us/HCLG.fst"];
 }
 
 
 #pragma mark KIOSRecognizer delegate methods
 
-- (void)recognizerPartialResult:(KIOSRecognizer *)recognizer result:(KIOSResult *)result {
+- (void)recognizerPartialResult:(KIOSResult *)result forRecognizer:(KIOSRecognizer *)recognizer {
   NSLog(@"Partial Result: %@ (%@)", result.cleanText, result.text);
   self.resultsLabel.textColor = [UIColor grayColor];
   self.resultsLabel.text = result.cleanText;
 }
 
-- (void)recognizerFinalResult:(KIOSRecognizer *)recognizer result:(KIOSResult *)result {
+- (void)recognizerFinalResult:(KIOSResult *)result forRecognizer:(KIOSRecognizer *)recognizer {
   NSLog(@"Final Result: %@ (%@, conf: %@)", result.cleanText, result.text, result.confidence);
   NSLog(@"Audio recording is in %@", recognizer.lastRecordingFilename);
   self.resultsLabel.textColor = [UIColor blackColor];
