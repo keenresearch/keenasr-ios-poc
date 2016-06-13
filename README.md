@@ -1,5 +1,7 @@
 #kaldi-ios-pos
-A demo of running Kaldi ASR decoder on iOS, based on KaldiIOS framework, our port of Kaldi to iOS. For more details see http://keenresearch.com/kaldi-ios-framework.
+NOTE: version 0.3, with support for custom decoding graph building, is available for download from http://keenresearch.com/kaldi-ios-framework. This POC will soon be updated to showcase use of custom decoding graph building.
+
+A proof-of-concept app that shows how to run Kaldi-iOS automated speech recognition framework. For more details see http://keenresearch.com/kaldi-ios-framework.
 
 The demo uses acoustic models in librispeech-gmm-en-us directory (tri1 models from librispeech egs). Aternatively, you can use nnet2 decoder and models in librispeech-nnet2-en-us directory (originally from http://kaldi-asr.org/downloads/build/10/trunk/egs/librispeech/s5/exp/nnet2_online/nnet_ms_a_online/). Nnet2 consumes about 3x more memory (140MB vs 45MB) and runs slower than GMM decoder.
 
