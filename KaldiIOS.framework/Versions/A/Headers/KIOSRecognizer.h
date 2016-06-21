@@ -11,7 +11,7 @@
 
 @class KIOSRecognizer;
 
-
+// @name Constants
 
 /** These constants indicate the type of recognizers you are creating.*/
 typedef NS_ENUM(NSInteger, KIOSRecognizerType) {
@@ -20,6 +20,42 @@ typedef NS_ENUM(NSInteger, KIOSRecognizerType) {
   /** NNet2 Kaldi Recognizer */
   KIOSRecognizerTypeNNet
 };
+
+/** These constants indicate the log levels for the framework.*/
+typedef NS_ENUM(NSInteger, KIOSRecognizerLogLevel) {
+  /** Log debug messages and higher */
+  KIOSRecognizerLogLevelDebug,
+  /** Log info messages and higher */
+  KIOSRecognizerLogLevelInfo,
+  /** Log only warnings or errors (default level)*/
+  KIOSRecognizerLogLevelWarning,
+};
+
+
+/** These constants correspond to different Voice Activity Detection parameters
+ that are used for endpointing during recognition.
+ 
+ You can change values of these parameters using setVadParameter method.
+ */
+typedef NS_ENUM(NSInteger, KIOSVadParameter) {
+  /** Timeout after this many seconds even if nothing has been recognized. 
+   Default is 10 seconds. */
+  KIOSVadTimeoutForNoSpeech,
+
+  /** Timeout after this many seconds if we had a good (high probability) 
+   match to the final state. Default is 1 second. */
+  KIOSVadTimeoutEndSilenceForGoodMatch,
+  
+  /** Timeout after this many seconds if we had any match (even if final state
+   has not been reached). Default is 2 seconds. */
+  KIOSVadTimeoutEndSilenceForAnyMatch,
+
+  /** Timeout after this many seconds regardless of what has been recognized. 
+   This is effectively upper bound on the duration of recognition. Default 
+   value is 20 seconds. */
+  KIOSVadTimeoutMaxDuration
+};
+
 
 
 /*  ################## KIOSResult #############*/
@@ -77,7 +113,8 @@ typedef NS_ENUM(NSInteger, KIOSRecognizerType) {
 
 
 /** This method is called when recognizer has finished the recognition on its
- own because one of the VAD rules has triggered.
+ own because one of the VAD rules has triggered. At this time, recognizer is not
+ listening any more.
  
  @param result final result of the recognition
  @param recognizer recognizer that produced the result
@@ -91,17 +128,17 @@ typedef NS_ENUM(NSInteger, KIOSRecognizerType) {
 
 /*  ################## KIOSRecognizer #############*/
 
-/** An instance of the KIOSRecognizer class, called recognizer, manages recognizer resources and provides speech recognition capabilities in your application.
+/** An instance of the KIOSRecognizer class, called recognizer, manages recognizer resources and provides speech recognition capabilities to your application.
  
- You typically initiate the engine at the app startup time by calling `+initWithRecognizerType:andASRBundle:andDecodingGraph:` method,  and then use sharedInstance method when you need to access the recognizer.
+ You typically initiate the engine at the app startup time by calling `+initWithRecognizerType:andASRBundle:` or `+initWithRecognizerType:andASRBundle:andDecodingGraph:` method,  and then
+ use sharedInstance method when you need to access the recognizer.
  
- You can implement a delegate object for a recognizer to respond to partial or final recognition results. For more details refer to KIOSRecognizerDelegate protocol,
+ Recognition results are provided via callbacks. One of your classes will need to adopt a [KIOSRecognizerDelegate protocol](KIOSRecognizerDelegate), and implement some of its methods.
  
  Initialization example:
  
      if (! [KIOSRecognizer sharedInstance]) {
-       [KIOSRecognizer initWithRecognizerType:KIOSRecognizerTypeGMM andASRBundle:@"librispeech-gmm" andDecodingGraph:@"librispeech-gmm/HCLG.fst"];
-       [KIOSRecognizer sharedInstance].createAudioRecordings = FALSE;
+       [KIOSRecognizer initWithRecognizerType:KIOSRecognizerTypeNNet andASRBundle:@"librispeech-gmm-en-us"];
      }
      // our class keeps a local reference of the recognizer (not necessary)
      self.recognizer = [KIOSRecognizer sharedInstance];
@@ -109,10 +146,9 @@ typedef NS_ENUM(NSInteger, KIOSRecognizerType) {
      self.recognizer.createAudioRecordings = YES;
  
  @warning Only a single instance of the recognizer can exist at any given time.
- 
- 
  */
 @interface KIOSRecognizer : NSObject 
+
 
 /** @name Properties */
 
@@ -132,22 +168,48 @@ typedef NS_ENUM(NSInteger, KIOSRecognizerType) {
  */
 @property(nonatomic, readonly) NSString *asrBundlePath;
 
-
-/** @name Initialization, starting, and stopping recognition */
+/** @name Initialization, Starting, and Stopping Recognition */
 
 
 /** Initialize ASR engine with the specific recognizer type. This method needs
- to be called first, before any other work can be performed.
+ to be called first, before any other work can be performed. You would use this 
+ init method if you are likely to use different decoding graphs (custom or 
+ prepackaged) in your app.
+ 
+ @param recognizerType one of KIOSRecognizerType
+ 
+ @param bundle directory containing all the resources necessary for the specific
+ recognizer type. This will typically include all acoustic model related files,
+ configuration files. Directory should contain decode.conf configuration file,
+ which can be augmented with additional Kaldi-specific config params. Currently,
+ that is the only way to pass various settings to Kaldi. All path references in
+ config files should be relative to the app root directory
+ (i.e. librispeech-gmm-en-us/mfcc.conf)
+ 
+ @return TRUE if succesful, FALSE otherwise.
+ 
+ @warning When initializing the recognizer, make sure that the bundle directory
+ contains all the necessary resources needed for the specific recognizer type
+ */
+
++ (BOOL)initWithRecognizerType:(KIOSRecognizerType)recognizerType
+                  andASRBundle:(NSString *)bundle;
+
+
+/** Initialize ASR engine with the specific recognizer type. This method needs
+ to be called first, before any other work can be performed. If your app is always
+ using a single decoding graph prepackaged with the app, you would typically use 
+ this method to initialize the recognizer.
  
  @param recognizerType one of KIOSRecognizerType
  
  @param bundle directory containing all the resources necessary for the specific
  recognizer type. This will typically include all acoustic model related files, 
- configuration files and HCLG.fst file(s). Directory should contain decode.conf 
- configuration file, which can be extended with additional Kaldi-specific config 
- params. Currently, that is the only way to pass various settings to Kaldi. All
- path references in config files should be relative to the app root directory
- (i.e. librispeech-gmm-en-us/mfcc.conf)
+ configuration files and any prepackaged HCLG.fst file(s). Directory should 
+ contain decode.conf configuration file, which can be augmented with additional
+ Kaldi-specific config params. Currently, that is the only way to pass various
+ settings to Kaldi. All path references in config files should be relative to 
+ the app root directory (i.e. librispeech-gmm-en-us/mfcc.conf)
  
  @param pathToDecodingGraph relative path to the decoding graph. This will
  usually be <ASR_BUNDLE_NAME>/HCLG.fst or similar.
@@ -157,7 +219,10 @@ typedef NS_ENUM(NSInteger, KIOSRecognizerType) {
  @warning When initializing the recognizer, make sure that the bundle directory
  contains all the necessary resources needed for the specific recognizer type
  */
-+ (BOOL)initWithRecognizerType:(KIOSRecognizerType)recognizerType andASRBundle:(NSString *)bundle andDecodingGraph:(NSString*)pathToDecodingGraph;
++ (BOOL)initWithRecognizerType:(KIOSRecognizerType)recognizerType
+                  andASRBundle:(NSString *)bundle
+              andDecodingGraph:(NSString*)pathToDecodingGraph;
+
 
 
 //+ (instancetype) alloc  __attribute__((unavailable("alloc not available, call sharedInstance instead")));
@@ -171,31 +236,52 @@ typedef NS_ENUM(NSInteger, KIOSRecognizerType) {
  
  After calling this method, recognizer will listen and decode audio coming through
  the microphone. The process will stop either by explicit call to stopListening or
- if VoiceActivityDetection module rules are triggered (for example, max duration 
- without speech, or end-silence, etc.). 
+ if one of the Voice Activity Detection module rules are triggered (for example,
+ max duration without speech, or end-silence, etc.).
  
- VAD settings can currently be specified
- only via the decode.conf file in the ASR bundle. Future releases will expose 
- some of these parameters via the API.
+ When the recognizer stops listening due to VAD triggering, it will call 
+ [recognizerFinalResult:forRecognizer:]([KIOSRecognizerDelegate recognizerFinalResult:forRecognizer:]) method.
+ 
+ VAD settings can be modified via setVADParameter:toValue: method.
 */
 - (BOOL)startListening;
 
 
 /** Start processing incoming audio using pathToDecodingGraphFile as a decoding graph.
- @param pathToDecodingGraphFile path to the HCLG file created with the ASR bundle
- used to initalize the engine
+ @param pathToDecodingGraphFile a relative path to the HCLG file created with
+ the ASR bundle used to initalize the engine. For example (librispeech-gmm-en-us/HCLG.fst)
+ 
  @return TRUE if successful, FALSE otherwise
  
+ This method will typically be used for decoding graphs that were created offline
+ and are part of the ASR Bundle. For decoding graphs dynamically created within
+ the app, startListeningWithCustomDecodingGraph method should be used.
+
+ See startListening for details on when recognition process is automatically
+ stopped.
  */
 - (BOOL)startListeningWithDecodingGraph:(NSString *)pathToDecodingGraphFile;
 
 
-/** Stop the recognizer from processing incoming audio.
+/** Start processing incoming audio using custom decoding graph which was 
+ previously created via KIOSDecodingGraph.
+ @param decodingGraphName name of the custom decoding graph created using
+ createDecodingGraphFromBigramURL:andSaveWithName: or 
+ createDecodingGraphFromSentences:andSaveWithName: methods of KIOSDecodingGraph
+ 
  @return TRUE if successful, FALSE otherwise
+ 
+ See startListening for details on when recognition process is automatically 
+ stopped.
+ */
+- (BOOL)startListeningWithCustomDecodingGraph:(NSString *)decodingGraphName;
+
+
+/** Stop the recognizer from processing incoming audio.
  @warning Currently, calling this method will not trigger recognizerFinalResult
  delegate call.
  */
-- (BOOL)stopListening;
+- (void)stopListening;
 
 // TODO
 //- (BOOL)stopListeningWithDelay:(float)delay;
@@ -222,13 +308,44 @@ typedef NS_ENUM(NSInteger, KIOSRecognizerType) {
  */
 - (float)inputLevel;
 
+
+
 /** relative path to the decoding graph */
 - (NSString *)decodingGraphPath;
 
 
+
+/** Version of the KaldiIOS framework. */
++ (NSString *)version;
+
+
+/** Set log level for the framework.
+ 
+ @param logLevel one of KIOSRecognizerLogLevel
+ 
+ Default value is KIOSRecognizerLogLevelWarning.
+ */
+
++ (void)setLogLevel:(KIOSRecognizerLogLevel)logLevel;
+
+
+/** @name Config Parameters */
+
+/** Set any of KIOSVadParameter Voice Activity Detection parameters. These 
+ parameters can be set, and will go into effect, at any time.
+ 
+ @param parameter one of KIOSVadParameter
+ @param value duration in seconds for the parameter
+ 
+ @warning Setting VAD rules in the config file within the ASR bundle will **NOT**
+ have any effect. Values for these parameters are set to their defaults upon
+ initialization of KIOSRecognizer. They can only be changed using this method.
+*/
+- (void)setVADParameter:(KIOSVadParameter)parameter toValue:(float)value;
+
+
+
+
 @end
-
-
-
 
 #endif /* KIOSRecognizer_h */

@@ -7,33 +7,31 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EE0D551A1CD41DCD00B37356 /* librispeech-nnet2-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE0D55181CD41DCD00B37356 /* librispeech-nnet2-en-us */; };
-		EE0D551B1CD41DCD00B37356 /* librispeech-gmm-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE0D55191CD41DCD00B37356 /* librispeech-gmm-en-us */; };
+		EE37CA061D0BBAE000F5F3FD /* librispeech-nnet2-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE0D55181CD41DCD00B37356 /* librispeech-nnet2-en-us */; };
+		EE4A6CB51CFD60A000BBEB41 /* librispeech-gmm-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE0D55191CD41DCD00B37356 /* librispeech-gmm-en-us */; };
+		EE4A6CD71D00B95600BBEB41 /* MusicDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE4A6CD61D00B95600BBEB41 /* MusicDemoViewController.m */; };
+		EE4A6CDA1D00B96F00BBEB41 /* ContactsDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE4A6CD91D00B96F00BBEB41 /* ContactsDemoViewController.m */; };
+		EE4A6CDD1D00B98100BBEB41 /* EduReadingDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE4A6CDC1D00B98100BBEB41 /* EduReadingDemoViewController.m */; };
 		EE8B7FFC1A16A3A9007F455E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B7FFB1A16A3A9007F455E /* main.m */; };
 		EE8B7FFF1A16A3A9007F455E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B7FFE1A16A3A9007F455E /* AppDelegate.m */; };
 		EE8B80021A16A3A9007F455E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B80011A16A3A9007F455E /* ViewController.m */; };
 		EE8B80051A16A3A9007F455E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE8B80031A16A3A9007F455E /* Main.storyboard */; };
 		EE8B80071A16A3A9007F455E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE8B80061A16A3A9007F455E /* Images.xcassets */; };
 		EE8B800A1A16A3A9007F455E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE8B80081A16A3A9007F455E /* LaunchScreen.xib */; };
-		EE8B80161A16A3A9007F455E /* kaldi_ios_pocTests.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B80151A16A3A9007F455E /* kaldi_ios_pocTests.m */; };
 		EE8B80E81A16C92B007F455E /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE8B80E71A16C92B007F455E /* Accelerate.framework */; };
 		EEB44DFB1CB58202009F432C /* KaldiIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EEB44DF81CB58202009F432C /* KaldiIOS.framework */; };
 		EEB44DFF1CB5ABE1009F432C /* libstdc++.6.0.9.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EEB44DFE1CB5ABE1009F432C /* libstdc++.6.0.9.tbd */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		EE8B80101A16A3A9007F455E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EE8B7FEE1A16A3A9007F455E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = EE8B7FF51A16A3A9007F455E;
-			remoteInfo = "kaldi-ios-poc";
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		EE0D55181CD41DCD00B37356 /* librispeech-nnet2-en-us */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "librispeech-nnet2-en-us"; sourceTree = "<group>"; };
 		EE0D55191CD41DCD00B37356 /* librispeech-gmm-en-us */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "librispeech-gmm-en-us"; sourceTree = "<group>"; };
+		EE4A6CD51D00B95600BBEB41 /* MusicDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicDemoViewController.h; sourceTree = "<group>"; };
+		EE4A6CD61D00B95600BBEB41 /* MusicDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicDemoViewController.m; sourceTree = "<group>"; };
+		EE4A6CD81D00B96F00BBEB41 /* ContactsDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactsDemoViewController.h; sourceTree = "<group>"; };
+		EE4A6CD91D00B96F00BBEB41 /* ContactsDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsDemoViewController.m; sourceTree = "<group>"; };
+		EE4A6CDB1D00B98100BBEB41 /* EduReadingDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EduReadingDemoViewController.h; sourceTree = "<group>"; };
+		EE4A6CDC1D00B98100BBEB41 /* EduReadingDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EduReadingDemoViewController.m; sourceTree = "<group>"; };
 		EE8B7FF61A16A3A9007F455E /* kaldi-ios-poc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "kaldi-ios-poc.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE8B7FFA1A16A3A9007F455E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EE8B7FFB1A16A3A9007F455E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -44,7 +42,6 @@
 		EE8B80041A16A3A9007F455E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		EE8B80061A16A3A9007F455E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		EE8B80091A16A3A9007F455E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		EE8B800F1A16A3A9007F455E /* kaldi-ios-pocTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "kaldi-ios-pocTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE8B80141A16A3A9007F455E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EE8B80151A16A3A9007F455E /* kaldi_ios_pocTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = kaldi_ios_pocTests.m; sourceTree = "<group>"; };
 		EE8B80E71A16C92B007F455E /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
@@ -60,13 +57,6 @@
 				EEB44DFF1CB5ABE1009F432C /* libstdc++.6.0.9.tbd in Frameworks */,
 				EEB44DFB1CB58202009F432C /* KaldiIOS.framework in Frameworks */,
 				EE8B80E81A16C92B007F455E /* Accelerate.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EE8B800C1A16A3A9007F455E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,7 +89,6 @@
 			isa = PBXGroup;
 			children = (
 				EE8B7FF61A16A3A9007F455E /* kaldi-ios-poc.app */,
-				EE8B800F1A16A3A9007F455E /* kaldi-ios-pocTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -111,6 +100,12 @@
 				EE8B7FFE1A16A3A9007F455E /* AppDelegate.m */,
 				EE8B80001A16A3A9007F455E /* ViewController.h */,
 				EE8B80011A16A3A9007F455E /* ViewController.m */,
+				EE4A6CD51D00B95600BBEB41 /* MusicDemoViewController.h */,
+				EE4A6CD61D00B95600BBEB41 /* MusicDemoViewController.m */,
+				EE4A6CD81D00B96F00BBEB41 /* ContactsDemoViewController.h */,
+				EE4A6CD91D00B96F00BBEB41 /* ContactsDemoViewController.m */,
+				EE4A6CDB1D00B98100BBEB41 /* EduReadingDemoViewController.h */,
+				EE4A6CDC1D00B98100BBEB41 /* EduReadingDemoViewController.m */,
 				EE8B80031A16A3A9007F455E /* Main.storyboard */,
 				EE8B80061A16A3A9007F455E /* Images.xcassets */,
 				EE8B80081A16A3A9007F455E /* LaunchScreen.xib */,
@@ -165,24 +160,6 @@
 			productReference = EE8B7FF61A16A3A9007F455E /* kaldi-ios-poc.app */;
 			productType = "com.apple.product-type.application";
 		};
-		EE8B800E1A16A3A9007F455E /* kaldi-ios-pocTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = EE8B801C1A16A3A9007F455E /* Build configuration list for PBXNativeTarget "kaldi-ios-pocTests" */;
-			buildPhases = (
-				EE8B800B1A16A3A9007F455E /* Sources */,
-				EE8B800C1A16A3A9007F455E /* Frameworks */,
-				EE8B800D1A16A3A9007F455E /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				EE8B80111A16A3A9007F455E /* PBXTargetDependency */,
-			);
-			name = "kaldi-ios-pocTests";
-			productName = "kaldi-ios-pocTests";
-			productReference = EE8B800F1A16A3A9007F455E /* kaldi-ios-pocTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -194,10 +171,6 @@
 				TargetAttributes = {
 					EE8B7FF51A16A3A9007F455E = {
 						CreatedOnToolsVersion = 6.1;
-					};
-					EE8B800E1A16A3A9007F455E = {
-						CreatedOnToolsVersion = 6.1;
-						TestTargetID = EE8B7FF51A16A3A9007F455E;
 					};
 				};
 			};
@@ -215,7 +188,6 @@
 			projectRoot = "";
 			targets = (
 				EE8B7FF51A16A3A9007F455E /* kaldi-ios-poc */,
-				EE8B800E1A16A3A9007F455E /* kaldi-ios-pocTests */,
 			);
 		};
 /* End PBXProject section */
@@ -226,17 +198,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				EE8B80051A16A3A9007F455E /* Main.storyboard in Resources */,
-				EE0D551B1CD41DCD00B37356 /* librispeech-gmm-en-us in Resources */,
+				EE4A6CB51CFD60A000BBEB41 /* librispeech-gmm-en-us in Resources */,
 				EE8B800A1A16A3A9007F455E /* LaunchScreen.xib in Resources */,
-				EE0D551A1CD41DCD00B37356 /* librispeech-nnet2-en-us in Resources */,
+				EE37CA061D0BBAE000F5F3FD /* librispeech-nnet2-en-us in Resources */,
 				EE8B80071A16A3A9007F455E /* Images.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EE8B800D1A16A3A9007F455E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -248,28 +213,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				EE8B80021A16A3A9007F455E /* ViewController.m in Sources */,
+				EE4A6CD71D00B95600BBEB41 /* MusicDemoViewController.m in Sources */,
+				EE4A6CDA1D00B96F00BBEB41 /* ContactsDemoViewController.m in Sources */,
+				EE4A6CDD1D00B98100BBEB41 /* EduReadingDemoViewController.m in Sources */,
 				EE8B7FFF1A16A3A9007F455E /* AppDelegate.m in Sources */,
 				EE8B7FFC1A16A3A9007F455E /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EE8B800B1A16A3A9007F455E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EE8B80161A16A3A9007F455E /* kaldi_ios_pocTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		EE8B80111A16A3A9007F455E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = EE8B7FF51A16A3A9007F455E /* kaldi-ios-poc */;
-			targetProxy = EE8B80101A16A3A9007F455E /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		EE8B80031A16A3A9007F455E /* Main.storyboard */ = {
@@ -383,7 +335,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++98";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -404,6 +357,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.keenresearch.kaldi-ios-poc";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -413,7 +367,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++98";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -434,44 +389,9 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.keenresearch.kaldi-ios-poc";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
-		EE8B801D1A16A3A9007F455E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "kaldi-ios-pocTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "Keen-Research.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/kaldi-ios-poc.app/kaldi-ios-poc";
-			};
-			name = Debug;
-		};
-		EE8B801E1A16A3A9007F455E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "kaldi-ios-pocTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "Keen-Research.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/kaldi-ios-poc.app/kaldi-ios-poc";
 			};
 			name = Release;
 		};
@@ -492,15 +412,6 @@
 			buildConfigurations = (
 				EE8B801A1A16A3A9007F455E /* Debug */,
 				EE8B801B1A16A3A9007F455E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		EE8B801C1A16A3A9007F455E /* Build configuration list for PBXNativeTarget "kaldi-ios-pocTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				EE8B801D1A16A3A9007F455E /* Debug */,
-				EE8B801E1A16A3A9007F455E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
