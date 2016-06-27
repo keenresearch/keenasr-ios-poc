@@ -1,7 +1,7 @@
 #kaldi-ios-pos
-NOTE: Kaldi-iOS version 0.3.1, with a few bug fixes and couple of new features is available for download from http://keenresearch.com/kaldi-ios-framework. 
+NOTE: Kaldi-iOS version 0.3.1, with a few bug fixes and couple of new features is available for download from http://keenresearch.com/. 
 
-A proof-of-concept app that shows how to run Kaldi-iOS automated speech recognition framework. For more details see http://keenresearch.com/kaldi-ios-framework.
+A proof-of-concept app that shows how to run Kaldi-iOS automated speech recognition framework. For more details see http://keenresearch.com/.
 
 The demo uses acoustic models in librispeech-nnet2-en-us directory (http://kaldi-asr.org/downloads/build/10/trunk/egs/librispeech/s5/exp/nnet2_online/nnet_ms_a_online). Aternatively, you can use gmm decoder and models in librispeech-gmm-en-us directory (tri1 librispeech models; will be updated with better models soon).
 
