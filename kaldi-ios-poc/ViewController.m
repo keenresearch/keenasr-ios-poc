@@ -13,12 +13,13 @@
 #import "MusicDemoViewController.h"
 #import "ContactsDemoViewController.h"
 #import "EduReadingDemoViewController.h"
-
+#import "EduWordsDemoViewController.h"
 
 typedef NS_ENUM(NSInteger, DemoType) {
   kDemoTypeMusicLibrary,
   kDemoTypeContacts,
-  kDemoTypeEduReading
+  kDemoTypeEduReading,
+  kDemoTypeEduWords,
 };
 
 
@@ -31,7 +32,7 @@ const static NSArray *demoIntroText;
 @property (nonatomic, weak) KIOSRecognizer *recognizer;
 @property (nonatomic, strong) UIButton *startButton, *chooseDemoButton;
 @property (nonatomic, strong) UIView *chooseDemoView;
-@property (nonatomic, strong) UIButton *musicDemoButton, *contactsDemoButton, *eduReadingDemoButton;
+@property (nonatomic, strong) UIButton *musicDemoButton, *contactsDemoButton, *eduReadingDemoButton, *eduWordsDemoButton;
 @property (nonatomic, assign) CGRect openMenuFrame, closedMenuFrame;
 @property (nonatomic, assign) NSInteger currentDemo;
 
@@ -48,7 +49,8 @@ const static NSArray *demoIntroText;
   
   demoIntroText = @[@"This demo showcases access to your music library via voice. You can say \"PLAY <SONGNAME>\" or \"PLAY <ARTIST_NAME>\" or \"PLAY <SONGNAME_NAME> BY <ARTIST_NAME>\"",
                     @"This demo showcases access to your contacts via voice. You can say \"CALL <NAME>\" or just \"<NAME>\" for any of your contacts.\n\nNote that foreign and non-common American names are assigned pronunciation algorithmically; the real-world app would aim to assign proper pronunciations to as many names as possible beforehand.",
-                    @"In a reading demo you will see a paragraph of text. As you read the text aloud, the app will highlight the words you say. Real-world app can track timings (delays, hesitations, pauses), false starts, skips, etc. for specific words, and also provide hints when the child is struggling with a word."];
+                    @"In the reading demo you will see a paragraph of text. As you read the text aloud, the app will highlight the words you say. Real-world app can track timings (delays, hesitations, pauses), false starts, skips, etc. for specific words, and also provide hints when the child is struggling with a word.",
+                    @"The words demo shows how to do recognition of individual words, with the goal of helping young children learn how to spell words. Child can say the word and then see how it's spelled"];
   // Choose button in the top right corner, reveals Music Library, Contacts,
   // Edu-Reading, Smart Home
   
@@ -152,7 +154,10 @@ const static NSArray *demoIntroText;
       self.currentDemo = kDemoTypeContacts;
     } else if ((UIButton *)sender == self.eduReadingDemoButton) {
       self.currentDemo = kDemoTypeEduReading;
+    } else if ((UIButton *)sender == self.eduWordsDemoButton) {
+      self.currentDemo = kDemoTypeEduWords;
     }
+
     self.mainLabel.text = demoIntroText[self.currentDemo];
     [UIView animateWithDuration:.3 animations:^ {
       self.mainLabel.alpha = 1;
@@ -173,6 +178,9 @@ const static NSArray *demoIntroText;
     case kDemoTypeEduReading:
       vc = [EduReadingDemoViewController new];
       break;
+    case kDemoTypeEduWords:
+      vc = [EduWordsDemoViewController new];
+      break;
   }
   [self presentViewController:vc animated:YES completion:^ {}];
   
@@ -187,7 +195,7 @@ const static NSArray *demoIntroText;
   self.openMenuFrame = CGRectMake(self.closedMenuFrame.origin.x,
                                  self.closedMenuFrame.origin.y,
                                  cbFrame.size.width,
-                                 4*cbFrame.size.height);
+                                 5*cbFrame.size.height);
 
 
   self.chooseDemoView = [[UIView alloc] initWithFrame:self.openMenuFrame];
@@ -222,152 +230,16 @@ const static NSArray *demoIntroText;
   self.eduReadingDemoButton.autoresizingMask = UIViewAutoresizingFlexibleWidth;
   [self.chooseDemoView addSubview:self.eduReadingDemoButton];
 
-  
+  self.eduWordsDemoButton = [[UIButton alloc] initWithFrame:CGRectMake(x, 120, self.openMenuFrame.size.width-5, 20)];
+  [self.eduWordsDemoButton setTitle:@"Edu: Words" forState:UIControlStateNormal];
+  self.eduWordsDemoButton.titleLabel.font = [UIFont systemFontOfSize:18];
+  [self.eduWordsDemoButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+  self.eduWordsDemoButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+  [self.eduWordsDemoButton addTarget:self action:@selector(selectedDemoButtonTapped:) forControlEvents:UIControlEventTouchDown];
+  self.eduWordsDemoButton.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+  [self.chooseDemoView addSubview:self.eduWordsDemoButton];
+
   self.chooseDemoView.frame = self.closedMenuFrame;
-}
-
-
-#pragma mark Helper methods for language models for different demos
-
-
-
-
-
-
-
-- (NSArray *)createStorySentences {
-  NSMutableArray *sentences = [NSMutableArray new];
-  
-  [sentences addObjectsFromArray:@[@"Once upon a time there were three little pigs.",
-                                   @"Once upon a time there were three little pigs.",
-                                   @"Once upon a time there were three little pigs.",
-                                   @"Once upon a time there were three little pigs.",
-                                   @"Once upon a time there were three little pigs.",
-                                   @"Once upon a time there were three little pigs.",
-                                   @"Once upon a time there were three little pigs.",
-                                   @"Once upon a time there were three little pigs.",
-                                   @"Once upon a time there were three little pigs.",
-                                   @"Once upon a time there were three little pigs.",
-                                   @"Once upon a time there were three little pigs.",
-                                   @"Once upon a time there were three little pigs.",
-                                   @"Once upon a time there were three little pigs.",
-                                   @"Once upon a time there were three little pigs.",
-                                   @"Once upon a time there were three little pigs.",
-                                   @"Once upon a time there were three little pigs.",
-                                   @"Once upon a time there were three little pigs.",
-                                   @"One pig built a house of straw while the second pig built his house with sticks.",
-                                   @"One pig built a house of straw while the second pig built his house with sticks.",
-                                   @"One pig built a house of straw while the second pig built his house with sticks.",
-                                   @"One pig built a house of straw while the second pig built his house with sticks.",
-                                   @"One pig built a house of straw while the second pig built his house with sticks.",
-                                   @"One pig built a house of straw while the second pig built his house with sticks.",
-                                   @"One pig built a house of straw while the second pig built his house with sticks.",
-                                   @"One pig built a house of straw while the second pig built his house with sticks.",
-                                   @"One pig built a house of straw while the second pig built his house with sticks.",
-                                   @"One pig built a house of straw while the second pig built his house with sticks.",
-                                   @"One pig built a house of straw while the second pig built his house with sticks.",
-                                   @"One pig built a house of straw while the second pig built his house with sticks.",
-                                   @"One pig built a house of straw while the second pig built his house with sticks.",
-                                   @"One pig built a house of straw while the second pig built his house with sticks.",
-                                   @"One pig built a house of straw while the second pig built his house with sticks.",
-                                   @"One pig built a house of straw while the second pig built his house with sticks.",
-                                   @"They built their houses very quickly and then sang and danced all day because they were lazy.",
-                                   @"They built their houses very quickly and then sang and danced all day because they were lazy.",
-                                   @"They built their houses very quickly and then sang and danced all day because they were lazy.",
-                                   @"They built their houses very quickly and then sang and danced all day because they were lazy.",
-                                   @"They built their houses very quickly and then sang and danced all day because they were lazy.",
-                                   @"They built their houses very quickly and then sang and danced all day because they were lazy.",
-                                   @"They built their houses very quickly and then sang and danced all day because they were lazy.",
-                                   @"They built their houses very quickly and then sang and danced all day because they were lazy.",
-                                   @"They built their houses very quickly and then sang and danced all day because they were lazy.",
-                                   @"They built their houses very quickly and then sang and danced all day because they were lazy.",
-                                   @"They built their houses very quickly and then sang and danced all day because they were lazy.",
-                                   @"They built their houses very quickly and then sang and danced all day because they were lazy.",
-                                   @"They built their houses very quickly and then sang and danced all day because they were lazy.",
-                                   @"They built their houses very quickly and then sang and danced all day because they were lazy.",
-                                   @"They built their houses very quickly and then sang and danced all day because they were lazy.",
-                                   @"They built their houses very quickly and then sang and danced all day because they were lazy.",
-                                   @"The third little pig worked hard all day and built his house with bricks.",
-                                   @"The third little pig worked hard all day and built his house with bricks.",
-                                   @"The third little pig worked hard all day and built his house with bricks.",
-                                   @"The third little pig worked hard all day and built his house with bricks.",
-                                   @"The third little pig worked hard all day and built his house with bricks.",
-                                   @"The third little pig worked hard all day and built his house with bricks.",
-                                   @"The third little pig worked hard all day and built his house with bricks.",
-                                   @"The third little pig worked hard all day and built his house with bricks.",
-                                   @"The third little pig worked hard all day and built his house with bricks.",
-                                   @"The third little pig worked hard all day and built his house with bricks.",
-                                   @"The third little pig worked hard all day and built his house with bricks.",
-                                   @"The third little pig worked hard all day and built his house with bricks.",
-                                   @"The third little pig worked hard all day and built his house with bricks.",
-                                   @"The third little pig worked hard all day and built his house with bricks.",
-                                   @"The third little pig worked hard all day and built his house with bricks.",
-                                   @"A big bad wolf saw the two little pigs while they danced and played and thought, What juicy tender meals they will make!",
-                                   @"A big bad wolf saw the two little pigs while they danced and played and thought, What juicy tender meals they will make!",
-                                   @"A big bad wolf saw the two little pigs while they danced and played and thought, What juicy tender meals they will make!",
-                                   @"A big bad wolf saw the two little pigs while they danced and played and thought, What juicy tender meals they will make!",
-                                   @"A big bad wolf saw the two little pigs while they danced and played and thought, What juicy tender meals they will make!",
-                                   @"A big bad wolf saw the two little pigs while they danced and played and thought, What juicy tender meals they will make!",
-                                   @"A big bad wolf saw the two little pigs while they danced and played and thought, What juicy tender meals they will make!",
-                                   @"A big bad wolf saw the two little pigs while they danced and played and thought, What juicy tender meals they will make!",
-                                   @"A big bad wolf saw the two little pigs while they danced and played and thought, What juicy tender meals they will make!",
-                                   @"A big bad wolf saw the two little pigs while they danced and played and thought, What juicy tender meals they will make!",
-                                   @"A big bad wolf saw the two little pigs while they danced and played and thought, What juicy tender meals they will make!",
-                                   @"A big bad wolf saw the two little pigs while they danced and played and thought, What juicy tender meals they will make!",
-                                   @"A big bad wolf saw the two little pigs while they danced and played and thought, What juicy tender meals they will make!",
-                                   @"A big bad wolf saw the two little pigs while they danced and played and thought, What juicy tender meals they will make!",
-                                   @"A big bad wolf saw the two little pigs while they danced and played and thought, What juicy tender meals they will make!",
-                                   @"A big bad wolf saw the two little pigs while they danced and played and thought, What juicy tender meals they will make!",
-                                   @"He chased the two pigs and they ran and hid in their houses.",
-                                   @"He chased the two pigs and they ran and hid in their houses.",
-                                   @"He chased the two pigs and they ran and hid in their houses.",
-                                   @"He chased the two pigs and they ran and hid in their houses.",
-                                   @"He chased the two pigs and they ran and hid in their houses.",
-                                   @"He chased the two pigs and they ran and hid in their houses.",
-                                   @"He chased the two pigs and they ran and hid in their houses.",
-                                   @"He chased the two pigs and they ran and hid in their houses.",
-                                   @"He chased the two pigs and they ran and hid in their houses.",
-                                   @"He chased the two pigs and they ran and hid in their houses.",
-                                   @"He chased the two pigs and they ran and hid in their houses.",
-                                   @"He chased the two pigs and they ran and hid in their houses.",
-                                   @"He chased the two pigs and they ran and hid in their houses.",
-                                   @"He chased the two pigs and they ran and hid in their houses.",
-                                   @"He chased the two pigs and they ran and hid in their houses.",
-                                   @"He chased the two pigs and they ran and hid in their houses.",
-                                   @"The big bad wolf went to the first house and huffed and puffed and blew the house down in minutes.",
-                                   @"The big bad wolf went to the first house and huffed and puffed and blew the house down in minutes.",
-                                   @"The big bad wolf went to the first house and huffed and puffed and blew the house down in minutes.",
-                                   @"The big bad wolf went to the first house and huffed and puffed and blew the house down in minutes.",
-                                   @"The big bad wolf went to the first house and huffed and puffed and blew the house down in minutes.",
-                                   @"The big bad wolf went to the first house and huffed and puffed and blew the house down in minutes.",
-                                   @"The big bad wolf went to the first house and huffed and puffed and blew the house down in minutes.",
-                                   @"The big bad wolf went to the first house and huffed and puffed and blew the house down in minutes.",
-                                   @"The big bad wolf went to the first house and huffed and puffed and blew the house down in minutes.",
-                                   @"The big bad wolf went to the first house and huffed and puffed and blew the house down in minutes.",
-                                   @"The big bad wolf went to the first house and huffed and puffed and blew the house down in minutes.",
-                                   @"The big bad wolf went to the first house and huffed and puffed and blew the house down in minutes.",
-                                   @"The big bad wolf went to the first house and huffed and puffed and blew the house down in minutes.",
-                                   @"The big bad wolf went to the first house and huffed and puffed and blew the house down in minutes.",
-                                   @"The big bad wolf went to the first house and huffed and puffed and blew the house down in minutes.",
-                                   @"The big bad wolf went to the first house and huffed and puffed and blew the house down in minutes.",
-                                   @"The frightened little pig ran to the second pig’s house that was made of sticks.,",
-                                   @"The frightened little pig ran to the second pig’s house that was made of sticks.,",
-                                   @"The frightened little pig ran to the second pig’s house that was made of sticks.,",
-                                   @"The frightened little pig ran to the second pig’s house that was made of sticks.,",
-                                   @"The frightened little pig ran to the second pig’s house that was made of sticks.,",
-                                   @"The frightened little pig ran to the second pig’s house that was made of sticks.,",
-                                   @"The frightened little pig ran to the second pig’s house that was made of sticks.,",
-                                   @"The frightened little pig ran to the second pig’s house that was made of sticks.,",
-                                   @"The frightened little pig ran to the second pig’s house that was made of sticks.,",
-                                   @"The frightened little pig ran to the second pig’s house that was made of sticks.,",
-                                   @"The frightened little pig ran to the second pig’s house that was made of sticks.,",
-                                   @"The frightened little pig ran to the second pig’s house that was made of sticks.,",
-                                   @"The frightened little pig ran to the second pig’s house that was made of sticks.,",
-                                   @"The frightened little pig ran to the second pig’s house that was made of sticks.,",
-                                   @"The frightened little pig ran to the second pig’s house that was made of sticks.,"
-                                   ]];
-  
-  return sentences;
 }
 
 
