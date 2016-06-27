@@ -19,6 +19,7 @@
 		EE8B80071A16A3A9007F455E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE8B80061A16A3A9007F455E /* Images.xcassets */; };
 		EE8B800A1A16A3A9007F455E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE8B80081A16A3A9007F455E /* LaunchScreen.xib */; };
 		EE8B80E81A16C92B007F455E /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE8B80E71A16C92B007F455E /* Accelerate.framework */; };
+		EEAF90DC1D21CB7800ED0451 /* EduWordsDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAF90DB1D21CB7800ED0451 /* EduWordsDemoViewController.m */; };
 		EEB44DFB1CB58202009F432C /* KaldiIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EEB44DF81CB58202009F432C /* KaldiIOS.framework */; };
 		EEB44DFF1CB5ABE1009F432C /* libstdc++.6.0.9.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EEB44DFE1CB5ABE1009F432C /* libstdc++.6.0.9.tbd */; };
 /* End PBXBuildFile section */
@@ -45,6 +46,8 @@
 		EE8B80141A16A3A9007F455E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EE8B80151A16A3A9007F455E /* kaldi_ios_pocTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = kaldi_ios_pocTests.m; sourceTree = "<group>"; };
 		EE8B80E71A16C92B007F455E /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		EEAF90DA1D21CB7800ED0451 /* EduWordsDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EduWordsDemoViewController.h; sourceTree = "<group>"; };
+		EEAF90DB1D21CB7800ED0451 /* EduWordsDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EduWordsDemoViewController.m; sourceTree = "<group>"; };
 		EEB44DF81CB58202009F432C /* KaldiIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = KaldiIOS.framework; sourceTree = "<group>"; };
 		EEB44DFE1CB5ABE1009F432C /* libstdc++.6.0.9.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.6.0.9.tbd"; path = "usr/lib/libstdc++.6.0.9.tbd"; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -106,6 +109,8 @@
 				EE4A6CD91D00B96F00BBEB41 /* ContactsDemoViewController.m */,
 				EE4A6CDB1D00B98100BBEB41 /* EduReadingDemoViewController.h */,
 				EE4A6CDC1D00B98100BBEB41 /* EduReadingDemoViewController.m */,
+				EEAF90DA1D21CB7800ED0451 /* EduWordsDemoViewController.h */,
+				EEAF90DB1D21CB7800ED0451 /* EduWordsDemoViewController.m */,
 				EE8B80031A16A3A9007F455E /* Main.storyboard */,
 				EE8B80061A16A3A9007F455E /* Images.xcassets */,
 				EE8B80081A16A3A9007F455E /* LaunchScreen.xib */,
@@ -214,6 +219,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EE8B80021A16A3A9007F455E /* ViewController.m in Sources */,
+				EEAF90DC1D21CB7800ED0451 /* EduWordsDemoViewController.m in Sources */,
 				EE4A6CD71D00B95600BBEB41 /* MusicDemoViewController.m in Sources */,
 				EE4A6CDA1D00B96F00BBEB41 /* ContactsDemoViewController.m in Sources */,
 				EE4A6CDD1D00B98100BBEB41 /* EduReadingDemoViewController.m in Sources */,
