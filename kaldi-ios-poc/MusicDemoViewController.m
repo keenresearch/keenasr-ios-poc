@@ -108,7 +108,7 @@
   // setup self to be the delegate for the recognizer so we get notifications
   // for partial/final results
   self.recognizer.delegate = self;
-  [KIOSRecognizer setLogLevel:KIOSRecognizerLogLevelDebug];
+  [KIOSRecognizer setLogLevel:KIOSRecognizerLogLevelInfo];
   
   // set Voice Activity Detection timeouts (defaults would probably be ok for
   // this use case, but we are changing them for the edu/reading demo and since
@@ -166,13 +166,6 @@
   // Since we are using data from the phone's music library, we will first
   // compose a list of relevant phrases
   NSArray *sentences = [self createMusicDemoSentences];
-//  NSArray *sentences = [self getSentences];
-//  NSArray *sentences = [self getSpellingSentences];
-//  NSArray *sentences = [self  getEBatesCategories];
-//  NSArray *sentences = [self  getNetflixSentences];
-//  for (int i=0; i<3; i++) {
-//    sentences = [sentences arrayByAddingObjectsFromArray:sentences];
-//  }
   if ([sentences count] == 0) {
     self.statusLabel.text = @"Unable to access music library";
     return;
@@ -306,5 +299,6 @@
     // Pass the selected object to the new view controller.
 }
 */
+
 
 @end
