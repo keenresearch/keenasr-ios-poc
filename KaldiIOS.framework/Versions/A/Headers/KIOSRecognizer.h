@@ -128,7 +128,9 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 
 /*  ################## KIOSRecognizer #############*/
 
-/** An instance of the KIOSRecognizer class, called recognizer, manages recognizer resources and provides speech recognition capabilities to your application.
+/** An instance of the KIOSRecognizer class, called recognizer, manages 
+ recognizer resources and provides speech recognition capabilities to your 
+ application.
  
  You typically initiate the engine at the app startup time by calling `+initWithRecognizerType:andASRBundle:` or `+initWithRecognizerType:andASRBundle:andDecodingGraph:` method,  and then
  use sharedInstance method when you need to access the recognizer.
@@ -144,6 +146,11 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
      self.recognizer = [KIOSRecognizer sharedInstance];
      self.recognizer.delegate = self;
      self.recognizer.createAudioRecordings = YES;
+ 
+ After initialization, audio data from all sessions when recognizer is listening
+ will be used for online speaker adaptation. You can name speaker adaptation
+ profiles via adaptToSpeakerWithName:, persist profiles in the filesystem via
+ saveSpeakerAdaptationProfile, and reset via resetSpeakerAdaptation.
  
  @warning Only a single instance of the recognizer can exist at any given time.
  */
@@ -167,6 +174,7 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 /** Relative path to the ASR bundle where acoustic models, config, etc. reside 
  */
 @property(nonatomic, readonly) NSString *asrBundlePath;
+
 
 /** @name Initialization, Starting, and Stopping Recognition */
 
@@ -249,7 +257,8 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 
 /** Start processing incoming audio using pathToDecodingGraphFile as a decoding graph.
  @param pathToDecodingGraphFile a relative path to the HCLG file created with
- the ASR bundle used to initalize the engine. For example (librispeech-gmm-en-us/HCLG.fst)
+ the ASR bundle used to initalize the engine. For example 
+ (librispeech-gmm-en-us/HCLG.fst)
  
  @return TRUE if successful, FALSE otherwise
  
@@ -285,6 +294,98 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 
 // TODO
 //- (BOOL)stopListeningWithDelay:(float)delay;
+
+
+/** @name Speaker Adaptation 
+ */
+
+/** Defines the name that will be used to uniquely identify speaker adaptation 
+ profile. When recognizer starts to listen, it will try to find a matching
+ speaker profile in the filesystem (profiles are matched based on speakername, 
+ asrbundle, and audio route). When saveSpeakerAdaptationProfile method is called, 
+ it uses the name to uniquely identify the profile file that will be saved in 
+ the filesystem.
+ 
+ @param speakerName (pseduo)name of the speaker for which adaptation is to be
+ performed. Default value is 'default'.
+ 
+ The name used here does not have to correspond to the real name of user (thus
+ we call it pseudo name). The exact value does not matter as long as you can
+ match the value to the specific user in your app. For example, you could use
+ 'user1', 'user2', etc..
+ 
+ @warning If you cannot match names to your users, it's recommended to not use 
+ this method, and to not save adaptation profiles between sessions. Adaptation 
+ will still be performed throughout the session, but each new session (activity 
+ after initialization of recognizer) will start from the baseline models.
+ 
+ In-memory speaker adaptation profile can always be reset by calling 
+ resetSpeakerAdaptation.
+ 
+ If this method is called while recognizer is listening, it will only affect 
+ subsequent calls to startListening methods.
+ */
+- (void)adaptToSpeakerWithName:(NSString *)speakerName;
+
+
+/** Resets speaker adaptation profile in the current recognizer session. Calling
+ this method will also reset the speakerName to 'default'. If the corresponding 
+ speaker adaptation profile exists in the filesystem for 'default' speaker, it 
+ will be used. If not, initial models from the ASR Bundle will be the baseline.
+
+ You would typically use this method id there is a new start of a certain
+ activity in your app that may entail new speaker. For example, a practice view
+ is started and there is a good chance a different user may be using the app.
+ 
+ If speaker (pseudo)identities are known, you don't need to call this method, you
+ can just switch speakers by calling adaptToSpeakerWithName: with the 
+ appropriate speakerName
+ 
+ Following are the tradeoffs when using this method:
+ 
+   - the downside of resetting user profile for the existing user is that ASR
+     performance will be reset to the baseline (no adaptation), which may 
+     slightly degrade performance in the first few interactions
+ 
+   - the downside of NOT resetting user profile for a new user is that, depending
+     on the characteristics of the new user's voice, ASR performance may 
+     initially be degraded slightly (when comparing to the baseline case of no 
+     adaptation)
+ 
+ Calls to this method will be ignored if recognizer is in LISTENING state.
+ 
+ If you are resetting adaptation profile and you know user's (pseudo)identity, 
+ you may want to call saveSpeakerAdaptationProfile method prior to calling this 
+ method so that on subsequent user switches, adaptation profiles can be reloaded 
+ and recognition starts with the speaker profile trained on previous sessions 
+ audio.
+ 
+ */
+- (void)resetSpeakerAdaptation;
+
+
+/** Saves speaker profile (used for adaptation) in the filesystem.
+ 
+ Speaker profile will be saved in the file system, 
+ in Caches/KaldiIOS-speaker-profiles/ directory. Profile filename is composed of
+ the speakerName, asrBundle, and audioRoute.
+ */
+- (void)saveSpeakerAdaptationProfile;
+
+
+
+/**
+ Remove all adaptation profiles for all speakers.
+ */
++ (BOOL)removeAllSpeakerAdaptationProfiles;
+
+/**
+ Removes all adaptation profiles for the speaker with name speakerName.
+ 
+ @param speakerName name of the speaker whose profiles should be removed
+ */
++ (BOOL)removeSpeakerAdaptationProfiles:(NSString *)speakerName;
+
 
 
 /** @name File Audio Recording Management */

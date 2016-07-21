@@ -126,7 +126,17 @@ const static NSArray *demoIntroText;
   
   // set to yes, if you'd like to capture audio recordings (see docs for details)
   self.recognizer.createAudioRecordings = NO;
-
+  
+  // Setting speaker name to some random value. If not set, adaptation will be
+  // performed via 'default' name, so this makes sense only if you know you will
+  // have different users and you can match users to their (pseudo)names.
+  
+  // In individual demo controllers we call SaveSpeakerAdaptationProfile on
+  // viewWillDisappear to persist speakear adaptation profile on disk, so that
+  // it can be used at from the beggining in subsequent sessions
+  [self.recognizer adaptToSpeakerWithName:@"john"];
+  // also see resetSpeakerAdaptation
+  
   self.startButton.alpha = 0;
 }
 

@@ -222,6 +222,15 @@
   self.backButton.enabled = YES;
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+  // We save speaker profile when view is about to disappear. You can do this
+  // on other events as well if needed. The main reason we are doing this is so
+  // that on subsequent starts of the app we can reuse the speaker profile and
+  // not start from the baseline
+  [self.recognizer saveSpeakerAdaptationProfile];
+  
+  [super viewWillDisappear:animated];
+}
 
 
 - (void)startListeningButtonTapped:(id)sender {
