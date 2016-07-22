@@ -10,8 +10,7 @@ Four different demos are provided in this proof of concept app:
 
 2. Contacts voice control: your contacts will be loaded and first/last name will be used to create a custom decoding graph
 
-3. Educational Reading Demo: demonstrates ASR use for following users reading aloud, but highlighting words as they are read. Oral reading rate of speech is computed in real time. Additional information related to oral reading fluency will be available in future releases.
+3. Educational Reading Demo: demonstrates ASR use for following users reading aloud, by highlighting words as they are read. Oral reading rate of speech is computed in real time. Additional information related to oral reading fluency will be available in future releases.
 
 4. Educational Words Demo: demonstrates ASR use for recognizing individual words. A set of ~1000 most common words for children is used to create a decoding graph. User can say the word itself of "How do you spell \<WORD\>" or "Spell \<WORD\>" and the word will be displayed on the screen.
-
 
