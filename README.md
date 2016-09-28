@@ -1,5 +1,9 @@
 #Kaldi-iOS Proof-of-Concept App
 
+**NOTE**: This proof-of-concept app ships with a trial version of KaldiIOS framework, which will exit (crash) the app 5min after the framework has been initialized. If you would like to obtain a version of the framework without this limitation, contact us at info@keenresearch.com.
+
+After cloning the repository, you will need to set the bundle id for the app, as well as signing settings in XCode project settings.
+
 A proof-of-concept app that shows how to run Kaldi-iOS automated speech recognition framework. For detailed information on all classes and methods, consult the [SDK reference documentation](http://keenresearch.com/kaldi-ios-docs). If starting with the framework from scratch, check our [Quick Start](http://keenresearch.com/kaldi-ios-docs/docs/additional-docs/Quick-Start.html) document.
 
 This demo app uses acoustic models in librispeech-nnet2-en-us directory (http://kaldi-asr.org/downloads/build/10/trunk/egs/librispeech/s5/exp/nnet2_online/nnet_ms_a_online). Aternatively, you can use gmm decoder and models in librispeech-gmm-en-us directory (tri1 librispeech models; will be updated with better models soon).
