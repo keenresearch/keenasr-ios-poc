@@ -204,18 +204,20 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  
  @param bundle directory containing all the resources necessary for the specific
  recognizer type. This will typically include all acoustic model related files,
- configuration files. The bundle directory should contain decode.conf 
- configuration file, which can be augmented with additional Kaldi-specific 
- config params. Currently, that is the only way to pass various settings to 
- Kaldi. All path references in config files should be relative to the app root 
- directory (e.g. librispeech-gmm-en-us/mfcc.conf). The init method will
- initiallize appropriate recognizer type based on the name and content of the 
- ASR bundle.
+ configuration files, and any prepackaged HCLG.fst file(s). The bundle directory
+ should contain decode.conf configuration file, which can be augmented with 
+ additional Kaldi-specific config params. Currently, that is the only way to
+ pass various settings to Kaldi. All path references in config files should be
+ relative to the app root directory (e.g. librispeech-gmm-en-us/mfcc.conf). The
+ init method will initiallize appropriate recognizer type based on the name and
+ content of the ASR bundle.
  
  @return TRUE if succesful, FALSE otherwise.
  
  @warning When initializing the recognizer, make sure that the bundle directory
- contains all the necessary resources needed for the specific recognizer type.
+ contains all the necessary resources needed for the specific recognizer type. 
+ If your app is dynamically creating decoding graphs, ASR bundle directory needs
+ to contain lang subdirectory with relevant resources (lexicon, etc.).
  */
 
 + (BOOL)initWithASRBundle:(NSString *)bundle;
@@ -241,7 +243,9 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  @return TRUE if succesful, FALSE otherwise.
  
  @warning When initializing the recognizer, make sure that the bundle directory
- contains all the necessary resources needed for the specific recognizer type
+ contains all the necessary resources needed for the specific recognizer type.  
+ If your app is dynamically creating decoding graphs, ASR bundle directory needs
+ to contain lang subdirectory with relevant resources (lexicon, etc.).
  */
 + (BOOL)initWithASRBundle:(NSString *)bundle
          andDecodingGraph:(NSString*)pathToDecodingGraph;
@@ -257,10 +261,10 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 /** Start processing incoming audio.
  @return TRUE if successful, FALSE otherwise
  
- After calling this method, recognizer will listen and decode audio coming through
- the microphone. The process will stop either by explicit call to stopListening or
- if one of the Voice Activity Detection module rules are triggered (for example,
- max duration without speech, or end-silence, etc.).
+ After calling this method, recognizer will listen to and decode audio coming
+ through the microphone. The process will stop either by explicit call to
+ stopListening or if one of the Voice Activity Detection module rules are 
+ triggered (for example, max duration without speech, or end-silence, etc.).
  
  When the recognizer stops listening due to VAD triggering, it will call 
  [recognizerFinalResult:forRecognizer:]([KIOSRecognizerDelegate recognizerFinalResult:forRecognizer:]) method.
@@ -270,7 +274,9 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 - (BOOL)startListening;
 
 
-/** Start processing incoming audio using pathToDecodingGraphFile as a decoding graph.
+/** Start processing incoming audio using pathToDecodingGraphFile as a decoding
+ graph.
+ 
  @param pathToDecodingGraphFile a relative path to the HCLG file created with
  the ASR bundle used to initalize the engine. For example 
  (librispeech-gmm-en-us/HCLG.fst)
@@ -448,22 +454,21 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 /** @name Config Parameters */
 
 /** Set any of KIOSVadParameter Voice Activity Detection parameters. These 
- parameters can be set, and will go into effect, at any time.
+ parameters can be set at any time and they will go into effect immediately.
  
  @param parameter one of KIOSVadParameter
  @param value duration in seconds for the parameter
  
  @warning Setting VAD rules in the config file within the ASR bundle will **NOT**
  have any effect. Values for these parameters are set to their defaults upon
- initialization of KIOSRecognizer. They can only be changed using this method.
+ initialization of KIOSRecognizer. They can only be changed programmatically, 
+ using this method.
 */
 - (void)setVADParameter:(KIOSVadParameter)parameter toValue:(float)value;
 
 
+/** @name Deprecated */
 
-/*
-     DEPRECATED METHODS
- */
 
 /** Initialize ASR engine with the specific recognizer type. This method needs
  to be called first, before any other work can be performed. You would use this
