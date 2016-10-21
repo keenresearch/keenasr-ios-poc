@@ -109,7 +109,7 @@
   // for partial/final results
   self.recognizer.delegate = self;
   [KIOSRecognizer setLogLevel:KIOSRecognizerLogLevelInfo];
-  
+  self.recognizer.createAudioRecordings=YES;
   // set Voice Activity Detection timeouts (defaults would probably be ok for
   // this use case, but we are changing them for the edu/reading demo and since
   // there is one recognizer we want to make sure they are  back to original
@@ -124,7 +124,7 @@
   [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForGoodMatch toValue:1];
   // use the same setting here as for the good match, although this could be
   // slightly longer
-  [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForAnyMatch toValue:2];
+  [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForAnyMatch toValue:1];
   
   self.startListeningButton.enabled = NO;
   
@@ -156,10 +156,9 @@
 
   // If we had bigram language model in the asr bundle, we could create decoding graph
   // directly from the bigram following the commented-out steps below.
-  
-//  NSArray *parts = [NSArray arrayWithObjects: [[NSBundle mainBundle] resourcePath], self.recognizer.asrBundlePath, @"numbers-bigram.txt", nil];
-//  NSURL *bigramURL = [NSURL fileURLWithPathComponents:parts];
-//  [dg createDecodingGraphFromBigramURL:bigramURL andSaveWithName:@"numbers"];
+  //  NSArray *parts = [NSArray arrayWithObjects: [[NSBundle mainBundle] resourcePath], self.recognizer.asrBundlePath, @"numbers-bigram.txt", nil];
+  //  NSURL *bigramURL = [NSURL fileURLWithPathComponents:parts];
+  //  [dg createDecodingGraphFromBigramURL:bigramURL andSaveWithName:@"numbers"];
 
   // Since we are using data from the phone's music library, we will first
   // compose a list of relevant phrases
