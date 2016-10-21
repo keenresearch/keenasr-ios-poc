@@ -13,12 +13,19 @@
 
 // @name Constants
 
-/** These constants indicate the type of recognizers you are creating.*/
+/** These constants indicate the type of recognizers you are creating.
+ */
 typedef NS_ENUM(NSInteger, KIOSRecognizerType) {
+  /** Unknown Recognizer */
+  KIOSRecognizerTypeUnknown = -1,
   /** Gaussian Mixture Model Kaldi Recognizer */
   KIOSRecognizerTypeGMM,
   /** NNet2 Kaldi Recognizer */
-  KIOSRecognizerTypeNNet
+  KIOSRecognizerTypeNNet,
+  /** NNet3 Kaldi Recognizer */
+  KIOSRecognizerTypeNNet3,
+  /** NNet3 Chain Kaldi Recognizer */
+  KIOSRecognizerTypeNNet3Chain
 };
 
 /** These constants indicate the log levels for the framework.*/
@@ -88,19 +95,17 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 /** The KIOSRecognizerDelegate protocol defines optional methods implemented by
  delegates of the KIOSRecognizer class.
  
- Partial recognition result is a result that's reported while recognition is still
- in progress.
+ Partial recognition result is a result that's periodically (100ms or so) 
+ reported while recognition is still in progress.
  
  Final recognition result is a result that's reported after the engine determined
- that there hasn't been any voice activity for a predefined duration of time 
- (2sec). TODO - future releases will allow dynamic configuration of the end timeout 
- VAD property.
- 
+ that there hasn't been any voice activity for a predefined duration of time, as
+ specifed by VAD endpointing settings.
  */
 @protocol KIOSRecognizerDelegate <NSObject>
 
 @optional
-/** This method is called whenever recognizer has a new (different than before)
+/** This method is called when recognizer has a new (different than before)
  partial recognition result. Internal timer that runs every 100ms checks for the 
  partial results and calls this method if result is different than before.
  
@@ -132,21 +137,25 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  recognizer resources and provides speech recognition capabilities to your 
  application.
  
- You typically initiate the engine at the app startup time by calling `+initWithRecognizerType:andASRBundle:` or `+initWithRecognizerType:andASRBundle:andDecodingGraph:` method,  and then
- use sharedInstance method when you need to access the recognizer.
+ You typically initiate the engine at the app startup time by calling
+ `+initWithASRBundle:` or `+initWithASRBundle:andDecodingGraph:` method, and
+ then use sharedInstance method when you need to access the recognizer.
  
- Recognition results are provided via callbacks. One of your classes will need to adopt a [KIOSRecognizerDelegate protocol](KIOSRecognizerDelegate), and implement some of its methods.
+ Recognition results are provided via callbacks. To obtain results one of your
+ classes will need to adopt a 
+ [KIOSRecognizerDelegate protocol](KIOSRecognizerDelegate), and implement some 
+ of its methods.
  
  Initialization example:
  
      if (! [KIOSRecognizer sharedInstance]) {
-       [KIOSRecognizer initWithRecognizerType:KIOSRecognizerTypeNNet andASRBundle:@"librispeech-gmm-en-us"];
+         [KIOSRecognizer initWithASRBundle:@"librispeech-nnet2-en-us"];
      }
-     // our class keeps a local reference of the recognizer (not necessary)
+     // for convenience our class keeps a local reference of the recognizer
      self.recognizer = [KIOSRecognizer sharedInstance];
      self.recognizer.delegate = self;
      self.recognizer.createAudioRecordings = YES;
- 
+
  After initialization, audio data from all sessions when recognizer is listening
  will be used for online speaker adaptation. You can name speaker adaptation
  profiles via adaptToSpeakerWithName:, persist profiles in the filesystem via
@@ -161,9 +170,12 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 
 /** Returns shared instance of the recognizer
  @return The shared recognizer instance
- @warning if the engine has not been initialized by calling `+initWithRecognizerType:andASRBundle:andDecodingGraph:`, this method will return nil
+ @warning if the engine has not been initialized by calling 
+ `+initWithASRBundle:andDecodingGraph:`, this method will return nil
  */
 + (KIOSRecognizer *)sharedInstance;
+
+
 
 /** delegate, which handles KIOSRecognizerDelegate protocol methods */
 @property(nonatomic, weak) id<KIOSRecognizerDelegate> delegate;
@@ -175,49 +187,53 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  */
 @property(nonatomic, readonly) NSString *asrBundlePath;
 
+/**
+ Type of the recognizer. It makes sense to query this property only after the
+ recognizer has been initialized.
+ */
+@property(nonatomic, assign, readonly) KIOSRecognizerType recognizerType;
+
 
 /** @name Initialization, Starting, and Stopping Recognition */
 
 
-/** Initialize ASR engine with the specific recognizer type. This method needs
- to be called first, before any other work can be performed. You would use this 
- init method if you are likely to use different decoding graphs (custom or 
- prepackaged) in your app.
- 
- @param recognizerType one of KIOSRecognizerType
+/** Initialize ASR engine with the specific ASR Bundle, which provides all the 
+ resources necessary for initialization. This method needs to be called first, 
+ before any other work can be performed. You would use this init method if you 
+ are planning to dynamically build decoding graphs in your app.
  
  @param bundle directory containing all the resources necessary for the specific
  recognizer type. This will typically include all acoustic model related files,
- configuration files. Directory should contain decode.conf configuration file,
- which can be augmented with additional Kaldi-specific config params. Currently,
- that is the only way to pass various settings to Kaldi. All path references in
- config files should be relative to the app root directory
- (i.e. librispeech-gmm-en-us/mfcc.conf)
+ configuration files. The bundle directory should contain decode.conf 
+ configuration file, which can be augmented with additional Kaldi-specific 
+ config params. Currently, that is the only way to pass various settings to 
+ Kaldi. All path references in config files should be relative to the app root 
+ directory (e.g. librispeech-gmm-en-us/mfcc.conf). The init method will
+ initiallize appropriate recognizer type based on the name and content of the 
+ ASR bundle.
  
  @return TRUE if succesful, FALSE otherwise.
  
  @warning When initializing the recognizer, make sure that the bundle directory
- contains all the necessary resources needed for the specific recognizer type
+ contains all the necessary resources needed for the specific recognizer type.
  */
 
-+ (BOOL)initWithRecognizerType:(KIOSRecognizerType)recognizerType
-                  andASRBundle:(NSString *)bundle;
++ (BOOL)initWithASRBundle:(NSString *)bundle;
 
 
-/** Initialize ASR engine with the specific recognizer type. This method needs
+
+/** Initialize ASR engine with the specific ASR Bundle. This method needs
  to be called first, before any other work can be performed. If your app is always
- using a single decoding graph prepackaged with the app, you would typically use 
+ using a single decoding graph prepackaged with the app, you would typically use
  this method to initialize the recognizer.
  
- @param recognizerType one of KIOSRecognizerType
- 
  @param bundle directory containing all the resources necessary for the specific
- recognizer type. This will typically include all acoustic model related files, 
- configuration files and any prepackaged HCLG.fst file(s). Directory should 
- contain decode.conf configuration file, which can be augmented with additional
- Kaldi-specific config params. Currently, that is the only way to pass various
- settings to Kaldi. All path references in config files should be relative to 
- the app root directory (i.e. librispeech-gmm-en-us/mfcc.conf)
+ recognizer type. This will typically include all acoustic model related files,
+ configuration files and any prepackaged HCLG.fst file(s). The bundle directory
+ should contain decode.conf configuration file, which can be augmented with 
+ additional Kaldi-specific config params. Currently, that is the only way to 
+ pass various settings to Kaldi. All path references in config files should be 
+ relative to the app root directory (i.e. librispeech-gmm-en-us/mfcc.conf)
  
  @param pathToDecodingGraph relative path to the decoding graph. This will
  usually be <ASR_BUNDLE_NAME>/HCLG.fst or similar.
@@ -227,9 +243,8 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  @warning When initializing the recognizer, make sure that the bundle directory
  contains all the necessary resources needed for the specific recognizer type
  */
-+ (BOOL)initWithRecognizerType:(KIOSRecognizerType)recognizerType
-                  andASRBundle:(NSString *)bundle
-              andDecodingGraph:(NSString*)pathToDecodingGraph;
++ (BOOL)initWithASRBundle:(NSString *)bundle
+         andDecodingGraph:(NSString*)pathToDecodingGraph;
 
 
 
@@ -443,6 +458,65 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  initialization of KIOSRecognizer. They can only be changed using this method.
 */
 - (void)setVADParameter:(KIOSVadParameter)parameter toValue:(float)value;
+
+
+
+/*
+     DEPRECATED METHODS
+ */
+
+/** Initialize ASR engine with the specific recognizer type. This method needs
+ to be called first, before any other work can be performed. You would use this
+ init method if you are likely to use different decoding graphs (custom or
+ prepackaged) in your app.
+ 
+ @param recognizerType one of KIOSRecognizerType
+ 
+ @param bundle directory containing all the resources necessary for the specific
+ recognizer type. This will typically include all acoustic model related files,
+ configuration files. The bundle directory should contain decode.conf
+ configuration file, which can be augmented with additional Kaldi-specific
+ config params. Currently, that is the only way to pass various settings to
+ Kaldi. All path references in config files should be relative to the app root
+ directory (i.e. librispeech-gmm-en-us/mfcc.conf)
+ 
+ @return TRUE if succesful, FALSE otherwise.
+ 
+ @warning  @warning DEPRECATED: please use initWitASRNBundle:
+ 
+ */
+
++ (BOOL)initWithRecognizerType:(KIOSRecognizerType)recognizerType
+                  andASRBundle:(NSString *)bundle \
+__attribute__((deprecated("This method has been depricated. Please use initWithAsrBundle method instead")));
+
+/** Initialize ASR engine with the specific recognizer type. This method needs
+ to be called first, before any other work can be performed. If your app is always
+ using a single decoding graph prepackaged with the app, you would typically use
+ this method to initialize the recognizer.
+ 
+ @param recognizerType one of KIOSRecognizerType
+ 
+ @param bundle directory containing all the resources necessary for the specific
+ recognizer type. This will typically include all acoustic model related files,
+ configuration files and any prepackaged HCLG.fst file(s). Directory should
+ contain decode.conf configuration file, which can be augmented with additional
+ Kaldi-specific config params. Currently, that is the only way to pass various
+ settings to Kaldi. All path references in config files should be relative to
+ the app root directory (i.e. librispeech-gmm-en-us/mfcc.conf)
+ 
+ @param pathToDecodingGraph relative path to the decoding graph. This will
+ usually be <ASR_BUNDLE_NAME>/HCLG.fst or similar.
+ 
+ @return TRUE if succesful, FALSE otherwise.
+ 
+ @warning DEPRECATED: please use initWitASRNBundle:andDecodingGraph
+ 
+ */
++ (BOOL)initWithRecognizerType:(KIOSRecognizerType)recognizerType
+                  andASRBundle:(NSString *)bundle
+              andDecodingGraph:(NSString*)pathToDecodingGraph \
+__attribute__((deprecated("This method has been depricated. Please use initWithAsrBundle: andDecodingGraph method instead")));
 
 
 

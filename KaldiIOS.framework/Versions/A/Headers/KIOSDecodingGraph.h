@@ -37,8 +37,9 @@
  saved in the filesystem on the device. Typically, you will provide a list of
  sentences/phrases to createDecodingGraphFromSentences:andSaveWithName: method,
  which will then create a custom decoding graph in the file system. Later on, 
- you can refer to the decodingGraph by its name. Alternatively, you can provide
- a bigram language model, which will be used to build a decoding graph.
+ you can refer to the custom decodingGraph by its name. Alternatively, instead 
+ of list of sentences you can provide an ARPA language model, which will be
+ used to build a decoding graph.
 
  Using this class is conditioned on availability of the lang/ subdirectory in the
  ASR bundle.
@@ -46,17 +47,17 @@
  @warning When dynamically creating decoding graphs, any words that do not have
  phonetic representation in the lexicon (ASRBUNDLE/lang/lexicon.txt) will be 
  assigned one algorithmically. For English langauge algorithmic representation is
- imperfect, thus you should aim to augment the lexicon text file with 
+ imperfect, thus you should aim to manually augment the lexicon text file with
  pronunciations for as many additional words that are likely to be encountered
  in your app. For example, if your app is dealing with ASR of names
  you would augment the lexicon with additional names and their proper 
- pronunciation.
+ pronunciation before releasing your app.
 
  @warning In the current versio of the framework, creating of decodingGraph can
- take on the order of 10-15 sec for medium size vocabulary/bigrams (more than
- thousand words). We are actively working on optimizing methods that create
- decoding graphs.
- 
+ take on the order of several seconds (on iPhone 6 and equivalaent devices) for 
+ medium size vocabulary task (more than thousand words). For larger language 
+ models we recommend you create decoding graph ahead of time and package it with 
+ your app.
  */
 @interface KIOSDecodingGraph : NSObject 
 
