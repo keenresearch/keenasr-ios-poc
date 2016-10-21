@@ -8,6 +8,13 @@
 
 #import "EduWordsDemoViewController.h"
 
+// end speech timeout if we recognized something that looks like a relevant word
+static float kEndSpeechTimeoutShort = 0.5;
+// default (much longer) end speech timeout, which allows user to hesitate/pause
+// e.g. "How to you spell..... winter"
+static float kEndSpeechTimeoutLong = 4;
+
+
 @interface EduWordsDemoViewController()
 @property (nonatomic, strong) UIButton *startListeningButton, *backButton;
 @property (nonatomic, strong) UILabel *textLabel, *statusLabel;
@@ -118,10 +125,18 @@
   // end silence timeouts (somewhat arbitrary); too long and it may be weird
   // if the user finished. Too short and we may cut them off if they pause for a
   // while.
-  [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForGoodMatch toValue:1];
+  // In this demo we will dynamically change the end timeouts. Initially we set
+  // them to a fairly large values, but in partialResult callbacks we will reduce
+  // them significantly if we spotted a correct word. That way user could say
+  // "SPELL...." and if they hesitate for a while to say the word we won't cut
+  // them off. But, if they say the right word (actually, we think they said the
+  // right word, then we timeout faster.
+  [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForGoodMatch
+                           toValue:kEndSpeechTimeoutLong];
   // use the same setting here as for the good match, although this could be
   // slightly longer
-  [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForAnyMatch toValue:2];
+  [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForAnyMatch
+                           toValue:kEndSpeechTimeoutLong];
   
   self.startListeningButton.enabled = NO;
   
@@ -129,6 +144,7 @@
   // decoder with the custom decoding graph via startListningWithCustomDecodingGraph
   // and set this to YES, so that subsequent taps on Start trigger only startListening
   self.initializedDecodingGraph = NO;
+  self.recognizer.createAudioRecordings=YES;
 }
 
 
@@ -239,6 +255,12 @@
 
 - (NSString *)spotKeyword:(NSString *)phrase {
   // strip prefix, if exists (not the most efficient way to do this)
+  // TODO
+  //
+  // if more than one word: remove non-relevant words one by one
+  // TODO handle situation "SPELL SPELL",
+  // also two or more relevant keywords (either show the first one or all of them)
+  
   phrase = [phrase stringByReplacingOccurrencesOfString:@"HOW DO YOU SPELL" withString:@""];
   phrase = [phrase stringByReplacingOccurrencesOfString:@"HOW DO YOU" withString:@""];
   phrase = [phrase stringByReplacingOccurrencesOfString:@"HOW DO" withString:@""];
@@ -265,28 +287,40 @@
 
 // This demo relies on the partial results for higlighting,
 - (void)recognizerPartialResult:(KIOSResult *)result forRecognizer:(KIOSRecognizer *)recognizer {
-  NSLog(@"Partial Result: %@ (%@)", result.cleanText, result.text);
+  NSLog(@"Partial Result: %@ (%@), conf %@", result.cleanText, result.text, result.confidence);
   
   NSString *keyword = [self spotKeyword:result.cleanText];
   NSLog(@"Got '%@'", keyword);
-  if (keyword == nil)  // no match
+  if (keyword == nil) {  // no match
+    self.textLabel.text = @"";
     return;
+  }
   
+  [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForGoodMatch
+                           toValue:kEndSpeechTimeoutShort];
+  [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForAnyMatch
+                           toValue:kEndSpeechTimeoutShort];
   self.textLabel.text = keyword;
-//  [self.recognizer stopListening];
+  
+  // we could also just call stop listening; this way we let the recognizer stop
+  // listening if there is no more speech
 }
 
 
-// NOTE: we update ROS label here as well, but it will be sligtly off because
-// we are including endTimeout silence as well. In the future, KIOSResult class
-// will provide start/end times for individual words; then, we could look up the
-// end time of the last word to do a final ROS estimation
 - (void)recognizerFinalResult:(KIOSResult *)result forRecognizer:(KIOSRecognizer *)recognizer {
   NSLog(@"Final Result: %@ (%@, conf: %@)", result.cleanText, result.text, result.confidence);
   
   NSString *keyword = [self spotKeyword:result.cleanText];
-  if (keyword != nil)
+  
+  if ([result.confidence floatValue] < 0.2 && [result.confidence floatValue] >= 0) { //
+    self.textLabel.text = @"";
+    NSLog(@"Ignoring recognized phrase due to low confidence");
+    // TODO if we got here bcs something was recognized in partial callback but now
+    // based on confidence we are ignoring it, we should probably continue listening
+    // i.e. call startListening from here
+  } else if  (keyword != nil) {
     self.textLabel.text = keyword;
+  }
 
   self.textLabel.textColor = [UIColor blackColor];
   // maybe we should restart listening if the keyword wasn't spotted
@@ -297,6 +331,13 @@
   
   self.statusLabel.text = @"Done Listening";
   self.startListeningButton.enabled = YES;
+
+  //revert back to original timeouts
+  [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForGoodMatch
+                           toValue:kEndSpeechTimeoutLong];
+  [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForAnyMatch
+                           toValue:kEndSpeechTimeoutLong];
+
 }
 
 
@@ -323,8 +364,9 @@
   return sentences;
 }
 
+
 // http://www.readingrockets.org/article/basic-spelling-vocabulary-list
-// augmented with days of week, and months
+// augmented with days of week, and months, and a number of other words
 - (NSArray *)getWords {
   return @[@"ALL",
            @"AND",
@@ -378,11 +420,11 @@
            @"MAY",
            @"ME",
            @"MOM",
+           @"MOMMY",
            @"MY",
            @"NO",
            @"NOT",
            @"OF",
-           @"OH",
            @"OLD",
            @"ON",
            @"ONE",
@@ -390,6 +432,7 @@
            @"PAN",
            @"PET",
            @"PIG",
+           @"PHONE",
            @"PLAY",
            @"RAN",
            @"RAT",
@@ -469,6 +512,7 @@
            @"CRY",
            @"CUP",
            @"CUT",
+           @"DAD",
            @"DADDY",
            @"DEAR",
            @"DEEP",
@@ -568,6 +612,7 @@
            @"LIVES",
            @"LONG",
            @"LOOKING",
+           @"LOADING",
            @"LOST",
            @"LOT",
            @"LOVE",
@@ -791,7 +836,6 @@
            @"EARTH",
            @"EAST",
            @"EIGHT",
-           @"XSEVEN",
            @"EVER",
            @"EVERY",
            @"EVERYONE",
@@ -998,6 +1042,7 @@
            @"WASN'T",
            @"WATCH",
            @"WATER",
+           @"WATERMELLON",
            @"WEATHER",
            @"WE'RE",
            @"WEST",
@@ -1063,7 +1108,7 @@
            @"FIFTH",
            @"FINISH",
            @"FOLLOWING",
-           @"GOOD-BY",
+           @"GOODBY",
            @"GROUP",
            @"HAPPENED*",
            @"HARDEN",
@@ -1140,7 +1185,7 @@
            @"COURSE",
            @"COUSIN",
            @"DECIDE",
-           @"DIFFERENT*",
+           @"DIFFERENT",
            @"EVENING",
            @"FAVORITE",
            @"FINALLY",
@@ -1183,6 +1228,15 @@
            @"OCTOBER",
            @"NOVEMBER",
            @"DECEMBER",
+           @"FRUIT",
+           @"VEGETABLES",
+           @"ELEPHANT",
+           @"PIGEON",
+           @"TIGER",
+           @"LION",
+           @"LOAD",
+           @"CHAIR",
+           @"LESS",
            ];
 };
 
@@ -1208,7 +1262,6 @@
  // Pass the selected object to the new view controller.
  }
  */
-
 
 
 @end
