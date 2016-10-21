@@ -114,8 +114,8 @@ const static NSArray *demoIntroText;
     // since we are using custom decoding graphs, we init without passing decoding
     // graph path, and later on we pass the custom decoding graph name to
     // startListeningWithCustomDecodingGraph
-//    [KIOSRecognizer initWithRecognizerType:KIOSRecognizerTypeGMM andASRBundle:@"librispeech-gmm-en-us"];
-    [KIOSRecognizer initWithRecognizerType:KIOSRecognizerTypeNNet andASRBundle:@"librispeech-nnet2-en-us"];
+//    [KIOSRecognizer initWithASRBundle:@"librispeech-gmm-en-us"];
+    [KIOSRecognizer initWithASRBundle:@"librispeech-nnet2-en-us"];
 
     [KIOSRecognizer sharedInstance].createAudioRecordings = FALSE;
   }
