@@ -109,6 +109,7 @@
   // for partial/final results
   self.recognizer.delegate = self;
   [KIOSRecognizer setLogLevel:KIOSRecognizerLogLevelInfo];
+  self.recognizer.createAudioRecordings = YES;
   
   // set Voice Activity Detection timeouts (defaults would probably be ok for
   // this use case, but we are changing them for the edu/reading demo and since
@@ -121,10 +122,10 @@
   // end silence timeouts (somewhat arbitrary); too long and it may be weird
   // if the user finished. Too short and we may cut them off if they pause for a
   // while.
-  [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForGoodMatch toValue:1];
+  [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForGoodMatch toValue:1.2];
   // use the same setting here as for the good match, although this could be
   // slightly longer
-  [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForAnyMatch toValue:2];
+  [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForAnyMatch toValue:1.2];
 
   // on first tap we will initialize the
   // decoder with the custom decoding graph via startListningWithCustomDecodingGraph
@@ -156,12 +157,12 @@
   
   KIOSDecodingGraph *dg = [[KIOSDecodingGraph alloc] initWithRecognizer:self.recognizer];
   
-  // If we had bigram language model in the asr bundle, we could create decoding graph
-  // directly from the bigram following the commented-out steps below.
+  // If we had arpa language model in the asr bundle, we could create decoding graph
+  // directly from the arpa file following the commented-out steps below.
   
-  //  NSArray *parts = [NSArray arrayWithObjects: [[NSBundle mainBundle] resourcePath], self.recognizer.asrBundlePath, @"bigram.arpa", nil];
-  //  NSURL *bigramURL = [NSURL fileURLWithPathComponents:parts];
-  //  [dg createDecodingGraphFromBigramURL:bigramURL andSaveWithName:@"numbers"];
+//    NSArray *parts = [NSArray arrayWithObjects: [[NSBundle mainBundle] resourcePath], self.recognizer.asrBundlePath, @"file.arpa", nil];
+//    NSURL *arpaURL = [NSURL fileURLWithPathComponents:parts];
+//    [dg createDecodingGraphFromArpaURL:arpaURL andSaveWithName:@"file-dg"];
   
   // Since we are using data from the phone's music library, we will first
   // compose a list of relevant phrases
@@ -171,7 +172,7 @@
     return;
   }
   
-  // and create custom decoding graph named 'music' using those phrases
+  // and create custom decoding graph named 'contacts' using those phrases
   if (! [dg createDecodingGraphFromSentences:sentences andSaveWithName:@"contacts"]) {
     self.resultsLabel.text = @"Error occured while creating decoding graph from users contacts";
     [self.spinner stopAnimating];
@@ -242,10 +243,14 @@
 
 
 - (void)recognizerFinalResult:(KIOSResult *)result forRecognizer:(KIOSRecognizer *)recognizer {
-  NSLog(@"Final Result: %@ (%@, conf: %@)", result.cleanText, result.text, result.confidence);
+  NSLog(@"Final Result: %@", result);
   if (recognizer.createAudioRecordings)
     NSLog(@"Audio recording is in %@", recognizer.lastRecordingFilename);
-  self.resultsLabel.textColor = [UIColor blackColor];
+  if (result.confidence && [result.confidence floatValue] < 0.7)
+    self.resultsLabel.textColor = [UIColor redColor];
+  else
+    self.resultsLabel.textColor = [UIColor blackColor];
+  
   self.resultsLabel.text = result.cleanText;
   self.statusLabel.text = @"Done Listening";
   self.startListeningButton.enabled = YES;
@@ -312,6 +317,7 @@
   NSLog(@"Got %d contacts from the address book", numContacts);
   return sentences;
 }
+
 
 
 - (BOOL) shouldAutorotate  {
