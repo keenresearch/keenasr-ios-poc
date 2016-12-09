@@ -14,12 +14,16 @@
 #import "ContactsDemoViewController.h"
 #import "EduReadingDemoViewController.h"
 #import "EduWordsDemoViewController.h"
+#import "CommandAndControlViewController.h"
+#import "FileRecognitionDemoViewController.h"
 
 typedef NS_ENUM(NSInteger, DemoType) {
   kDemoTypeMusicLibrary,
   kDemoTypeContacts,
   kDemoTypeEduReading,
   kDemoTypeEduWords,
+  kDemoTypeCommandAndControl,
+  kDemoTypeFileRecognition,
 };
 
 
@@ -32,7 +36,10 @@ const static NSArray *demoIntroText;
 @property (nonatomic, weak) KIOSRecognizer *recognizer;
 @property (nonatomic, strong) UIButton *startButton, *chooseDemoButton;
 @property (nonatomic, strong) UIView *chooseDemoView;
-@property (nonatomic, strong) UIButton *musicDemoButton, *contactsDemoButton, *eduReadingDemoButton, *eduWordsDemoButton;
+
+@property (nonatomic, strong) UIButton *musicDemoButton, *contactsDemoButton, \
+*eduReadingDemoButton, *eduWordsDemoButton, *commandAndControlDemoButton, *fileRecognitionDemoButton;
+
 @property (nonatomic, assign) CGRect openMenuFrame, closedMenuFrame;
 @property (nonatomic, assign) NSInteger currentDemo;
 
@@ -50,15 +57,11 @@ const static NSArray *demoIntroText;
   demoIntroText = @[@"This demo showcases access to your music library via voice. You can say \"PLAY <SONGNAME>\" or \"PLAY <ARTIST_NAME>\" or \"PLAY <SONGNAME_NAME> BY <ARTIST_NAME>\"",
                     @"This demo showcases access to your contacts via voice. You can say \"CALL <NAME>\" or just \"<NAME>\" for any of your contacts.\n\nNote that foreign and non-common American names are assigned pronunciation algorithmically; the real-world app would aim to assign proper pronunciations to as many names as possible beforehand.",
                     @"In the reading demo you will see a paragraph of text. As you read the text aloud, the app will highlight the words you say. Real-world app can track timings (delays, hesitations, pauses), false starts, skips, etc. for specific words, and also provide hints when the child is struggling with a word.",
-                    @"The words demo shows how to do recognition of individual words, with the goal of helping young children learn how to spell words. Child can say the word and then see how it's spelled"];
+                    @"The words demo shows how to do recognition of individual words, with the goal of helping young children learn how to spell words. Child can say the word and then see how it's spelled",
+                    @"Command and controls demo shows how to do recognition of individual words or short phrases for command and control (e.g. robots)",
+                    @"The File ASR demo shows how to do recognition from a file. Decoding graph is built to listen to any day of the week and the audio recording has several days said."];
   // Choose button in the top right corner, reveals Music Library, Contacts,
-  // Edu-Reading, Smart Home
-  
-  // preview view, shows intro about the demo and creates decoding graph (if needed)
-  // shows number of entries (e.g. 850 songs)
-  
-  // edu-reading starts another view controller
-  
+  // Edu-Reading, File ASR
   
   // mainLabel is used to show the app intro message as well as the overview of
   // different demos
@@ -107,17 +110,21 @@ const static NSArray *demoIntroText;
 
   // Kaldi-iOS SETUP
   // we'll set the log level to info so we can see what's going on (default is WARN)
-  [KIOSRecognizer setLogLevel:KIOSRecognizerLogLevelInfo];
+//  [KIOSRecognizer setLogLevel:KIOSRecognizerLogLevelInfo];
+  [KIOSRecognizer setLogLevel:KIOSRecognizerLogLevelDebug];
 
   // Init can occur here on in the AppDelegate
   if (! [KIOSRecognizer sharedInstance]) {
     // since we are using custom decoding graphs, we init without passing decoding
     // graph path, and later on we pass the custom decoding graph name to
     // startListeningWithCustomDecodingGraph
-//    [KIOSRecognizer initWithASRBundle:@"librispeech-gmm-en-us"];
+
+    //    [KIOSRecognizer initWithASRBundle:@"librispeech-gmm-en-us"];
     [KIOSRecognizer initWithASRBundle:@"librispeech-nnet2-en-us"];
 
-    [KIOSRecognizer sharedInstance].createAudioRecordings = FALSE;
+    // these bundles are not yet publicly available
+    //    [KIOSRecognizer initWithASRBundle:@"librispeech460-nnet3chain-en-us"];
+    //    [KIOSRecognizer initWithASRBundle:@"aspire-nnet3chain-en-us"];
   }
   self.recognizer = [KIOSRecognizer sharedInstance];
   // we are NOT setting this controller as a delegate, since individual demo
@@ -166,6 +173,10 @@ const static NSArray *demoIntroText;
       self.currentDemo = kDemoTypeEduReading;
     } else if ((UIButton *)sender == self.eduWordsDemoButton) {
       self.currentDemo = kDemoTypeEduWords;
+    } else if ((UIButton *)sender == self.commandAndControlDemoButton) {
+      self.currentDemo = kDemoTypeCommandAndControl;
+    } else if ((UIButton *)sender == self.fileRecognitionDemoButton) {
+      self.currentDemo = kDemoTypeFileRecognition;
     }
 
     self.mainLabel.text = demoIntroText[self.currentDemo];
@@ -191,6 +202,12 @@ const static NSArray *demoIntroText;
     case kDemoTypeEduWords:
       vc = [EduWordsDemoViewController new];
       break;
+    case kDemoTypeCommandAndControl:
+      vc = [CommandAndControlViewController new];
+      break;
+    case kDemoTypeFileRecognition:
+      vc = [FileRecognitionDemoViewController new];
+      break;
   }
   [self presentViewController:vc animated:YES completion:^ {}];
   
@@ -204,8 +221,8 @@ const static NSArray *demoIntroText;
   self.closedMenuFrame = CGRectMake(cbFrame.origin.x+offset, cbFrame.origin.y+cbFrame.size.height+offset, 0, 0);
   self.openMenuFrame = CGRectMake(self.closedMenuFrame.origin.x,
                                  self.closedMenuFrame.origin.y,
-                                 cbFrame.size.width,
-                                 5*cbFrame.size.height);
+                                 cbFrame.size.width + 20,
+                                 (demoIntroText.count + 1)*cbFrame.size.height);
 
 
   self.chooseDemoView = [[UIView alloc] initWithFrame:self.openMenuFrame];
@@ -249,6 +266,25 @@ const static NSArray *demoIntroText;
   self.eduWordsDemoButton.autoresizingMask = UIViewAutoresizingFlexibleWidth;
   [self.chooseDemoView addSubview:self.eduWordsDemoButton];
 
+  self.commandAndControlDemoButton = [[UIButton alloc] initWithFrame:CGRectMake(x, 155, self.openMenuFrame.size.width-5, 20)];
+  [self.commandAndControlDemoButton setTitle:@"Command & Control" forState:UIControlStateNormal];
+  self.commandAndControlDemoButton.titleLabel.font = [UIFont systemFontOfSize:18];
+  [self.commandAndControlDemoButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+  self.commandAndControlDemoButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+  [self.commandAndControlDemoButton addTarget:self action:@selector(selectedDemoButtonTapped:) forControlEvents:UIControlEventTouchDown];
+  self.commandAndControlDemoButton.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+  [self.chooseDemoView addSubview:self.commandAndControlDemoButton];
+
+  self.fileRecognitionDemoButton = [[UIButton alloc] initWithFrame:CGRectMake(x, 190, self.openMenuFrame.size.width-5, 20)];
+  [self.fileRecognitionDemoButton setTitle:@"File ASR" forState:UIControlStateNormal];
+  self.fileRecognitionDemoButton.titleLabel.font = [UIFont systemFontOfSize:18];
+  [self.fileRecognitionDemoButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+  self.fileRecognitionDemoButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+  [self.fileRecognitionDemoButton addTarget:self action:@selector(selectedDemoButtonTapped:) forControlEvents:UIControlEventTouchDown];
+  self.fileRecognitionDemoButton.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+  [self.chooseDemoView addSubview:self.fileRecognitionDemoButton];
+
+  
   self.chooseDemoView.frame = self.closedMenuFrame;
 }
 
