@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EE10B3D31DB9E9A7001AD25A /* tedlium-nnet3chain-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE10B3D21DB9E9A7001AD25A /* tedlium-nnet3chain-en-us */; };
 		EE10B3D61DBED9D4001AD25A /* FileRecognitionDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE10B3D51DBED9D4001AD25A /* FileRecognitionDemoViewController.m */; };
 		EE266BEC1D835C310003CDD7 /* libstdc++.6.0.9.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EEB44DFE1CB5ABE1009F432C /* libstdc++.6.0.9.tbd */; };
 		EE2D07371DDF7B470095D90F /* CommandAndControlViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE2D07361DDF7B470095D90F /* CommandAndControlViewController.m */; };
@@ -17,14 +16,12 @@
 		EE4A6CD71D00B95600BBEB41 /* MusicDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE4A6CD61D00B95600BBEB41 /* MusicDemoViewController.m */; };
 		EE4A6CDA1D00B96F00BBEB41 /* ContactsDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE4A6CD91D00B96F00BBEB41 /* ContactsDemoViewController.m */; };
 		EE4A6CDD1D00B98100BBEB41 /* EduReadingDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE4A6CDC1D00B98100BBEB41 /* EduReadingDemoViewController.m */; };
-		EE8764E71DD2792100E7CF17 /* librispeech460-nnet3chain-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE8764E61DD2792100E7CF17 /* librispeech460-nnet3chain-en-us */; };
 		EE8B7FFC1A16A3A9007F455E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B7FFB1A16A3A9007F455E /* main.m */; };
 		EE8B7FFF1A16A3A9007F455E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B7FFE1A16A3A9007F455E /* AppDelegate.m */; };
 		EE8B80021A16A3A9007F455E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B80011A16A3A9007F455E /* ViewController.m */; };
 		EE8B80051A16A3A9007F455E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE8B80031A16A3A9007F455E /* Main.storyboard */; };
 		EE8B800A1A16A3A9007F455E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE8B80081A16A3A9007F455E /* LaunchScreen.xib */; };
 		EE8B80E81A16C92B007F455E /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE8B80E71A16C92B007F455E /* Accelerate.framework */; };
-		EEA49F211DC5D001003B0877 /* aspire-nnet3chain-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EEA49F201DC5D001003B0877 /* aspire-nnet3chain-en-us */; };
 		EEAF90DC1D21CB7800ED0451 /* EduWordsDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAF90DB1D21CB7800ED0451 /* EduWordsDemoViewController.m */; };
 		EEB44DFB1CB58202009F432C /* KaldiIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EEB44DF81CB58202009F432C /* KaldiIOS.framework */; };
 /* End PBXBuildFile section */
@@ -32,7 +29,6 @@
 /* Begin PBXFileReference section */
 		EE0D55181CD41DCD00B37356 /* librispeech-nnet2-en-us */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "librispeech-nnet2-en-us"; sourceTree = "<group>"; };
 		EE0D55191CD41DCD00B37356 /* librispeech-gmm-en-us */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "librispeech-gmm-en-us"; sourceTree = "<group>"; };
-		EE10B3D21DB9E9A7001AD25A /* tedlium-nnet3chain-en-us */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "tedlium-nnet3chain-en-us"; sourceTree = "<group>"; };
 		EE10B3D41DBED9D4001AD25A /* FileRecognitionDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileRecognitionDemoViewController.h; sourceTree = "<group>"; };
 		EE10B3D51DBED9D4001AD25A /* FileRecognitionDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileRecognitionDemoViewController.m; sourceTree = "<group>"; };
 		EE2D07351DDF7B470095D90F /* CommandAndControlViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandAndControlViewController.h; sourceTree = "<group>"; };
@@ -46,7 +42,6 @@
 		EE4A6CD91D00B96F00BBEB41 /* ContactsDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsDemoViewController.m; sourceTree = "<group>"; };
 		EE4A6CDB1D00B98100BBEB41 /* EduReadingDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EduReadingDemoViewController.h; sourceTree = "<group>"; };
 		EE4A6CDC1D00B98100BBEB41 /* EduReadingDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EduReadingDemoViewController.m; sourceTree = "<group>"; };
-		EE8764E61DD2792100E7CF17 /* librispeech460-nnet3chain-en-us */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "librispeech460-nnet3chain-en-us"; sourceTree = "<group>"; };
 		EE8B7FF61A16A3A9007F455E /* kaldi-ios-poc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "kaldi-ios-poc.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE8B7FFA1A16A3A9007F455E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EE8B7FFB1A16A3A9007F455E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -59,7 +54,6 @@
 		EE8B80141A16A3A9007F455E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EE8B80151A16A3A9007F455E /* kaldi_ios_pocTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = kaldi_ios_pocTests.m; sourceTree = "<group>"; };
 		EE8B80E71A16C92B007F455E /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
-		EEA49F201DC5D001003B0877 /* aspire-nnet3chain-en-us */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "aspire-nnet3chain-en-us"; sourceTree = "<group>"; };
 		EEA6E01E1D5C42F900778A66 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		EEAF90DA1D21CB7800ED0451 /* EduWordsDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EduWordsDemoViewController.h; sourceTree = "<group>"; };
 		EEAF90DB1D21CB7800ED0451 /* EduWordsDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EduWordsDemoViewController.m; sourceTree = "<group>"; };
@@ -97,9 +91,6 @@
 		EE8B7FED1A16A3A9007F455E = {
 			isa = PBXGroup;
 			children = (
-				EE8764E61DD2792100E7CF17 /* librispeech460-nnet3chain-en-us */,
-				EEA49F201DC5D001003B0877 /* aspire-nnet3chain-en-us */,
-				EE10B3D21DB9E9A7001AD25A /* tedlium-nnet3chain-en-us */,
 				EE0D55181CD41DCD00B37356 /* librispeech-nnet2-en-us */,
 				EE0D55191CD41DCD00B37356 /* librispeech-gmm-en-us */,
 				EE8B7FF81A16A3A9007F455E /* kaldi-ios-poc */,
@@ -229,11 +220,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				EE8B80051A16A3A9007F455E /* Main.storyboard in Resources */,
-				EE8764E71DD2792100E7CF17 /* librispeech460-nnet3chain-en-us in Resources */,
-				EE10B3D31DB9E9A7001AD25A /* tedlium-nnet3chain-en-us in Resources */,
 				EE4A6CB51CFD60A000BBEB41 /* librispeech-gmm-en-us in Resources */,
 				EE8B800A1A16A3A9007F455E /* LaunchScreen.xib in Resources */,
-				EEA49F211DC5D001003B0877 /* aspire-nnet3chain-en-us in Resources */,
 				EE37CA061D0BBAE000F5F3FD /* librispeech-nnet2-en-us in Resources */,
 				EE30E5901DF7CAD800D547B6 /* audio-1.wav in Resources */,
 			);
