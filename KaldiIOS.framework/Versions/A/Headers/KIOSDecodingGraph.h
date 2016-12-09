@@ -71,20 +71,21 @@
 - (id)initWithRecognizer:(KIOSRecognizer*) recognizer;
 
 
- /** Create custom decoding graph from a bigram file and save it in the 
-  filesystem for later use.
+ /** Create custom decoding graph using the language model specifed in an ARPA 
+  file and save it in the filesystem for later use.
   
- @param bigramURL a URL for the bigram file that defines the language model for
-  which decoding graph needs to be created
+ @param arpaURL a URL for an ARPA file that defines the language model for
+  which decoding graph needs to be created. Words in the ARPA file should all be
+  uppercase.
   
   @param decodingGraphName a name of the custom decoding graph. All graph 
-  resources will be stored in a directy named decodingGraphName in 
-  Library/Application Support/KaldiIOS-decoding-graphs/
+  resources will be stored in a directory named DECODING_GRAPH_NAME-ASR_BUNDLE_NAME
+  in Library/Application Support/KaldiIOS-decoding-graphs/
 
   @return TRUE on success, FALSE otherwise
   */
-- (BOOL)createDecodingGraphFromBigramURL:(NSURL *)bigramURL
-                         andSaveWithName:(NSString *)decodingGraphName;
+- (BOOL)createDecodingGraphFromArpaURL:(NSURL *)arpaURL
+                       andSaveWithName:(NSString *)decodingGraphName;
 
 
 /** Create custom decoding graph from an array of sentences/phrases and save it
@@ -128,6 +129,11 @@
 - (NSURL *)hclgURLForCustomDecodingGraph:(NSString *)decodingGraphName;
 - (NSURL *)wordSymsURLForCustomDecodingGraph:(NSString *)decodingGraphName;
 
+
+
+- (BOOL)createDecodingGraphFromBigramURL:(NSURL *)bigramURL
+                         andSaveWithName:(NSString *)decodingGraphName \
+__attribute__((deprecated("This method has been depricated. Please use createDecodingGraphFromArpaURL method instead")));
 
 
 @end

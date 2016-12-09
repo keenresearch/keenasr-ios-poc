@@ -67,27 +67,61 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 
 /*  ################## KIOSResult #############*/
 
+@class KIOSWord;
 
 /**  An instance of the KIOSResult class, called recognition results, provides
  results of the recognition.*/
 @interface KIOSResult : NSObject
 
 /** recognition result text */
-@property(nonatomic, readonly) NSString *text;
+@property(nonatomic, readonly, nonnull) NSString *text;
+
 /** recognition result clean text; all tokens of type \<TOKEN\> are removed
- (e.g. <spoken_noise>, etc.)  */
-@property(nonatomic, readonly) NSString *cleanText;
-/** Confidence of the overall result (TODO - more details on the method) */
-@property(nonatomic, readonly) NSNumber *confidence;
+ (e.g. <SPOKEN_NOISE>, etc.)  */
+@property(nonatomic, readonly, nonnull) NSString *cleanText;
+
+/** Confidence of the overall result */
+@property(nonatomic, readonly, nullable) NSNumber *confidence;
+
+/** Array of KIOSWord objects */
+@property(nonatomic, strong, nullable) NSArray<KIOSWord *> *words;
 
 /** Returns TRUE if recognition result is empty, FALSE otherwise */
-- (BOOL)isEmpty; // is result empty
+- (BOOL)isEmpty;
 
-- (id)initWithText:(NSString*)text andConfidence:(NSNumber *)confidence;
+- (nonnull NSString *)description;
 
 @end
 
+/** An instance of the KIOSWord class, called word, provides word text, timing
+ information, and the confidence of the word 
+ 
+ Note that in certain circumstances startTime, duration, and confidence may be
+ nil.
+ 
+ */
+@interface KIOSWord : NSObject
+/** Text of the word */
+@property (nonatomic, readonly, nonnull) NSString *text;
 
+/** Start time, in seconds, for this word */
+@property (nonatomic, strong, nullable, readonly) NSNumber *startTime;
+
+/** Duration of the word, in seconds */
+@property (nonatomic, strong, nullable, readonly) NSNumber *duration;
+
+/** Confidence in the range 0 to 1 for the word. Higher value corresponds to
+ better confidence that the recognized text matches what was said. */
+@property (nonatomic, strong, nullable, readonly) NSNumber *confidence;
+
+- (nullable id)initWithText:(nonnull NSString *)text
+               andStartTime:(nullable NSNumber *)startTime
+                andDuration:(nullable NSNumber *)duration
+              andConfidence:(nullable NSNumber *)confidence;
+
+- (nonnull NSString *)description;
+
+@end
 
 /*  ################## KIOSRecognizerDelegate #############*/
 
@@ -113,8 +147,8 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  @param recognizer recognizer that produced the result
  
  */
-- (void)recognizerPartialResult:(KIOSResult *)result
-                  forRecognizer:(KIOSRecognizer *)recognizer;
+- (void)recognizerPartialResult:(nonnull KIOSResult *)result
+                  forRecognizer:(nonnull KIOSRecognizer *)recognizer;
 
 
 /** This method is called when recognizer has finished the recognition on its
@@ -124,8 +158,8 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  @param result final result of the recognition
  @param recognizer recognizer that produced the result
  */
-- (void)recognizerFinalResult:(KIOSResult *)result
-                forRecognizer:(KIOSRecognizer *)recognizer;
+- (void)recognizerFinalResult:(nonnull KIOSResult *)result
+                forRecognizer:(nonnull KIOSRecognizer *)recognizer;
 
 @end
 
@@ -173,19 +207,19 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  @warning if the engine has not been initialized by calling 
  `+initWithASRBundle:andDecodingGraph:`, this method will return nil
  */
-+ (KIOSRecognizer *)sharedInstance;
++ (nullable KIOSRecognizer *)sharedInstance;
 
 
 
 /** delegate, which handles KIOSRecognizerDelegate protocol methods */
-@property(nonatomic, weak) id<KIOSRecognizerDelegate> delegate;
+@property(nonatomic, weak, nullable) id<KIOSRecognizerDelegate> delegate;
 
 /** Is recognizer listening to and decoding the incoming audio. */
 @property(assign, readonly) BOOL listening;
 
 /** Relative path to the ASR bundle where acoustic models, config, etc. reside 
  */
-@property(nonatomic, readonly) NSString *asrBundlePath;
+@property(nonatomic, readonly, nonnull) NSString *asrBundlePath;
 
 /**
  Type of the recognizer. It makes sense to query this property only after the
@@ -220,7 +254,7 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  to contain lang subdirectory with relevant resources (lexicon, etc.).
  */
 
-+ (BOOL)initWithASRBundle:(NSString *)bundle;
++ (BOOL)initWithASRBundle:(nonnull NSString *)bundle;
 
 
 
@@ -247,14 +281,14 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  If your app is dynamically creating decoding graphs, ASR bundle directory needs
  to contain lang subdirectory with relevant resources (lexicon, etc.).
  */
-+ (BOOL)initWithASRBundle:(NSString *)bundle
-         andDecodingGraph:(NSString*)pathToDecodingGraph;
++ (BOOL)initWithASRBundle:(nonnull NSString *)bundle
+         andDecodingGraph:(nullable NSString *)pathToDecodingGraph;
 
 
 
 //+ (instancetype) alloc  __attribute__((unavailable("alloc not available, call sharedInstance instead")));
 //- (instancetype) init   __attribute__((unavailable("init not available, call sharedInstance instead")));
-+ (instancetype) new    __attribute__((unavailable("new not available, call sharedInstance instead")));
++ (nullable instancetype) new    __attribute__((unavailable("new not available, call sharedInstance instead")));
 
 
 
@@ -290,7 +324,7 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  See startListening for details on when recognition process is automatically
  stopped.
  */
-- (BOOL)startListeningWithDecodingGraph:(NSString *)pathToDecodingGraphFile;
+- (BOOL)startListeningWithDecodingGraph:(nonnull NSString *)pathToDecodingGraphFile;
 
 
 /** Start processing incoming audio using custom decoding graph which was 
@@ -304,7 +338,84 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  See startListening for details on when recognition process is automatically 
  stopped.
  */
-- (BOOL)startListeningWithCustomDecodingGraph:(NSString *)decodingGraphName;
+- (BOOL)startListeningWithCustomDecodingGraph:(nonnull NSString *)decodingGraphName;
+
+
+/**
+ Performs speech recognition on the audio file. This is an asynchronious method,
+ which will perform basic validation (valid wav file, sampling frequency of the 
+ audio matches that of the ASR Bundle), and then start recognition in the 
+ background and return. Recognition results can be obtained via [recognizerFinalResult:forRecognizer:]([KIOSRecognizerDelegate recognizerFinalResult:forRecognizer:]) and [recognizerPartialResult:forRecognizer:]([KIOSRecognizerDelegate recognizerPartialResult:forRecognizer:]) methods.
+ 
+ @param pathToAudioFile full path to the audio file in WAV format. Files should
+ be mono (single channel) and its sampling frequency should match the sampling
+ frequency used for the ASR bundle training (typically 16kHz).
+ 
+ @return TRUE if the audio file is valid WAV file, its sampling frequency
+ matches the one in ASR Bundle, and recording duration is less than 100ms,
+ FALSE otherwise.
+ 
+ @note The whole audio file will be loaded in the memory, thus we currently
+ limit the length to 100sec. If file is longer than 100sec no processing will
+ occur and the method will return FALSE.
+ */
+- (BOOL)startListeningFromAudioFile:(nonnull NSString *)pathToAudioFile;
+
+
+
+/**
+ Performs speech recognition on the audio file using the decoding graph. This is
+ an asynchronious method, which will perform basic validation (valid wav file, 
+ sampling frequency of the audio matches that of the ASR Bundle, decoding graph 
+ is valid), and then start recognition in the background and return. Recognition
+ results can be obtained via [recognizerFinalResult:forRecognizer:]([KIOSRecognizerDelegate recognizerFinalResult:forRecognizer:]) 
+ and [recognizerPartialResult:forRecognizer:]([KIOSRecognizerDelegate recognizerPartialResult:forRecognizer:]) 
+ methods.
+ 
+ @param pathToAudioFile full path to the audio file in WAV format. Files should
+ be mono (single channel) and its sampling frequency should match the sampling
+ frequency used for the ASR bundle training (typically 16kHz).
+
+ @param pathToDecodingGraphFile a relative path to the HCLG file created with
+ the ASR bundle used to initalize the engine. For example
+ (librispeech-nnet-en-us/HCLG.fst)
+ 
+ @return TRUE if the audio file is valid WAV file, its sampling frequency
+ matches the one in ASR Bundle, and recording duration is less than 100ms,
+ and decoding graph is valid, FALSE otherwise.
+ 
+ @note The whole audio file will be loaded in the memory, thus we currently 
+ limit the length to 100sec. If file is longer than 100sec no processing will 
+ occur and the method will return FALSE.
+ */
+- (BOOL)startListeningFromAudioFile:(nonnull NSString *)pathToAudioFile
+                   andDecodingGraph:(nonnull NSString *)pathToDecodingGraphFile;
+
+
+/**
+ Performs speech recognition on the audio file using custom decoding graph. This
+ is an asynchronious method, which will perform basic validation (valid wav file,
+ sampling frequency of the audio matches that of the ASR Bundle, decoding graph
+ is valid), and then start recognition in the background and return. Recognition
+ results can be obtained via [recognizerFinalResult:forRecognizer:]([KIOSRecognizerDelegate recognizerFinalResult:forRecognizer:])
+ and [recognizerPartialResult:forRecognizer:]([KIOSRecognizerDelegate recognizerPartialResult:forRecognizer:])
+ methods.
+ 
+ @param pathToAudioFile full path to the audio file in WAV format.
+ @param customDecodingGraphName name of the custom decoding graph created using
+ createDecodingGraphFromBigramURL:andSaveWithName: or
+ createDecodingGraphFromSentences:andSaveWithName: methods of KIOSDecodingGraph
+ 
+ @return TRUE if the audio file is valid WAV file, its sampling frequency
+ matches the one in ASR Bundle, and recording duration is less than 100ms,
+ and decoding graph is valid, FALSE otherwise.
+
+ @note The whole audio file will be loaded in the memory, thus we currently
+ limit the length to 100sec. If file is longer than 100sec no processing will
+ occur and the method will return FALSE.
+ */
+- (BOOL)startListeningFromAudioFile:(nonnull NSString *)pathToAudioFile
+             andCustomDecodingGraph:(nonnull NSString *)customDecodingGraphName;
 
 
 /** Stop the recognizer from processing incoming audio.
@@ -346,7 +457,7 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  If this method is called while recognizer is listening, it will only affect 
  subsequent calls to startListening methods.
  */
-- (void)adaptToSpeakerWithName:(NSString *)speakerName;
+- (void)adaptToSpeakerWithName:(nonnull NSString *)speakerName;
 
 
 /** Resets speaker adaptation profile in the current recognizer session. Calling
@@ -405,7 +516,7 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  
  @param speakerName name of the speaker whose profiles should be removed
  */
-+ (BOOL)removeSpeakerAdaptationProfiles:(NSString *)speakerName;
++ (BOOL)removeSpeakerAdaptationProfiles:(nonnull NSString *)speakerName;
 
 
 
@@ -415,11 +526,11 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 @property(nonatomic, assign) BOOL createAudioRecordings;
 
 /** Directory in which recordings will be stored. Default is Library/Cache/KaldiIOS-recordings */
-@property(nonatomic, copy) NSString *recordingsDir;
+@property(nonatomic, copy, nonnull) NSString *recordingsDir;
 
 /** Filename of the last recording. If createAudioRecordings was set to TRUE, you
  can read the filename of the latest recording via this property. */
-@property(nonatomic, readonly) NSString *lastRecordingFilename;
+@property(nonatomic, readonly, nullable) NSString *lastRecordingFilename;
 
 
 /** @name Other */
@@ -433,12 +544,12 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 
 
 /** relative path to the decoding graph */
-- (NSString *)decodingGraphPath;
+- (nullable NSString *)decodingGraphPath;
 
 
 
 /** Version of the KaldiIOS framework. */
-+ (NSString *)version;
++ (nonnull NSString *)version;
 
 
 /** Set log level for the framework.
@@ -492,7 +603,7 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  */
 
 + (BOOL)initWithRecognizerType:(KIOSRecognizerType)recognizerType
-                  andASRBundle:(NSString *)bundle \
+                  andASRBundle:(nonnull NSString *)bundle \
 __attribute__((deprecated("This method has been depricated. Please use initWithAsrBundle method instead")));
 
 /** Initialize ASR engine with the specific recognizer type. This method needs
@@ -519,8 +630,8 @@ __attribute__((deprecated("This method has been depricated. Please use initWithA
  
  */
 + (BOOL)initWithRecognizerType:(KIOSRecognizerType)recognizerType
-                  andASRBundle:(NSString *)bundle
-              andDecodingGraph:(NSString*)pathToDecodingGraph \
+                  andASRBundle:(nonnull NSString *)bundle
+              andDecodingGraph:(nullable NSString*)pathToDecodingGraph \
 __attribute__((deprecated("This method has been depricated. Please use initWithAsrBundle: andDecodingGraph method instead")));
 
 
