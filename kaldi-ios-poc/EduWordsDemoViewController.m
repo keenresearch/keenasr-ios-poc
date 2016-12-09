@@ -12,7 +12,7 @@
 static float kEndSpeechTimeoutShort = 0.5;
 // default (much longer) end speech timeout, which allows user to hesitate/pause
 // e.g. "How to you spell..... winter"
-static float kEndSpeechTimeoutLong = 4;
+static float kEndSpeechTimeoutLong = 2;
 
 
 @interface EduWordsDemoViewController()
@@ -187,7 +187,7 @@ static float kEndSpeechTimeoutLong = 4;
   
   // create custom decoding graph with (arbitraty) name 'reading' using
   // sentences obtained above
-  if (! [dg createDecodingGraphFromSentences:sentences andSaveWithName:@"words"]) {
+  if (! [dg createDecodingGraphFromSentences:sentences andSaveWithName:dgName]) {
     self.textLabel.text = @"Error occured while creating decoding graph from the text";
     [self.spinner stopAnimating];
     self.spinner.alpha = 0;
@@ -285,7 +285,6 @@ static float kEndSpeechTimeoutLong = 4;
 
 #pragma mark KIOSRecognizer delegate methods
 
-// This demo relies on the partial results for higlighting,
 - (void)recognizerPartialResult:(KIOSResult *)result forRecognizer:(KIOSRecognizer *)recognizer {
   NSLog(@"Partial Result: %@ (%@), conf %@", result.cleanText, result.text, result.confidence);
   
@@ -303,21 +302,21 @@ static float kEndSpeechTimeoutLong = 4;
   self.textLabel.text = keyword;
   
   // we could also just call stop listening; this way we let the recognizer stop
-  // listening if there is no more speech
+  // listening when there is no more speech (but with shorter end timeouts)
 }
 
 
 - (void)recognizerFinalResult:(KIOSResult *)result forRecognizer:(KIOSRecognizer *)recognizer {
-  NSLog(@"Final Result: %@ (%@, conf: %@)", result.cleanText, result.text, result.confidence);
+  NSLog(@"Final Result: %@", result);
   
   NSString *keyword = [self spotKeyword:result.cleanText];
   
-  if ([result.confidence floatValue] < 0.2 && [result.confidence floatValue] >= 0) { //
+  if ([result.confidence floatValue] < 0.7) { //
     self.textLabel.text = @"";
     NSLog(@"Ignoring recognized phrase due to low confidence");
-    // TODO if we got here bcs something was recognized in partial callback but now
-    // based on confidence we are ignoring it, we should probably continue listening
-    // i.e. call startListening from here
+//    // TODO if we got here bcs something was recognized in partial callback but now
+//    // based on confidence we are ignoring it, we should probably continue listening
+//    // i.e. call startListening from here
   } else if  (keyword != nil) {
     self.textLabel.text = keyword;
   }
