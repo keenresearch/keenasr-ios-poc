@@ -149,6 +149,7 @@
   [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForAnyMatch toValue:5];
   
   self.startListeningButton.enabled = NO;
+  self.recognizer.createAudioRecordings = YES;
   
   // on first tap we will initialize the
   // decoder with the custom decoding graph via startListningWithCustomDecodingGraph
@@ -317,11 +318,11 @@
 // will provide start/end times for individual words; then, we could look up the
 // end time of the last word to do a final ROS estimation
 - (void)recognizerFinalResult:(KIOSResult *)result forRecognizer:(KIOSRecognizer *)recognizer {
-  NSLog(@"Final Result: %@ (%@, conf: %@)", result.cleanText, result.text, result.confidence);
+  NSLog(@"Final Result: %@", result);
   [self.rosUpdateTimer invalidate];
 
   unsigned long numWords = [result.cleanText length] - [[result.cleanText stringByReplacingOccurrencesOfString:@" " withString:@""] length];
-  NSLog(@"Final Result (%lu words): %@", numWords, result.cleanText);
+  NSLog(@"Final Result (%lu words): %@", numWords, result.cleanText); 
   NSTimeInterval minSinceStart = -1*[self.startTime timeIntervalSinceNow]/60;
   self.rateOfSpeech = numWords/minSinceStart;
   self.rateOfSpeechLabel.text = [NSString stringWithFormat:@"Words per minute: %.0f", self.rateOfSpeech];
