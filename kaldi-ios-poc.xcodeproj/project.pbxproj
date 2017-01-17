@@ -10,8 +10,12 @@
 		EE10B3D61DBED9D4001AD25A /* FileRecognitionDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE10B3D51DBED9D4001AD25A /* FileRecognitionDemoViewController.m */; };
 		EE266BEC1D835C310003CDD7 /* libstdc++.6.0.9.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EEB44DFE1CB5ABE1009F432C /* libstdc++.6.0.9.tbd */; };
 		EE2D07371DDF7B470095D90F /* CommandAndControlViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE2D07361DDF7B470095D90F /* CommandAndControlViewController.m */; };
+		EE2E861F1DFC9A4C00692531 /* aspire-nnet3chain-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE2E861E1DFC9A4C00692531 /* aspire-nnet3chain-en-us */; };
 		EE30E5901DF7CAD800D547B6 /* audio-1.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE30E58F1DF7CAD800D547B6 /* audio-1.wav */; };
+		EE30E5B91DFA8AC900D547B6 /* librispeech460-nnet3chain-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE30E5B81DFA8AC900D547B6 /* librispeech460-nnet3chain-en-us */; };
 		EE37CA061D0BBAE000F5F3FD /* librispeech-nnet2-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE0D55181CD41DCD00B37356 /* librispeech-nnet2-en-us */; };
+		EE4322A41E18CBA300247041 /* mindpixels-dg in Resources */ = {isa = PBXBuildFile; fileRef = EE4322A31E18CBA300247041 /* mindpixels-dg */; };
+		EE4322A61E18CEFF00247041 /* mindpixels-full-dg in Resources */ = {isa = PBXBuildFile; fileRef = EE4322A51E18CEFF00247041 /* mindpixels-full-dg */; };
 		EE4A6CB51CFD60A000BBEB41 /* librispeech-gmm-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE0D55191CD41DCD00B37356 /* librispeech-gmm-en-us */; };
 		EE4A6CD71D00B95600BBEB41 /* MusicDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE4A6CD61D00B95600BBEB41 /* MusicDemoViewController.m */; };
 		EE4A6CDA1D00B96F00BBEB41 /* ContactsDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE4A6CD91D00B96F00BBEB41 /* ContactsDemoViewController.m */; };
@@ -33,9 +37,13 @@
 		EE10B3D51DBED9D4001AD25A /* FileRecognitionDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileRecognitionDemoViewController.m; sourceTree = "<group>"; };
 		EE2D07351DDF7B470095D90F /* CommandAndControlViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandAndControlViewController.h; sourceTree = "<group>"; };
 		EE2D07361DDF7B470095D90F /* CommandAndControlViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommandAndControlViewController.m; sourceTree = "<group>"; };
+		EE2E861E1DFC9A4C00692531 /* aspire-nnet3chain-en-us */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "aspire-nnet3chain-en-us"; sourceTree = "<group>"; };
 		EE2FA2301D826B8100F0CFCF /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
 		EE2FA2321D826BA300F0CFCF /* libstdc++.6.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.6.tbd"; path = "usr/lib/libstdc++.6.tbd"; sourceTree = SDKROOT; };
 		EE30E58F1DF7CAD800D547B6 /* audio-1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "audio-1.wav"; sourceTree = "<group>"; };
+		EE30E5B81DFA8AC900D547B6 /* librispeech460-nnet3chain-en-us */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "librispeech460-nnet3chain-en-us"; sourceTree = "<group>"; };
+		EE4322A31E18CBA300247041 /* mindpixels-dg */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "mindpixels-dg"; path = "../../tmp/mindpixels-dg"; sourceTree = "<group>"; };
+		EE4322A51E18CEFF00247041 /* mindpixels-full-dg */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "mindpixels-full-dg"; path = "../../tmp/mindpixels-full-dg"; sourceTree = "<group>"; };
 		EE4A6CD51D00B95600BBEB41 /* MusicDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicDemoViewController.h; sourceTree = "<group>"; };
 		EE4A6CD61D00B95600BBEB41 /* MusicDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicDemoViewController.m; sourceTree = "<group>"; };
 		EE4A6CD81D00B96F00BBEB41 /* ContactsDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactsDemoViewController.h; sourceTree = "<group>"; };
@@ -91,6 +99,10 @@
 		EE8B7FED1A16A3A9007F455E = {
 			isa = PBXGroup;
 			children = (
+				EE4322A51E18CEFF00247041 /* mindpixels-full-dg */,
+				EE4322A31E18CBA300247041 /* mindpixels-dg */,
+				EE2E861E1DFC9A4C00692531 /* aspire-nnet3chain-en-us */,
+				EE30E5B81DFA8AC900D547B6 /* librispeech460-nnet3chain-en-us */,
 				EE0D55181CD41DCD00B37356 /* librispeech-nnet2-en-us */,
 				EE0D55191CD41DCD00B37356 /* librispeech-gmm-en-us */,
 				EE8B7FF81A16A3A9007F455E /* kaldi-ios-poc */,
@@ -220,10 +232,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				EE8B80051A16A3A9007F455E /* Main.storyboard in Resources */,
+				EE4322A61E18CEFF00247041 /* mindpixels-full-dg in Resources */,
 				EE4A6CB51CFD60A000BBEB41 /* librispeech-gmm-en-us in Resources */,
+				EE4322A41E18CBA300247041 /* mindpixels-dg in Resources */,
+				EE30E5B91DFA8AC900D547B6 /* librispeech460-nnet3chain-en-us in Resources */,
 				EE8B800A1A16A3A9007F455E /* LaunchScreen.xib in Resources */,
 				EE37CA061D0BBAE000F5F3FD /* librispeech-nnet2-en-us in Resources */,
 				EE30E5901DF7CAD800D547B6 /* audio-1.wav in Resources */,
+				EE2E861F1DFC9A4C00692531 /* aspire-nnet3chain-en-us in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

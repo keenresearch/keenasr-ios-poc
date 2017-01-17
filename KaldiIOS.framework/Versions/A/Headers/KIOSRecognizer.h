@@ -227,8 +227,20 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  */
 @property(nonatomic, assign, readonly) KIOSRecognizerType recognizerType;
 
+/**
+ If set to YES, recognizer will perform rescoring for the final result, using
+ rescoring language model provided in the custom decoding graph that's bundled
+ with the application.
+ 
+ Default is YES.
+ 
+ @warning If the resources necessary for rescoring are not available in the custom
+ decoding graph directory bundled with the app, and rescore is set to YES, 
+ rescoring step will be skipped.
+ */
+@property(nonatomic, assign) BOOL rescore;
 
-/** @name Initialization, Starting, and Stopping Recognition */
+/** @name Initialization, Preparing, Starting, and Stopping Recognition */
 
 
 /** Initialize ASR engine with the specific ASR Bundle, which provides all the 
@@ -238,13 +250,12 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  
  @param bundle directory containing all the resources necessary for the specific
  recognizer type. This will typically include all acoustic model related files,
- configuration files, and any prepackaged HCLG.fst file(s). The bundle directory
- should contain decode.conf configuration file, which can be augmented with 
- additional Kaldi-specific config params. Currently, that is the only way to
- pass various settings to Kaldi. All path references in config files should be
- relative to the app root directory (e.g. librispeech-gmm-en-us/mfcc.conf). The
- init method will initiallize appropriate recognizer type based on the name and
- content of the ASR bundle.
+ and configuration files. The bundle directory should contain decode.conf 
+ configuration file, which can be augmented with additional Kaldi-specific 
+ config params. Currently, that is the only way to pass various settings to Kaldi.
+ All path references in config files should be relative to the app root directory
+ (e.g. librispeech-gmm-en-us/mfcc.conf). The init method will initiallize
+ appropriate recognizer type based on the name and content of the ASR bundle.
  
  @return TRUE if succesful, FALSE otherwise.
  
@@ -257,39 +268,41 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 + (BOOL)initWithASRBundle:(nonnull NSString *)bundle;
 
 
-
-/** Initialize ASR engine with the specific ASR Bundle. This method needs
- to be called first, before any other work can be performed. If your app is always
- using a single decoding graph prepackaged with the app, you would typically use
- this method to initialize the recognizer.
- 
- @param bundle directory containing all the resources necessary for the specific
- recognizer type. This will typically include all acoustic model related files,
- configuration files and any prepackaged HCLG.fst file(s). The bundle directory
- should contain decode.conf configuration file, which can be augmented with 
- additional Kaldi-specific config params. Currently, that is the only way to 
- pass various settings to Kaldi. All path references in config files should be 
- relative to the app root directory (i.e. librispeech-gmm-en-us/mfcc.conf)
- 
- @param pathToDecodingGraph relative path to the decoding graph. This will
- usually be <ASR_BUNDLE_NAME>/HCLG.fst or similar.
- 
- @return TRUE if succesful, FALSE otherwise.
- 
- @warning When initializing the recognizer, make sure that the bundle directory
- contains all the necessary resources needed for the specific recognizer type.  
- If your app is dynamically creating decoding graphs, ASR bundle directory needs
- to contain lang subdirectory with relevant resources (lexicon, etc.).
- */
-+ (BOOL)initWithASRBundle:(nonnull NSString *)bundle
-         andDecodingGraph:(nullable NSString *)pathToDecodingGraph;
-
-
-
 //+ (instancetype) alloc  __attribute__((unavailable("alloc not available, call sharedInstance instead")));
 //- (instancetype) init   __attribute__((unavailable("init not available, call sharedInstance instead")));
 + (nullable instancetype) new    __attribute__((unavailable("new not available, call sharedInstance instead")));
 
+
+/** Prepare for recognition by loading custom decoding graph that was prepared
+ via [KIOSDecodingGraph createDecodingGraphFromSentences:forRecognizer:andSaveWithName] 
+ or [KIOSDecodingGraph createDecodingGraphFromArpaURL:forRecognizer:andSaveWithName:] methods.
+ 
+ After calling this method, recognizer will load the decoding graph into memory
+ and it will be ready to start listening via startListening method.
+ 
+ @param dgName name of the custom decoding graph
+ @return TRUE if successful, FALSE otherwise
+ */
+- (BOOL)prepareForListeningWithCustomDecodingGraphWithName:(nonnull NSString *)dgName;
+
+
+/** Prepare for recognition by loading custom decoding graph that was bundled 
+ with the application. You will typically use this approach for large vocabulary
+ tasks, where it would take too long to build the decoding graph on the mobile
+ device.
+ 
+ After calling this method, recognizer will load the decoding graph into memory
+ and it will be ready to start listening via startListening method.
+ 
+ @param pathToDecodingGraphDirectory absolute path to the custom decoding graph
+ directory which was created ahead of time and packaged with the app.
+ 
+ @return TRUE if successful, FALSE otherwise.
+ 
+ @warning If custom decoding graph was built with rescoring capability, all the 
+ resources will be loaded regardless of how rescore paramater is set.
+ */
+- (BOOL)prepareForListeningWithCustomDecodingGraphAtPath:(nonnull NSString *)pathToDecodingGraphDirectory;
 
 
 /** Start processing incoming audio.
@@ -301,44 +314,16 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  triggered (for example, max duration without speech, or end-silence, etc.).
  
  When the recognizer stops listening due to VAD triggering, it will call 
- [recognizerFinalResult:forRecognizer:]([KIOSRecognizerDelegate recognizerFinalResult:forRecognizer:]) method.
+ [recognizerFinalResult:forRecognizer:]([KIOSRecognizerDelegate recognizerFinalResult:forRecognizer:]) 
+ callback method.
  
  VAD settings can be modified via setVADParameter:toValue: method.
+ 
+ @warning You will need to call either prepareForListeningWithCustomDecodingGraphWithName:
+ or prepareForListeningWithCustomDecodingGraphAtPath: before calling startListening
+ method.
 */
 - (BOOL)startListening;
-
-
-/** Start processing incoming audio using pathToDecodingGraphFile as a decoding
- graph.
- 
- @param pathToDecodingGraphFile a relative path to the HCLG file created with
- the ASR bundle used to initalize the engine. For example 
- (librispeech-gmm-en-us/HCLG.fst)
- 
- @return TRUE if successful, FALSE otherwise
- 
- This method will typically be used for decoding graphs that were created offline
- and are part of the ASR Bundle. For decoding graphs dynamically created within
- the app, startListeningWithCustomDecodingGraph method should be used.
-
- See startListening for details on when recognition process is automatically
- stopped.
- */
-- (BOOL)startListeningWithDecodingGraph:(nonnull NSString *)pathToDecodingGraphFile;
-
-
-/** Start processing incoming audio using custom decoding graph which was 
- previously created via KIOSDecodingGraph.
- @param decodingGraphName name of the custom decoding graph created using
- createDecodingGraphFromBigramURL:andSaveWithName: or 
- createDecodingGraphFromSentences:andSaveWithName: methods of KIOSDecodingGraph
- 
- @return TRUE if successful, FALSE otherwise
- 
- See startListening for details on when recognition process is automatically 
- stopped.
- */
-- (BOOL)startListeningWithCustomDecodingGraph:(nonnull NSString *)decodingGraphName;
 
 
 /**
@@ -360,62 +345,6 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  occur and the method will return FALSE.
  */
 - (BOOL)startListeningFromAudioFile:(nonnull NSString *)pathToAudioFile;
-
-
-
-/**
- Performs speech recognition on the audio file using the decoding graph. This is
- an asynchronious method, which will perform basic validation (valid wav file, 
- sampling frequency of the audio matches that of the ASR Bundle, decoding graph 
- is valid), and then start recognition in the background and return. Recognition
- results can be obtained via [recognizerFinalResult:forRecognizer:]([KIOSRecognizerDelegate recognizerFinalResult:forRecognizer:]) 
- and [recognizerPartialResult:forRecognizer:]([KIOSRecognizerDelegate recognizerPartialResult:forRecognizer:]) 
- methods.
- 
- @param pathToAudioFile full path to the audio file in WAV format. Files should
- be mono (single channel) and its sampling frequency should match the sampling
- frequency used for the ASR bundle training (typically 16kHz).
-
- @param pathToDecodingGraphFile a relative path to the HCLG file created with
- the ASR bundle used to initalize the engine. For example
- (librispeech-nnet-en-us/HCLG.fst)
- 
- @return TRUE if the audio file is valid WAV file, its sampling frequency
- matches the one in ASR Bundle, and recording duration is less than 100ms,
- and decoding graph is valid, FALSE otherwise.
- 
- @note The whole audio file will be loaded in the memory, thus we currently 
- limit the length to 100sec. If file is longer than 100sec no processing will 
- occur and the method will return FALSE.
- */
-- (BOOL)startListeningFromAudioFile:(nonnull NSString *)pathToAudioFile
-                   andDecodingGraph:(nonnull NSString *)pathToDecodingGraphFile;
-
-
-/**
- Performs speech recognition on the audio file using custom decoding graph. This
- is an asynchronious method, which will perform basic validation (valid wav file,
- sampling frequency of the audio matches that of the ASR Bundle, decoding graph
- is valid), and then start recognition in the background and return. Recognition
- results can be obtained via [recognizerFinalResult:forRecognizer:]([KIOSRecognizerDelegate recognizerFinalResult:forRecognizer:])
- and [recognizerPartialResult:forRecognizer:]([KIOSRecognizerDelegate recognizerPartialResult:forRecognizer:])
- methods.
- 
- @param pathToAudioFile full path to the audio file in WAV format.
- @param customDecodingGraphName name of the custom decoding graph created using
- createDecodingGraphFromBigramURL:andSaveWithName: or
- createDecodingGraphFromSentences:andSaveWithName: methods of KIOSDecodingGraph
- 
- @return TRUE if the audio file is valid WAV file, its sampling frequency
- matches the one in ASR Bundle, and recording duration is less than 100ms,
- and decoding graph is valid, FALSE otherwise.
-
- @note The whole audio file will be loaded in the memory, thus we currently
- limit the length to 100sec. If file is longer than 100sec no processing will
- occur and the method will return FALSE.
- */
-- (BOOL)startListeningFromAudioFile:(nonnull NSString *)pathToAudioFile
-             andCustomDecodingGraph:(nonnull NSString *)customDecodingGraphName;
 
 
 /** Stop the recognizer from processing incoming audio.
@@ -542,12 +471,6 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 - (float)inputLevel;
 
 
-
-/** relative path to the decoding graph */
-- (nullable NSString *)decodingGraphPath;
-
-
-
 /** Version of the KaldiIOS framework. */
 + (nonnull NSString *)version;
 
@@ -576,65 +499,6 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  using this method.
 */
 - (void)setVADParameter:(KIOSVadParameter)parameter toValue:(float)value;
-
-
-/** @name Deprecated */
-
-
-/** Initialize ASR engine with the specific recognizer type. This method needs
- to be called first, before any other work can be performed. You would use this
- init method if you are likely to use different decoding graphs (custom or
- prepackaged) in your app.
- 
- @param recognizerType one of KIOSRecognizerType
- 
- @param bundle directory containing all the resources necessary for the specific
- recognizer type. This will typically include all acoustic model related files,
- configuration files. The bundle directory should contain decode.conf
- configuration file, which can be augmented with additional Kaldi-specific
- config params. Currently, that is the only way to pass various settings to
- Kaldi. All path references in config files should be relative to the app root
- directory (i.e. librispeech-gmm-en-us/mfcc.conf)
- 
- @return TRUE if succesful, FALSE otherwise.
- 
- @warning  @warning DEPRECATED: please use initWitASRNBundle:
- 
- */
-
-+ (BOOL)initWithRecognizerType:(KIOSRecognizerType)recognizerType
-                  andASRBundle:(nonnull NSString *)bundle \
-__attribute__((deprecated("This method has been depricated. Please use initWithAsrBundle method instead")));
-
-/** Initialize ASR engine with the specific recognizer type. This method needs
- to be called first, before any other work can be performed. If your app is always
- using a single decoding graph prepackaged with the app, you would typically use
- this method to initialize the recognizer.
- 
- @param recognizerType one of KIOSRecognizerType
- 
- @param bundle directory containing all the resources necessary for the specific
- recognizer type. This will typically include all acoustic model related files,
- configuration files and any prepackaged HCLG.fst file(s). Directory should
- contain decode.conf configuration file, which can be augmented with additional
- Kaldi-specific config params. Currently, that is the only way to pass various
- settings to Kaldi. All path references in config files should be relative to
- the app root directory (i.e. librispeech-gmm-en-us/mfcc.conf)
- 
- @param pathToDecodingGraph relative path to the decoding graph. This will
- usually be <ASR_BUNDLE_NAME>/HCLG.fst or similar.
- 
- @return TRUE if succesful, FALSE otherwise.
- 
- @warning DEPRECATED: please use initWitASRNBundle:andDecodingGraph
- 
- */
-+ (BOOL)initWithRecognizerType:(KIOSRecognizerType)recognizerType
-                  andASRBundle:(nonnull NSString *)bundle
-              andDecodingGraph:(nullable NSString*)pathToDecodingGraph \
-__attribute__((deprecated("This method has been depricated. Please use initWithAsrBundle: andDecodingGraph method instead")));
-
-
 
 
 @end

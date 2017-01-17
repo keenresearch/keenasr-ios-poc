@@ -115,16 +115,15 @@ const static NSArray *demoIntroText;
 
   // Init can occur here on in the AppDelegate
   if (! [KIOSRecognizer sharedInstance]) {
-    // since we are using custom decoding graphs, we init without passing decoding
-    // graph path, and later on we pass the custom decoding graph name to
-    // startListeningWithCustomDecodingGraph
 
-    //    [KIOSRecognizer initWithASRBundle:@"librispeech-gmm-en-us"];
+//    [KIOSRecognizer initWithASRBundle:@"librispeech-gmm-en-us"];
+    
+    // nnet recognizers/acoustic models are more robust and provide better accuracy than GMM
     [KIOSRecognizer initWithASRBundle:@"librispeech-nnet2-en-us"];
 
-    // these bundles are not yet publicly available
+    // these ASR bundles are not yet publicly available.
+    // contact us if interested in dictation type tasks or lower memory footprint
     //    [KIOSRecognizer initWithASRBundle:@"librispeech460-nnet3chain-en-us"];
-    //    [KIOSRecognizer initWithASRBundle:@"aspire-nnet3chain-en-us"];
   }
   self.recognizer = [KIOSRecognizer sharedInstance];
   // we are NOT setting this controller as a delegate, since individual demo

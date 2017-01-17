@@ -17,7 +17,6 @@ static float kEndSpeechTimeoutShort = 0.8;
 @property (nonatomic, strong) UIButton *startListeningButton, *backButton;
 @property (nonatomic, strong) UILabel *textLabel, *statusLabel;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
-@property (nonatomic, assign) BOOL initializedDecodingGraph;
 @property (nonatomic, strong) NSArray *words;
 
 // just to make it easier to access recognizer throught this class
@@ -133,13 +132,6 @@ static float kEndSpeechTimeoutShort = 0.8;
                            toValue:kEndSpeechTimeoutShort];
   
   self.startListeningButton.enabled = NO;
-  
-  // on first tap we will initialize the
-  // decoder with the custom decoding graph via startListningWithCustomDecodingGraph
-  // and set this to YES, so that subsequent taps on Start trigger only startListening
-  self.initializedDecodingGraph = NO;
-  self.recognizer.createAudioRecordings=YES;
-
 }
 
 
@@ -150,7 +142,7 @@ static float kEndSpeechTimeoutShort = 0.8;
   self.spinner.alpha = 1;
   [self.spinner startAnimating]; //
   
-  self.statusLabel.text = @"Creating decoding graph...";
+  self.statusLabel.text = @"Creating graph and preparing to listen...";
 }
 
 
@@ -158,9 +150,6 @@ static float kEndSpeechTimeoutShort = 0.8;
   [super viewDidAppear:animated];
   
   NSLog(@"View appeared, setting up decoding graph now");
-  
-  KIOSDecodingGraph *dg = [[KIOSDecodingGraph alloc] initWithRecognizer:self.recognizer];
-  
   
   // we'll create decoding graph based on the sentences in the paragraph presented
   // to the user
@@ -173,9 +162,10 @@ static float kEndSpeechTimeoutShort = 0.8;
   // explore these two methods just for fun; regardless we will recreate the
   // decoding graph
   NSString *dgName = @"commands";
-  if ([dg decodingGraphExists:dgName]) {
+  if ([KIOSDecodingGraph decodingGraphWithNameExists:dgName forRecognizer:self.recognizer]) {
     NSLog(@"Custom decoding graph '%@' exists", dgName);
-    NSDate *createdOn = [dg decodingGraphCreationDate:dgName];
+    NSDate *createdOn = [KIOSDecodingGraph decodingGraphCreationDate:dgName
+                                                       forRecognizer:self.recognizer];
     NSLog(@"It was created on %@", createdOn);
   } else {
     NSLog(@"Decoding graph '%@' doesn't exist", dgName);
@@ -183,13 +173,18 @@ static float kEndSpeechTimeoutShort = 0.8;
   
   // create custom decoding graph with (arbitraty) name 'reading' using
   // sentences obtained above
-    if (! [dg createDecodingGraphFromSentences:sentences andSaveWithName:dgName]) {
-      self.textLabel.text = @"Error occured while creating decoding graph from the text";
-      [self.spinner stopAnimating];
-      self.spinner.alpha = 0;
-      return;
-    }
-  
+  if (! [KIOSDecodingGraph createDecodingGraphFromSentences:sentences
+                                              forRecognizer:self.recognizer
+                                            andSaveWithName:dgName]) {
+    self.textLabel.text = @"Error occured while creating decoding graph from the text";
+    [self.spinner stopAnimating];
+    self.spinner.alpha = 0;
+    return;
+  }
+  NSLog(@"Preparing to listen with custom decoding graph '%@'", dgName);
+  [self.recognizer prepareForListeningWithCustomDecodingGraphWithName:dgName];
+  NSLog(@"Ready to start listening");
+
   [self.spinner stopAnimating];
   self.spinner.alpha = 0;
   self.statusLabel.text = @"Completed decoding graph"; // TODO - add num songs/artists
@@ -229,15 +224,7 @@ static float kEndSpeechTimeoutShort = 0.8;
   
   
   // start listening using decoding graph we created in viewDidAppear
-  if (! self.initializedDecodingGraph) {
-    [self.recognizer startListeningWithCustomDecodingGraph:@"commands"];
-    self.initializedDecodingGraph = YES;
-  } else {
-    [self.recognizer startListening]; // decoding graph is already set so we can just call startListening
-    // this if/else is not mandatory, but there is some overhead in loading the
-    // decoding graph so if we continue listening with the same graph it's better
-    // to call startListening
-  }
+  [self.recognizer startListening];
 }
 
 

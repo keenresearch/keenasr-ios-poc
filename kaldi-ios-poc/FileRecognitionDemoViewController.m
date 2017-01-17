@@ -127,7 +127,7 @@
   [self.spinner startAnimating];
   
   self.transcriptLabel.text = [NSString stringWithFormat:@"REF: %@", fileTranscript];
-  self.statusLabel.text = @"Buildingg decoding graph...";
+  self.statusLabel.text = @"Creating graph and preparing to listen...";
 }
 
 
@@ -143,9 +143,10 @@
   }
   
   NSString *dgName = @"weekdays";
-  KIOSDecodingGraph *dg = [[KIOSDecodingGraph alloc] initWithRecognizer:self.recognizer];
   NSArray *sentences = @[@"monday", @"tuesday", @"wednesday", @"thursday", @"friday", @"saturday", @"sunday"];
-  if (! [dg createDecodingGraphFromSentences:sentences andSaveWithName:dgName]) {
+  if (! [KIOSDecodingGraph createDecodingGraphFromSentences:sentences
+                                              forRecognizer:self.recognizer
+                                            andSaveWithName:dgName]) {
     self.resultsLabel.text = @"Error occured while creating decoding graph from the text";
     [self.spinner stopAnimating];
     self.spinner.alpha = 0;
@@ -153,12 +154,15 @@
   }
   self.backButton.enabled = YES;
 
-  
+  NSLog(@"Preparing to listen with custom decoding graph '%@'", dgName);
+  [self.recognizer prepareForListeningWithCustomDecodingGraphWithName:dgName];
+  NSLog(@"Ready to start listening");
+
   [self.spinner stopAnimating];
   self.spinner.alpha = 0;
 
   self.statusLabel.text = @"Processing audio file...";
-  if (! [self.recognizer startListeningFromAudioFile:fullPath andCustomDecodingGraph:dgName]) {
+  if (! [self.recognizer startListeningFromAudioFile:fullPath]) {
     self.statusLabel.text = @"ERROR";
     self.transcriptLabel.text = [NSString stringWithFormat:@"Unable to open audio file %@", fullPath];
   }

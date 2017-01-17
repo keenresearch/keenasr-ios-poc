@@ -15,7 +15,6 @@
 @property (nonatomic, strong) UIButton *startListeningButton, *backButton;
 @property (nonatomic, strong) UILabel *resultsLabel, *statusLabel;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
-@property (nonatomic, assign) BOOL initializedDecodingGraph;
 
 @property(nonatomic, strong) NSArray *words;
 
@@ -127,11 +126,6 @@
   [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForAnyMatch toValue:1];
   
   self.startListeningButton.enabled = NO;
-  
-  // on first tap we will initialize the
-  // decoder with the custom decoding graph via startListningWithCustomDecodingGraph
-  // and set this to YES, so that subsequent taps on Start trigger only startListening
-  self.initializedDecodingGraph = NO;
 }
 
 
@@ -142,7 +136,7 @@
   self.spinner.alpha = 1;
   [self.spinner startAnimating]; //
 
-  self.statusLabel.text = @"Creating decoding graph...";
+  self.statusLabel.text = @"Creating graph and preparing to listen...";
 }
 
 
@@ -152,13 +146,13 @@
   
   NSLog(@"View appeared, setting up decoding graph now");
   
-  KIOSDecodingGraph *dg = [[KIOSDecodingGraph alloc] initWithRecognizer:self.recognizer];
-
-  // If we had bigram language model in the asr bundle, we could create decoding graph
+  // If we had arpa language model in the asr bundle, we could create decoding graph
   // directly from the bigram following the commented-out steps below.
   //  NSArray *parts = [NSArray arrayWithObjects: [[NSBundle mainBundle] resourcePath], self.recognizer.asrBundlePath, @"numbers-bigram.txt", nil];
-  //  NSURL *bigramURL = [NSURL fileURLWithPathComponents:parts];
-  //  [dg createDecodingGraphFromBigramURL:bigramURL andSaveWithName:@"numbers"];
+  //  NSURL *arpaURL = [NSURL fileURLWithPathComponents:parts];
+//  [KIOSDecodingGraph createDecodingGraphFromArpaURL:arpaURL
+//                                      forRecognizer:self.recognizer
+//                                    andSaveWithName:@"numbers"];
 
   // Since we are using data from the phone's music library, we will first
   // compose a list of relevant phrases
@@ -169,19 +163,25 @@
   }
   
   // and create custom decoding graph named 'music' using those phrases
-  if (! [dg createDecodingGraphFromSentences:sentences andSaveWithName:@"music"]) {
+  NSString *dgName = @"music";
+  if (! [KIOSDecodingGraph createDecodingGraphFromSentences:sentences
+                                              forRecognizer:self.recognizer
+                                            andSaveWithName:dgName]) {
     self.resultsLabel.text = @"Error occured while creating decoding graph from users music library";
     [self.spinner stopAnimating];
     self.spinner.alpha = 0;
     return;
   }
-  self.statusLabel.text = @"Completed decoding graph"; // TODO - add num songs/artists
+  // Note that this decoding graph doesn't need to be created in this view controller.
+  // It could have been created any time; we just need to know the name so we can
+  // reference it when we need to call preprareForListening methods
+
+  NSLog(@"Preparing to listen with custom decoding graph '%@'", dgName);
+  [self.recognizer prepareForListeningWithCustomDecodingGraphWithName:dgName];
+  NSLog(@"Ready to start listening");
   
   [self.spinner stopAnimating];
   self.spinner.alpha = 0;
-  // Note that this decoding graph doesn't need to be created in this view controller.
-  // It could have been created any time; we just need to know the name so we can
-  // reference it when starting to listen
 
   self.resultsLabel.textColor = [UIColor lightGrayColor];
   self.resultsLabel.text = @"Tap the button an then say \"PLAY <ARTIST_NAME>\" or \"PLAY <SONG_NAME>\", or \"PLAY <SONG_NAME> by <ARTIST_NAME>\", where <ARTIST_NAME> and <SONG_NAME> are name of a song or an artist in your music library on this device";
@@ -210,15 +210,7 @@
   //  [self.recognizer startListening];
   
   // start listening using decoding graph we created in viewDidAppear
-  if (! self.initializedDecodingGraph) {
-    [self.recognizer startListeningWithCustomDecodingGraph:@"music"];
-    self.initializedDecodingGraph = YES;
-  } else {
-    [self.recognizer startListening]; // decoding graph is already set so we can just call startListening
-    // this if/else is not mandatory, but there is some overhead in loading the
-    // decoding graph so if we continue listening with the same graph it's better
-    // to call startListening
-  }
+  [self.recognizer startListening];
 }
 
 

@@ -14,7 +14,6 @@
 @property (nonatomic, strong) UILabel *textLabel, *statusLabel;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @property (nonatomic, strong) NSString *text;
-@property (nonatomic, assign) BOOL initializedDecodingGraph;
 
 @property (nonatomic, assign) float rateOfSpeech;
 @property (nonatomic, strong) UILabel *rateOfSpeechLabel;
@@ -151,10 +150,6 @@
   self.startListeningButton.enabled = NO;
   self.recognizer.createAudioRecordings = YES;
   
-  // on first tap we will initialize the
-  // decoder with the custom decoding graph via startListningWithCustomDecodingGraph
-  // and set this to YES, so that subsequent taps on Start trigger only startListening
-  self.initializedDecodingGraph = NO;
 }
 
 
@@ -165,7 +160,7 @@
   self.spinner.alpha = 1;
   [self.spinner startAnimating]; //
   
-  self.statusLabel.text = @"Creating decoding graph...";
+  self.statusLabel.text = @"Creating graph and preparing to listen...";
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -173,9 +168,6 @@
   
   NSLog(@"View appeared, setting up decoding graph now");
   
-  KIOSDecodingGraph *dg = [[KIOSDecodingGraph alloc] initWithRecognizer:self.recognizer];
-  
-
   // we'll create decoding graph based on the sentences in the paragraph presented
   // to the user
   NSArray *sentences = [self createReadingSentences];
@@ -187,9 +179,11 @@
   // explore these two methods just for fun; regardless we will recreate the
   // decoding graph
   NSString *dgName = @"reading";
-  if ([dg decodingGraphExists:dgName]) {
+  if ([KIOSDecodingGraph decodingGraphWithNameExists:dgName
+                                       forRecognizer:self.recognizer]) {
     NSLog(@"Custom decoding graph '%@' exists", dgName);
-    NSDate *createdOn = [dg decodingGraphCreationDate:dgName];
+    NSDate *createdOn = [KIOSDecodingGraph decodingGraphCreationDate:dgName
+                         forRecognizer:self.recognizer];
     NSLog(@"It was created on %@", createdOn);
   } else {
     NSLog(@"Decoding graph '%@' doesn't exist", dgName);
@@ -197,12 +191,17 @@
   
   // create custom decoding graph with (arbitraty) name 'reading' using
   // sentences obtained above
-  if (! [dg createDecodingGraphFromSentences:sentences andSaveWithName:@"reading"]) {
+  if (! [KIOSDecodingGraph createDecodingGraphFromSentences:sentences
+                                              forRecognizer:self.recognizer
+                                            andSaveWithName:dgName]) {
     self.textLabel.text = @"Error occured while creating decoding graph from the text";
     [self.spinner stopAnimating];
     self.spinner.alpha = 0;
     return;
   }
+  NSLog(@"Preparing to listen with custom decoding graph '%@'", dgName);
+  [self.recognizer prepareForListeningWithCustomDecodingGraphWithName:dgName];
+  NSLog(@"Ready to start listening");
 
   [self.spinner stopAnimating];
   self.spinner.alpha = 0;
@@ -245,15 +244,7 @@
   self.rosUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(updateRosUILabel:) userInfo:nil repeats:YES];
   
   // start listening using decoding graph we created in viewDidAppear
-  if (! self.initializedDecodingGraph) {
-    [self.recognizer startListeningWithCustomDecodingGraph:@"reading"];
-    self.initializedDecodingGraph = YES;
-  } else {
-    [self.recognizer startListening]; // decoding graph is already set so we can just call startListening
-    // this if/else is not mandatory, but there is some overhead in loading the
-    // decoding graph so if we continue listening with the same graph it's better
-    // to call startListening
-  }
+  [self.recognizer startListening]; 
 }
 
 
