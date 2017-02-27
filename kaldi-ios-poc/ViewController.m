@@ -121,9 +121,6 @@ const static NSArray *demoIntroText;
     // nnet recognizers/acoustic models are more robust and provide better accuracy than GMM
     [KIOSRecognizer initWithASRBundle:@"librispeech-nnet2-en-us"];
 
-    // these ASR bundles are not yet publicly available.
-    // contact us if interested in dictation type tasks or lower memory footprint
-    //    [KIOSRecognizer initWithASRBundle:@"librispeech460-nnet3chain-en-us"];
   }
   self.recognizer = [KIOSRecognizer sharedInstance];
   // we are NOT setting this controller as a delegate, since individual demo
