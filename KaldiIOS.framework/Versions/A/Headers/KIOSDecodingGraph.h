@@ -144,10 +144,11 @@
 /** Returns date when custom decoding graph was created.
  
  @param decodingGraphName name of the decodingGraph
+ @param recognizer KIOSRecognizer object equivalent to the KIOSRecognizer object
+ that was used to create the decoding graph.
  
  @return date when decoding graph was created and saved in the filesystem. nil 
  if not available.
- 
  */
 + (nullable NSDate *)decodingGraphCreationDate:(nonnull NSString *)decodingGraphName
                                  forRecognizer:(nonnull KIOSRecognizer *)recognizer;

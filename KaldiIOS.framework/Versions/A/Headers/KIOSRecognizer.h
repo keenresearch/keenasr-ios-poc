@@ -274,8 +274,8 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 
 
 /** Prepare for recognition by loading custom decoding graph that was prepared
- via [KIOSDecodingGraph createDecodingGraphFromSentences:forRecognizer:andSaveWithName] 
- or [KIOSDecodingGraph createDecodingGraphFromArpaURL:forRecognizer:andSaveWithName:] methods.
+ via [KIOSDecodingGraph createDecodingGraphFromSentences:forRecognizer:andSaveWithName:] 
+ or [KIOSDecodingGraph createDecodingGraphFromArpaFileAtURL:forRecognizer:andSaveWithName:] methods.
  
  After calling this method, recognizer will load the decoding graph into memory
  and it will be ready to start listening via startListening method.
@@ -326,6 +326,8 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 - (BOOL)startListening;
 
 
+
+
 /**
  Performs speech recognition on the audio file. This is an asynchronious method,
  which will perform basic validation (valid wav file, sampling frequency of the 
@@ -348,13 +350,20 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 
 
 /** Stop the recognizer from processing incoming audio.
- @warning Currently, calling this method will not trigger recognizerFinalResult
- delegate call.
+ @warning Calling this method will not trigger recognizerFinalResult
+ delegate call. Use stopListeningAndReturnFinalResult if you are interested in 
+ obtaining the final result directly.
  */
 - (void)stopListening;
 
-// TODO
-//- (BOOL)stopListeningWithDelay:(float)delay;
+
+/** Stop the recognizer from processing incoming audio and return the final result.
+ @return Final result of the recognition.
+ 
+ @warning This method runs synchroniously. For large decoding graphs there may be
+ noticable delay (few hundred ms) on lower-end devices.
+ */
+- (nullable KIOSResult *)stopListeningAndReturnFinalResult;
 
 
 /** @name Speaker Adaptation 
