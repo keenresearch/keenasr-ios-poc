@@ -143,17 +143,28 @@
 
 - (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
-  
-  NSLog(@"View appeared, setting up decoding graph now");
-  
-  // If we had arpa language model in the asr bundle, we could create decoding graph
-  // directly from the bigram following the commented-out steps below.
-  //  NSArray *parts = [NSArray arrayWithObjects: [[NSBundle mainBundle] resourcePath], self.recognizer.asrBundlePath, @"numbers-bigram.txt", nil];
-  //  NSURL *arpaURL = [NSURL fileURLWithPathComponents:parts];
-//  [KIOSDecodingGraph createDecodingGraphFromArpaURL:arpaURL
-//                                      forRecognizer:self.recognizer
-//                                    andSaveWithName:@"numbers"];
 
+  NSLog(@"View appeared, checking access to the media library");
+  
+  if ([MPMediaLibrary authorizationStatus] != MPMediaLibraryAuthorizationStatusAuthorized) {
+    [MPMediaLibrary requestAuthorization:^(MPMediaLibraryAuthorizationStatus status) {
+      if (status == MPMediaLibraryAuthorizationStatusAuthorized) {
+        [self prepareForListening];
+      } else {
+        self.startListeningButton.enabled = NO;
+        self.backButton.enabled = YES;
+        self.statusLabel.text =@"No permission to access music library";
+        self.resultsLabel.text = @"It seems you've declined access to the music library. To proceed you will need to allow access under iPhone Settings for this app";
+      }
+      
+    }];
+  } else {
+    [self prepareForListening];
+  }
+}
+
+- (void)prepareForListening {
+  NSLog(@"View appeared, setting up decoding graph now");
   // Since we are using data from the phone's music library, we will first
   // compose a list of relevant phrases
   NSArray *sentences = [self createMusicDemoSentences];
@@ -175,21 +186,22 @@
   // Note that this decoding graph doesn't need to be created in this view controller.
   // It could have been created any time; we just need to know the name so we can
   // reference it when we need to call preprareForListening methods
-
+  
   NSLog(@"Preparing to listen with custom decoding graph '%@'", dgName);
   [self.recognizer prepareForListeningWithCustomDecodingGraphWithName:dgName];
   NSLog(@"Ready to start listening");
   
   [self.spinner stopAnimating];
   self.spinner.alpha = 0;
-
+  
   self.resultsLabel.textColor = [UIColor lightGrayColor];
   self.resultsLabel.text = @"Tap the button an then say \"PLAY <ARTIST_NAME>\" or \"PLAY <SONG_NAME>\", or \"PLAY <SONG_NAME> by <ARTIST_NAME>\", where <ARTIST_NAME> and <SONG_NAME> are name of a song or an artist in your music library on this device";
-
+  
   self.startListeningButton.alpha = 1;
   self.startListeningButton.enabled = YES;
   self.backButton.enabled = YES;
 }
+
 
 
 - (void)viewWillDisappear:(BOOL)animated {
