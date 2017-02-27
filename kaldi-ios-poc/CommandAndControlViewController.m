@@ -222,15 +222,19 @@ static float kEndSpeechTimeoutShort = 0.8;
   self.textLabel.textColor = [UIColor lightGrayColor];
   self.statusLabel.text = @"Listening...";
   
-  
   // start listening using decoding graph we created in viewDidAppear
   [self.recognizer startListening];
 }
 
 
 - (void)backButtonTapped:(id)sender {
-  if ([self.recognizer listening])
+  if ([self.recognizer listening]) {
     [self.recognizer stopListening];
+    // if you wanted to obtain the final result for everything processed up to
+    // now, you could call this method instead
+//    KIOSResult *result = [self.recognizer stopListeningAndReturnFinalResult];
+//    NSLog(@"Final result (direct) is: %@", result);
+  }
   
   [self dismissViewControllerAnimated:YES completion:^{}];
 }
@@ -278,24 +282,30 @@ static float kEndSpeechTimeoutShort = 0.8;
 
 
 - (NSArray *)createSentences {
-  NSArray *sentences = @[@"Go left",
-                         @"left",
-                         @"go right",
-                         @"right",
-                         @"go up",
-                         @"up",
-                         @"go down",
-                         @"down",
-                         @"jump",
-                         @"stop",
-                         @"spin",
-                         @"run",
-                         @"faster",
-                         @"slower",
-                         @"lay down",
-                         @"follow me",
+  NSArray *sentences = @[@"YES",
+                         @"NO",
+                         @"MAYBE",
+                         @"YEAH"
                          ];
-  
+
+//  NSArray *sentences = @[@"Go left",
+//                         @"left",
+//                         @"go right",
+//                         @"right",
+//                         @"go up",
+//                         @"up",
+//                         @"go down",
+//                         @"down",
+//                         @"jump",
+//                         @"stop",
+//                         @"spin",
+//                         @"run",
+//                         @"faster",
+//                         @"slower",
+//                         @"lay down",
+//                         @"follow me",
+//                         ];
+
   return sentences;
 }
 
