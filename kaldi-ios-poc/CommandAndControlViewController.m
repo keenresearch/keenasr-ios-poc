@@ -282,29 +282,23 @@ static float kEndSpeechTimeoutShort = 0.8;
 
 
 - (NSArray *)createSentences {
-  NSArray *sentences = @[@"YES",
-                         @"NO",
-                         @"MAYBE",
-                         @"YEAH"
+  NSArray *sentences = @[@"Go left",
+                         @"left",
+                         @"go right",
+                         @"right",
+                         @"go up",
+                         @"up",
+                         @"go down",
+                         @"down",
+                         @"jump",
+                         @"stop",
+                         @"spin",
+                         @"run",
+                         @"faster",
+                         @"slower",
+                         @"lay down",
+                         @"follow me",
                          ];
-
-//  NSArray *sentences = @[@"Go left",
-//                         @"left",
-//                         @"go right",
-//                         @"right",
-//                         @"go up",
-//                         @"up",
-//                         @"go down",
-//                         @"down",
-//                         @"jump",
-//                         @"stop",
-//                         @"spin",
-//                         @"run",
-//                         @"faster",
-//                         @"slower",
-//                         @"lay down",
-//                         @"follow me",
-//                         ];
 
   return sentences;
 }
