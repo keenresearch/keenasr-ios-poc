@@ -253,7 +253,6 @@ static float kEndSpeechTimeoutLong = 2;
   phrase = [phrase stringByReplacingOccurrencesOfString:@"HOW DO YOU SPELL" withString:@""];
   phrase = [phrase stringByReplacingOccurrencesOfString:@"HOW DO YOU" withString:@""];
   phrase = [phrase stringByReplacingOccurrencesOfString:@"HOW DO" withString:@""];
-  phrase = [phrase stringByReplacingOccurrencesOfString:@"HOW" withString:@""];
   phrase = [phrase stringByReplacingOccurrencesOfString:@"SPELL" withString:@""];
   
   if ([phrase length]==0)
@@ -995,7 +994,6 @@ static float kEndSpeechTimeoutLong = 2;
            @"SUCH",
            @"SUGAR",
            @"SUMMER",
-           @"SUNDAY",
            @"SUPPER",
            @"TABLE",
            @"TAKEN",
@@ -1098,7 +1096,7 @@ static float kEndSpeechTimeoutLong = 2;
            @"FOLLOWING",
            @"GOODBY",
            @"GROUP",
-           @"HAPPENED*",
+           @"HAPPENED",
            @"HARDEN",
            @"HAVEN'T",
            @"HEAVY",
@@ -1227,6 +1225,20 @@ static float kEndSpeechTimeoutLong = 2;
            @"LESS",
            @"MONKEY",
            @"DONKEY",
+           @"MOOSE",
+           @"BANANA",
+           @"GRAPES",
+           @"KIDDY",
+           @"PARROT",
+           @"PINK",
+           @"PURPLE",
+           @"MARS",
+           @"JUPITER",
+           @"NEPTUNE",
+           @"MERCURY",
+           @"VENUS",
+           @"SATURN",
+           @"URANUS"
            ];
 };
 
