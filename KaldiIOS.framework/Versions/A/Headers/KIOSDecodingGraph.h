@@ -156,6 +156,7 @@
 
 + (nullable NSString *)hclgURLForDecodingGraphAtPath:(nonnull NSString *)absolutePath;
 + (nullable NSString *)wordSymsURLForDecodingGraphAtPath:(nonnull NSString *)absolutePath;
++ (nullable NSString *)rescoringConstArpaURLForDecodingGraphAtPath:(nonnull NSString *)absolutePath;
 
 + (nullable NSURL *)getDecodingGraphDirURL:(nonnull NSString *)customDecodingGraphName
                              forRecognizer:(nonnull KIOSRecognizer *)recognizer;

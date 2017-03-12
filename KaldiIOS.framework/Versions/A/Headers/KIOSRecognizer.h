@@ -31,7 +31,7 @@ typedef NS_ENUM(NSInteger, KIOSRecognizerType) {
 /** These constants indicate the log levels for the framework.*/
 typedef NS_ENUM(NSInteger, KIOSRecognizerLogLevel) {
   /** Log debug messages and higher */
-  KIOSRecognizerLogLevelDebug,
+  KIOSRecognizerLogLevelDebug=0,
   /** Log info messages and higher */
   KIOSRecognizerLogLevelInfo,
   /** Log only warnings or errors (default level)*/
@@ -47,7 +47,7 @@ typedef NS_ENUM(NSInteger, KIOSRecognizerLogLevel) {
 typedef NS_ENUM(NSInteger, KIOSVadParameter) {
   /** Timeout after this many seconds even if nothing has been recognized. 
    Default is 10 seconds. */
-  KIOSVadTimeoutForNoSpeech,
+  KIOSVadTimeoutForNoSpeech=0,
 
   /** Timeout after this many seconds if we had a good (high probability) 
    match to the final state. Default is 1 second. */
@@ -86,10 +86,39 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 /** Array of KIOSWord objects */
 @property(nonatomic, strong, nullable) NSArray<KIOSWord *> *words;
 
+/** Name of the decoding graph used to perform recognition */
+@property(nonatomic, copy, nullable) NSString *decodingGraphName;
+
+/** Name of the ASR bunde used to perform recognition */
+@property(nonatomic, copy, nullable) NSString *asrBundle;
+
 /** Returns TRUE if recognition result is empty, FALSE otherwise */
 - (BOOL)isEmpty;
 
 - (nonnull NSString *)description;
+
+/** JSON representation of the KIOSResult. Example:
+    {
+      "words" : [
+      {
+        "startTime" : 0.52,
+        "duration" : 0.3,
+        "confidence" : 1,
+        "text" : "GO"
+      },
+      {
+        "startTime" : 0.82,
+        "duration" : 0.3,
+        "confidence" : 1,
+        "text" : "UP"
+      }
+      ],
+      "confidence" : 1,
+      "cleanText" : "GO UP",
+      "text" : "GO UP <SPOKEN_NOISE>"
+    }
+ */
+- (nullable NSString *)toJSON;
 
 @end
 
@@ -113,6 +142,9 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 /** Confidence in the range 0 to 1 for the word. Higher value corresponds to
  better confidence that the recognized text matches what was said. */
 @property (nonatomic, strong, nullable, readonly) NSNumber *confidence;
+
+/** False for real words, TRUE for tags, e.g. <SPOKEN_NOISE>, <LAUGHTER> */
+@property (nonatomic, assign, readonly, getter=isTag) BOOL tag;
 
 - (nullable id)initWithText:(nonnull NSString *)text
                andStartTime:(nullable NSNumber *)startTime
