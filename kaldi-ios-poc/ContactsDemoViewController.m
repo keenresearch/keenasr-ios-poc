@@ -160,6 +160,9 @@
 
   if ([sentences count] == 0) {
     self.statusLabel.text = @"Unable to access contacts";
+    [self.spinner stopAnimating];
+    self.spinner.alpha = 0;
+    self.backButton.enabled = YES;
     return;
   }
   
