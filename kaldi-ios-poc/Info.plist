@@ -27,7 +27,7 @@
 	<key>NSContactsUsageDescription</key>
 	<string>This app will use metadata information from your contacts list to allow speech recognition to properly recognize contact names.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Microphone access is required for automated speech recognition</string>
+	<string>Microphone access is required for speech recognition</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

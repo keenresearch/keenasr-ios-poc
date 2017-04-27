@@ -52,7 +52,7 @@ const static NSArray *demoIntroText;
 - (void)viewDidLoad {
   [super viewDidLoad];
 
-  NSString *intro = @"All the demos are utilizing basic functionality of the Kaldi-iOS framework; many paramenters can be tuned to further optimize recognition performance.\n\nThe app will show the words it's recognizing in real-time in gray text. Once it detects 2sec of silence, the app stops listening and displays the final hypothesis in black text.\n\nNow, choose demo via Choose Demo button.";
+  NSString *intro = @"All the demos are utilizing basic functionality of the KeenASR framework; many paramenters can be tuned to further optimize recognition performance.\n\nThe app will show the words it's recognizing in real-time in gray text. Once it detects 2sec of silence, the app stops listening and displays the final hypothesis in black text.\n\nNow, choose demo via Choose Demo button.";
   
   demoIntroText = @[@"This demo showcases access to your music library via voice. You can say \"PLAY <SONGNAME>\" or \"PLAY <ARTIST_NAME>\" or \"PLAY <SONGNAME_NAME> BY <ARTIST_NAME>\"",
                     @"This demo showcases access to your contacts via voice. You can say \"CALL <NAME>\" or just \"<NAME>\" for any of your contacts.\n\nNote that foreign and non-common American names are assigned pronunciation algorithmically; the real-world app would aim to assign proper pronunciations to as many names as possible beforehand.",
@@ -108,7 +108,7 @@ const static NSArray *demoIntroText;
   
   [self setupSelectionMenu];
 
-  // Kaldi-iOS SETUP
+  // Initialize the engine
   // we'll set the log level to info so we can see what's going on (default is WARN)
 //  [KIOSRecognizer setLogLevel:KIOSRecognizerLogLevelInfo];
   [KIOSRecognizer setLogLevel:KIOSRecognizerLogLevelDebug];
