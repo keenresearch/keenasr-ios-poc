@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "KaldiIOS/KaldiIOS.h"
+#import "KeenASR/KeenASR.h"
 
 @interface ViewController : UIViewController <KIOSRecognizerDelegate>
 

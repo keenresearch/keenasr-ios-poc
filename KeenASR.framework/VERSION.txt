@@ -1,0 +1,5 @@
+Version: 1.0
+Built on: Wed Apr 26 21:11:22 PDT 2017
+Rev: e80bd7bb0f8dd012e0c25294ff5dd5c803d5134e
+Bundle ID: THIS IS A TRIAL VERSION OF THE FRAMEWORK
+NOTE: these values are for reference only. They are not read by the framework.

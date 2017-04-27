@@ -1,3 +1,0 @@
-Version: 0.9
-Built on: Sat Mar 11 20:07:01 PST 2017
-Rev: c279736e833058960d0e45c04a0f6fcde6c97cff

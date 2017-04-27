@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 
-#import "KaldiIOS/KaldiIOS.h"
+#import "KeenASR/KeenASR.h"
 
 #import "MusicDemoViewController.h"
 #import "ContactsDemoViewController.h"

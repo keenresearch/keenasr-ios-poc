@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-#import "KaldiIOS/KaldiIOS.h"
+#import "KeenASR/KeenASR.h"
 
 
 // We setup this controller to follow KIOSRecognizerDelegate protocol so we can

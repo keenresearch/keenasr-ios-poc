@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSContactsUsageDescription</key>
-	<string>This app will use metadata information from your contacts list to allow speech recognition to properly recognize contact names.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -26,8 +24,10 @@
 	<true/>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>This app will use metadata information from your music library to allow speech recognition to properly recognize song/artist names.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>This app will use metadata information from your contacts list to allow speech recognition to properly recognize contact names.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>This app uses Automated Speech Recognition which requires audio capture via microphone</string>
+	<string>Microphone access is required for automated speech recognition</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -36,8 +36,6 @@
 	<array>
 		<string>armv7</string>
 	</array>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Microphone access is required for automated speech recognition</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationLandscapeRight</string>
