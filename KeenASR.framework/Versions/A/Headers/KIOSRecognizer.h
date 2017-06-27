@@ -193,6 +193,24 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 - (void)recognizerFinalResult:(nonnull KIOSResult *)result
                 forRecognizer:(nonnull KIOSRecognizer *)recognizer;
 
+
+/** This method is called when recognizer is ready to listen again, after being 
+ interrupted due to audio interrupt (incoming call, etc.) or because the app went 
+ to the background. See KIOSRecognizer for more details on handling interrupts.
+ You will typically setup UI elements in this callback (e.g. enable "Start Listening"
+ button), or explictly call startListening if your app is expected to listen as 
+ soon as the view has appeared.
+ 
+ @param recognizer the recognizer
+ 
+ @warning NOTE: this callback indicates readiness to listen from audio setup 
+ point of view. If you initialized a recognizer, but didn't fully prepare it for
+ listening (via prepareForListening: method), this callback will still trigger
+ when audio interrupt ends.
+ 
+ */
+- (void)recognizerReadyToListenAfterInterrupt:(nonnull KIOSRecognizer *)recognizer;
+
 @end
 
 
@@ -204,13 +222,15 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  application.
  
  You typically initiate the engine at the app startup time by calling
- `+initWithASRBundle:` or `+initWithASRBundle:andDecodingGraph:` method, and
+ `+initWithASRBundle:` or `+initWithASRBundleAtPath:` method, and
  then use sharedInstance method when you need to access the recognizer.
  
  Recognition results are provided via callbacks. To obtain results one of your
  classes will need to adopt a 
  [KIOSRecognizerDelegate protocol](KIOSRecognizerDelegate), and implement some 
  of its methods.
+ 
+ In order to properly handle audio interrupts you should implement [KIOSRecognizerDelegate recognizerReadyToListenAfterInterrupt:] callback method.
  
  Initialization example:
  
@@ -219,9 +239,19 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
      }
      // for convenience our class keeps a local reference of the recognizer
      self.recognizer = [KIOSRecognizer sharedInstance];
+ 
+     // this class will also be implementing methods from KIOSRecognizerDelegate 
+     // protocol
      self.recognizer.delegate = self;
+ 
+     // recordings will be saved on the device
      self.recognizer.createAudioRecordings = YES;
+ 
+     // after 0.8sec of silence, recognizer will automatically stop listening
+     [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForGoodMatch toValue:.8];
 
+     // define callbacks for KIOSRecognizerDelegate
+ 
  After initialization, audio data from all sessions when recognizer is listening
  will be used for online speaker adaptation. You can name speaker adaptation
  profiles via adaptToSpeakerWithName:, persist profiles in the filesystem via
@@ -237,7 +267,7 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 /** Returns shared instance of the recognizer
  @return The shared recognizer instance
  @warning if the engine has not been initialized by calling 
- `+initWithASRBundle:andDecodingGraph:`, this method will return nil
+ `+initWithASRBundle:`, this method will return nil
  */
 + (nullable KIOSRecognizer *)sharedInstance;
 
@@ -249,9 +279,16 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 /** Is recognizer listening to and decoding the incoming audio. */
 @property(assign, readonly) BOOL listening;
 
-/** Relative path to the ASR bundle where acoustic models, config, etc. reside 
+/** Absolute path to the ASR bundle where acoustic models, config, etc. reside 
  */
 @property(nonatomic, readonly, nonnull) NSString *asrBundlePath;
+
+/** Name of the ASR Bundle (name of the directory that contains all the ASR 
+ resources. This will be the last component of the asrBundlePath.
+ */
+@property(nonatomic, readonly, nonnull) NSString *asrBundleName;
+
+
 
 /**
  Type of the recognizer. It makes sense to query this property only after the
@@ -275,29 +312,53 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 /** @name Initialization, Preparing, Starting, and Stopping Recognition */
 
 
-/** Initialize ASR engine with the specific ASR Bundle, which provides all the 
- resources necessary for initialization. This method needs to be called first, 
- before any other work can be performed. You would use this init method if you 
- are planning to dynamically build decoding graphs in your app.
+/** Initialize ASR engine with the ASR Bundle, which provides all the
+ resources necessary for initialization. You will use this initalization method 
+ if you included ASR bundle with your application. See also initWithASRBundleAtPath:
+ for scenarios when ASR Bundle is not included with the app, but downloaded after
+ the app has been installed. SDK initialization needs to occur before any  other
+ work can be performed.
  
- @param bundle directory containing all the resources necessary for the specific
- recognizer type. This will typically include all acoustic model related files,
- and configuration files. The bundle directory should contain decode.conf 
- configuration file, which can be augmented with additional config params. 
- Currently, that is the only way to pass various settings to the decoder.
- All path references in config files should be relative to the app root directory
- (e.g. librispeech-gmm-en-us/mfcc.conf). The init method will initiallize
- appropriate recognizer type based on the name and content of the ASR bundle.
+ @param bundleName name of the ASR Bundle. A directory containing all the resources
+ necessary for the specific recognizer type. This will typically include all 
+ acoustic model related files, and configuration files. The bundle directory 
+ should contain decode.conf configuration file, which can be augmented with 
+ additional config params. Currently, that is the only way to pass various 
+ settings to the decoder. All path references in config files should be relative 
+ to the app root directory (e.g. librispeech-gmm-en-us/mfcc.conf). The init 
+ method will initiallize appropriate recognizer type based on the name and 
+ content of the ASR bundle.
+ 
+ @return TRUE if succesful, FALSE otherwise.
+ 
+ @warning When initializing the recognizer, you need to make sure that bundle
+ directory contains all the necessary resources needed for the specific 
+ recognizer type. If your app is dynamically creating decoding graphs, ASR 
+ bundle directory needs to contain lang subdirectory with relevant resources 
+ (lexicon, etc.).
+ */
+
++ (BOOL)initWithASRBundle:(nonnull NSString *)bundleName;
+
+
+/** Initialize ASR engine with the ASR Bundle located at provided path. This is
+ an alternative method to initialize the SDK, which you would use if you did not
+ package ASR Bundle with your application but instead downloaded it after the
+ app has been installed. SDK initialization needs to occur before any  other
+ work can be performed.
+ 
+ @param pathToASRBundle full path to the ASR Bundle. For more details about ASR 
+ Bundles see initWithASRBundle:
  
  @return TRUE if succesful, FALSE otherwise.
  
  @warning When initializing the recognizer, make sure that the bundle directory
- contains all the necessary resources needed for the specific recognizer type. 
+ contains all the necessary resources needed for the specific recognizer type.
  If your app is dynamically creating decoding graphs, ASR bundle directory needs
  to contain lang subdirectory with relevant resources (lexicon, etc.).
  */
 
-+ (BOOL)initWithASRBundle:(nonnull NSString *)bundle;
++ (BOOL)initWithASRBundleAtPath:(nonnull NSString *)pathToASRBundle;
 
 
 //+ (instancetype) alloc  __attribute__((unavailable("alloc not available, call sharedInstance instead")));
@@ -341,19 +402,26 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  @return TRUE if successful, FALSE otherwise
  
  After calling this method, recognizer will listen to and decode audio coming
- through the microphone. The process will stop either by explicit call to
- stopListening or if one of the Voice Activity Detection module rules are 
- triggered (for example, max duration without speech, or end-silence, etc.).
+ through the microphone using decoding graph you specified via one of the 
+ prepareForListening methods. The listening process will stop either by: a) an 
+ explicit call to stopListening or b) if one of the Voice Activity Detection 
+ module rules are triggered (for example, max duration without speech, or 
+ end-silence, etc.), c) if audio interrupt occurs (phone call, audible
+ notification, app goes to background, etc.).
  
  When the recognizer stops listening due to VAD triggering, it will call 
  [recognizerFinalResult:forRecognizer:]([KIOSRecognizerDelegate recognizerFinalResult:forRecognizer:]) 
  callback method.
  
+ When the recognizer stops listening due to audio interrupt, *no callback methods*
+ will be triggered until audio interrupt is over.
+ 
  VAD settings can be modified via setVADParameter:toValue: method.
  
- @warning You will need to call either prepareForListeningWithCustomDecodingGraphWithName:
- or prepareForListeningWithCustomDecodingGraphAtPath: before calling startListening
- method.
+ @warning You will need to call either [prepareForListeningWithCustomDecodingGraphWithName]([KIOSRecognizer prepareForListeningWithCustomDecodingGraphWithName:])
+ or [prepareForListeningWithCustomDecodingGraphAtPath]([KIOSRecognizer prepareForListeningWithCustomDecodingGraphAtPath:]) before calling this method.
+ You will also need to make sure that user has granted audio recording permission
+ before calling this method; see AVAudioSessionRecordPermission and [AVAudioSession requestRecordPermission:] in AVFoundation framework for details.
 */
 - (BOOL)startListening;
 
@@ -488,6 +556,28 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  */
 + (BOOL)removeSpeakerAdaptationProfiles:(nonnull NSString *)speakerName;
 
+
+/*
+ @name Audio Interruption Management
+ When audio interruption occurs, due to a phone call, SMS, etc.  SDK will
+ automatically stop listening if necessary, and tear down the internal audio setup.
+ When interrupt ends audio will be automatically reinitialized. You can define
+ a callback method recognizerReadyToListenAfterInterrupt: to track when these
+ changes happen.
+ 
+ If necessary, you can also define your own handler for when audio interruption 
+ ends. You may want to do this if your app is dealing with multiple audio related
+ SDKs, so that you can invoke initalization methods in the correct order.
+ 
+ If this handler is defined via audioInterruptionEndedHandler , it will be called
+ automatically when SDK detects that the audio interrupt has ended. It is your
+ responsibilty to invoke reinitAudioPath in this custom handler.
+ 
+*/
+
+/**
+ */
+//- (void)audioInterruptionEndedHandler:(nonnull void (^)(void))callbackBlock;
 
 
 /** @name File Audio Recording Management */
