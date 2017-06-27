@@ -148,7 +148,7 @@
   [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForAnyMatch toValue:5];
   
   self.startListeningButton.enabled = NO;
-  self.recognizer.createAudioRecordings = YES;
+//  self.recognizer.createAudioRecordings = YES;
   
 }
 
@@ -364,6 +364,15 @@
     [ranges addObject:[NSValue valueWithBytes:&prevRange objCType:@encode(NSRange)]];
   
   return ranges;
+}
+
+
+- (void)recognizerReadyToListenAfterInterrupt:(KIOSRecognizer *)recognizer {
+  self.startListeningButton.enabled = YES;
+  self.rateOfSpeechLabel.text = @"";
+  self.textLabel.textColor = [UIColor lightGrayColor];
+  self.textLabel.textAlignment = UIControlContentHorizontalAlignmentLeft;
+  self.textLabel.text = @"Tap the button and then read the paragraph aloud. Words will be highlighted as you read them (for example, try to skip some words)";
 }
 
 

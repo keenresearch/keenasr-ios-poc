@@ -310,6 +310,10 @@
 }
 
 
+- (void)recognizerReadyToListenAfterInterrupt:(KIOSRecognizer *)recognizer {
+  self.startListeningButton.enabled = YES;
+}
+
 
 - (BOOL) shouldAutorotate  {
   return YES;

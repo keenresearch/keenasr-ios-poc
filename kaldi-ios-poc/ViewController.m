@@ -115,10 +115,8 @@ const static NSArray *demoIntroText;
 
   // Init can occur here on in the AppDelegate
   if (! [KIOSRecognizer sharedInstance]) {
-    
-    // nnet recognizers/acoustic models are more robust and provide better accuracy than GMM
+    // contact us for more robust ASR Bundles
     [KIOSRecognizer initWithASRBundle:@"librispeech-nnet2-en-us"];
-
   }
   self.recognizer = [KIOSRecognizer sharedInstance];
   // we are NOT setting this controller as a delegate, since individual demo

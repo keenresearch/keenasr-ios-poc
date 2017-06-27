@@ -6,6 +6,8 @@
 //  Copyright © 2016 Keen Research. All rights reserved.
 //
 
+#import <AVFoundation/AVFoundation.h>
+
 #import "EduWordsDemoViewController.h"
 
 // end speech timeout if we recognized something that looks like a relevant word
@@ -138,7 +140,7 @@ static float kEndSpeechTimeoutLong = 2;
                            toValue:kEndSpeechTimeoutLong];
   
   self.startListeningButton.enabled = NO;
-  
+  self.recognizer.createAudioRecordings = YES;
 }
 
 
@@ -218,7 +220,8 @@ static float kEndSpeechTimeoutLong = 2;
   // that on subsequent starts of the app we can reuse the speaker profile and
   // not start from the baseline
   [self.recognizer saveSpeakerAdaptationProfile];
-  
+  self.startListeningButton.enabled = NO;
+
   [super viewWillDisappear:animated];
 }
 
@@ -325,6 +328,11 @@ static float kEndSpeechTimeoutLong = 2;
   [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForAnyMatch
                            toValue:kEndSpeechTimeoutLong];
 
+}
+
+
+- (void)recognizerReadyToListenAfterInterrupt:(KIOSRecognizer *)recognizer {
+  self.startListeningButton.enabled = YES;
 }
 
 

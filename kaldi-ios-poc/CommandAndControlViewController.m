@@ -160,7 +160,8 @@ static float kEndSpeechTimeoutShort = 0.8;
   }
   
   // explore these two methods just for fun; regardless we will recreate the
-  // decoding graph
+  // decoding graph but in real case scenario we may want to avoid creating it
+  // if it already exists
   NSString *dgName = @"commands";
   if ([KIOSDecodingGraph decodingGraphWithNameExists:dgName forRecognizer:self.recognizer]) {
     NSLog(@"Custom decoding graph '%@' exists", dgName);
@@ -171,8 +172,7 @@ static float kEndSpeechTimeoutShort = 0.8;
     NSLog(@"Decoding graph '%@' doesn't exist", dgName);
   }
   
-  // create custom decoding graph with (arbitraty) name 'reading' using
-  // sentences obtained above
+  // create custom decoding graph using sentences obtained above
   if (! [KIOSDecodingGraph createDecodingGraphFromSentences:sentences
                                               forRecognizer:self.recognizer
                                             andSaveWithName:dgName]) {
@@ -187,10 +187,8 @@ static float kEndSpeechTimeoutShort = 0.8;
 
   [self.spinner stopAnimating];
   self.spinner.alpha = 0;
-  self.statusLabel.text = @"Completed decoding graph"; // TODO - add num songs/artists
+  self.statusLabel.text = @"Completed decoding graph";
   
-  [self.spinner stopAnimating];
-  self.spinner.alpha = 0;
   // Note that this decoding graph doesn't need to be created in this view controller.
   // It could have been created any time; we just need to know the name so we can
   // reference it when starting to listen
@@ -270,6 +268,11 @@ static float kEndSpeechTimeoutShort = 0.8;
     NSLog(@"Audio recording is in %@", recognizer.lastRecordingFilename);
   
   self.statusLabel.text = @"Done Listening";
+  self.startListeningButton.enabled = YES;
+}
+
+
+- (void)recognizerReadyToListenAfterInterrupt:(KIOSRecognizer *)recognizer {
   self.startListeningButton.enabled = YES;
 }
 
