@@ -4,6 +4,8 @@ This proof-of-concept app ships with a trial version of KeenASR framework, which
 
 **Important:** After cloning the repository, you will need to **set/change the bundle id** for the app (currently set to com.keenresearch.com.kaldi-ios-poc), as well as **signing settings** in XCode project settings. These settings are under project build settings, General tab->Identity.
 
+**Important:** Version 1.2 of the framework requires the latest XCode (8.3.2). With older version of the XCode you will receive a link error.
+
 ## KeenASR Proof-of-Concept App
 
 A proof-of-concept app that shows how to run KeenASR automatic speech recognition framework. For detailed information on all classes and methods, consult the [SDK reference documentation](http://keenresearch.com/keenasr-docs). If starting with the framework from scratch, check our [Quick Start](http://keenresearch.com/keenasr-docs/docs/additional-docs/Quick-Start.html) document.
