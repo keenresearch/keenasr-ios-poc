@@ -1,7 +1,6 @@
 <eps> 0
 SIL 1
 <SPOKEN_NOISE> 2
-<UNK> 3
 A 4
 A''S 5
 A'BODY 6
