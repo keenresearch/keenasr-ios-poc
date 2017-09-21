@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "KeenASR/KeenASR.h"
 
-@interface ViewController : UIViewController <KIOSRecognizerDelegate>
+@interface ViewController : UIViewController
 
 
 @end
