@@ -114,6 +114,11 @@
                             andSaveWithName:(nonnull NSString *)decodingGraphName;
 
 
++ (BOOL)createDecodingGraphForKeywordSpotting:(nonnull NSArray *)keywords
+                                forRecognizer:(nonnull KIOSRecognizer *) recognizer
+                              andSaveWithName:(nonnull NSString *)decodingGraphName;
+
+
 /** Returns TRUE if valid custom decoding graph with the given name exists in
  the filesystem.
  

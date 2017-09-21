@@ -238,7 +238,8 @@ static float kEndSpeechTimeoutLong = 2;
 
 
 - (void)backButtonTapped:(id)sender {
-  if ([self.recognizer listening])
+  if (self.recognizer.recognizerState == KIOSRecognizerStateListening ||
+      self.recognizer.recognizerState == KIOSRecognizerStateFinalProcessing)
     [self.recognizer stopListening];
   
   [self dismissViewControllerAnimated:YES completion:^{}];
@@ -275,6 +276,11 @@ static float kEndSpeechTimeoutLong = 2;
 
 
 #pragma mark KIOSRecognizer delegate methods
+
+- (void)unwindAppAudioBeforeAudioInterrupt {
+  NSLog(@"Unwinding app audio (nothing to do here since app doens't play audio");
+}
+
 
 - (void)recognizerPartialResult:(KIOSResult *)result forRecognizer:(KIOSRecognizer *)recognizer {
   NSLog(@"Partial Result: %@ (%@), conf %@", result.cleanText, result.text, result.confidence);
@@ -346,15 +352,18 @@ static float kEndSpeechTimeoutLong = 2;
 - (NSArray *)createSentences {
   NSMutableArray *sentences = [NSMutableArray new];
 
-  for (NSString *word in self.words) {
-    NSString *s = [NSString stringWithFormat:@"How do you spell %@", word];
-    [sentences addObject:s];
-
-    NSString *s1 = [NSString stringWithFormat:@"spell %@", word];
-    [sentences addObject:s1];
-    
-    [sentences addObject:word];
-  }
+  [sentences addObject:@"HOW DO YOU SPELL"];
+  [sentences addObject:@"SPELL"];
+  [sentences addObjectsFromArray:self.words];
+//  for (NSString *word in self.words) {
+//    NSString *s = [NSString stringWithFormat:@"How do you spell %@", word];
+//    [sentences addObject:s];
+//
+//    NSString *s1 = [NSString stringWithFormat:@"spell %@", word];
+//    [sentences addObject:s1];
+//    
+//    [sentences addObject:word];
+//  }
   
   return sentences;
 }

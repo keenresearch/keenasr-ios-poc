@@ -1,5 +1,5 @@
-Version: 1.2
-Built on: Tue Jun 20 23:43:47 PDT 2017
-Rev: 5ad41f5ece1db0437b34b73c49d0e6c8cb2ee37f
+Version: 1.3
+Built on: Thu Sep 21 14:52:28 PDT 2017
+Rev: 13193b3202629aa49e91a8045994b6783f11b298
 Bundle ID: THIS IS A TRIAL VERSION OF THE FRAMEWORK
 NOTE: these values are for reference only. They are not read by the framework.

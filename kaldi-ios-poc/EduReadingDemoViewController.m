@@ -257,7 +257,8 @@
 
 
 - (void)backButtonTapped:(id)sender {
-  if ([self.recognizer listening])
+  if (self.recognizer.recognizerState == KIOSRecognizerStateListening ||
+      self.recognizer.recognizerState == KIOSRecognizerStateFinalProcessing)
     [self.recognizer stopListening];
   [self.rosUpdateTimer invalidate];
   
@@ -267,6 +268,10 @@
 
 
 #pragma mark KIOSRecognizer delegate methods
+
+- (void)unwindAppAudioBeforeAudioInterrupt {
+  NSLog(@"Unwinding app audio (nothing to do here since app doens't play audio");
+}
 
 // This demo relies on the partial results for higlighting, since the recognizer is
 // listening all the time and we want to highlight the text in real-time as user

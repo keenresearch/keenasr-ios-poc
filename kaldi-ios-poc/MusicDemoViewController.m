@@ -227,7 +227,8 @@
 
 
 - (void)backButtonTapped:(id)sender {
-  if ([self.recognizer listening])
+  if (self.recognizer.recognizerState == KIOSRecognizerStateListening ||
+      self.recognizer.recognizerState == KIOSRecognizerStateFinalProcessing)
     [self.recognizer stopListening];
   
   [self dismissViewControllerAnimated:YES completion:^{}];
@@ -236,6 +237,10 @@
 
 
 #pragma mark KIOSRecognizer delegate methods
+
+- (void)unwindAppAudioBeforeAudioInterrupt {
+  NSLog(@"Unwinding app audio (nothing to do here since app doens't play audio");
+}
 
 - (void)recognizerPartialResult:(KIOSResult *)result forRecognizer:(KIOSRecognizer *)recognizer {
   NSLog(@"Partial Result: %@ (%@)", result.cleanText, result.text);

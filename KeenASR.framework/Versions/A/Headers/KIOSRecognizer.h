@@ -13,8 +13,7 @@
 
 // @name Constants
 
-/** These constants indicate the type of recognizers you are creating.
- */
+/** These constants indicate the type of recognizers you are creating. */
 typedef NS_ENUM(NSInteger, KIOSRecognizerType) {
   /** Unknown Recognizer */
   KIOSRecognizerTypeUnknown = -1,
@@ -28,6 +27,7 @@ typedef NS_ENUM(NSInteger, KIOSRecognizerType) {
   KIOSRecognizerTypeNNet3Chain
 };
 
+
 /** These constants indicate the log levels for the framework.*/
 typedef NS_ENUM(NSInteger, KIOSRecognizerLogLevel) {
   /** Log debug messages and higher */
@@ -36,6 +36,25 @@ typedef NS_ENUM(NSInteger, KIOSRecognizerLogLevel) {
   KIOSRecognizerLogLevelInfo,
   /** Log only warnings or errors (default level)*/
   KIOSRecognizerLogLevelWarning,
+};
+
+/** These constants indicate the recognizer state */
+typedef NS_ENUM(NSInteger, KIOSRecognizerState) {
+  /** Recognizer is initialized but it needs decoding graph before if can start
+   listening */
+  KIOSRecognizerStateNeedsDecodingGraph=0,
+  /** Recognizer is ready to start listening */
+  KIOSRecognizerStateReadyToListen,
+  /** Recognizer is actively listening. Any calls to startListening will be ignored */
+  KIOSRecognizerStateListening,
+  /** Recognizer is not acquiring incoming audio any more, it is processing the 
+   final result.
+   Note that in realistic scenarios recognizer is not likely to be in this state 
+   for a long time (usuaully 200-300ms). Long processing times may indicate that
+   the SDK is running on devices which cannot keep up with the processing, or
+   some type of misconfiguration.
+   */
+  KIOSRecognizerStateFinalProcessing,
 };
 
 
@@ -170,6 +189,24 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  */
 @protocol KIOSRecognizerDelegate <NSObject>
 
+/** @name Mandatory callback methods */
+
+/**
+ This method is called when audio interrupt occurs. It will be called in synchronous
+ manner immediately before KIOSRecognizer starts unwinding its audio stack. You
+ would use this method to stop playing any audio that is controlled directly by
+ your app. Your app should not modify AVAudioSession state nor interact with the
+ recognizer at this point.
+ 
+ @warning NOTE: this method will be called during app wind-down when audio
+ interrupt occurs or the app goes to the background. It is crucial that this method
+ performs quickly, otherwise KIOSRecognizer may not have sufficient time to properly
+ unwind its audio stack before the app goes to background.
+ */
+- (void)unwindAppAudioBeforeAudioInterrupt;
+
+/** @name Optional callback methods */
+
 @optional
 /** This method is called when recognizer has a new (different than before)
  partial recognition result. Internal timer that runs every 100ms checks for the 
@@ -207,9 +244,9 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  point of view. If you initialized a recognizer, but didn't fully prepare it for
  listening (via prepareForListening: method), this callback will still trigger
  when audio interrupt ends.
- 
  */
 - (void)recognizerReadyToListenAfterInterrupt:(nonnull KIOSRecognizer *)recognizer;
+
 
 @end
 
@@ -221,7 +258,7 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  recognizer resources and provides speech recognition capabilities to your 
  application.
  
- You typically initiate the engine at the app startup time by calling
+ You typically initialize the engine at the app startup time by calling
  `+initWithASRBundle:` or `+initWithASRBundleAtPath:` method, and
  then use sharedInstance method when you need to access the recognizer.
  
@@ -230,7 +267,13 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  [KIOSRecognizerDelegate protocol](KIOSRecognizerDelegate), and implement some 
  of its methods.
  
- In order to properly handle audio interrupts you should implement [KIOSRecognizerDelegate recognizerReadyToListenAfterInterrupt:] callback method.
+ In order to properly handle audio interrupts you will need to implement
+  [KIOSRecognizerDelegate recognizerReadyToListenAfterInterrupt:] callback method 
+ in which you need to perform audio play cleanup (stop playing audio). This allows KeenASR
+ SDK to properly deactivate audio session before app goes to background.
+ 
+ You can optionally implement [KIOSRecognizerDelegate recognizerReadyToListenAfterInterrupt:] callback method, which will trigger after KIOSRecognizer is fully setup after
+ app comes to the foreground. This is where you may refresh the UI state of the app.
  
  Initialization example:
  
@@ -273,13 +316,14 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 
 
 
-/** delegate, which handles KIOSRecognizerDelegate protocol methods */
+/** Delegate, which handles KIOSRecognizerDelegate protocol methods */
 @property(nonatomic, weak, nullable) id<KIOSRecognizerDelegate> delegate;
 
-/** Is recognizer listening to and decoding the incoming audio. */
-@property(assign, readonly) BOOL listening;
+/** State of the recognizer, a read-only property that takes one of KIOSRecognizerState values
+ */
+@property(assign, readonly) KIOSRecognizerState recognizerState;
 
-/** Absolute path to the ASR bundle where acoustic models, config, etc. reside 
+/** Absolute path to the ASR bundle where acoustic models, config, etc. reside
  */
 @property(nonatomic, readonly, nonnull) NSString *asrBundlePath;
 
@@ -458,10 +502,13 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 
 
 /** Stop the recognizer from processing incoming audio and return the final result.
+
  @return Final result of the recognition.
  
  @warning This method runs synchroniously. For large decoding graphs there may be
- noticable delay (few hundred ms) on lower-end devices.
+ noticable delay (few hundred ms) on lower-end devices. This method will return nil
+ if recognizer is already in KIOSRecognizerStateFinalProcessing (due to VAD rules
+ automatically triggering for example).
  */
 - (nullable KIOSResult *)stopListeningAndReturnFinalResult;
 
@@ -601,6 +648,30 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  */
 - (float)inputLevel;
 
+/** Provides information about echo cancellation support on the device.
+ 
+ @return YES if echo cancellation is supported, NO otherwise
+ 
+ */
++ (BOOL)echoCancellationAvailable;
+
+
+/** *EXPERIMENTAL* Specifies if echo cancellation should be performed. If value 
+ is set to YES and the device supports echo cancellation, then audio played by
+ the application will be removed from the audio captured via the microphone.
+ 
+ @param value set to YES to turn on echo cancellation processing, NO to turn it 
+ off. Default is NO.
+ 
+ @return TRUE if value was successfully set, FALSE otherwise. If the device does not
+ support echo cancellatio and you pass YES to this method, it will return FALSE.
+ 
+ @warning Calls to this method while the recognizer is listening will be ignored
+ end the method will return FALSE.
+ 
+ */
+- (BOOL)performEchoCancellation:(BOOL)value;
+
 
 /** Version of the KeenASR framework. */
 + (nonnull NSString *)version;
@@ -630,6 +701,14 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  using this method.
 */
 - (void)setVADParameter:(KIOSVadParameter)parameter toValue:(float)value;
+
+/** @name Deprecated methods and properties */
+
+/** Is recognizer listening to and decoding the incoming audio. 
+ This property has been deprecated and replaced by recognizerState.
+ */
+@property(assign, readonly) BOOL listening __attribute__((deprecated("use recognizerState method")));
+
 
 
 @end

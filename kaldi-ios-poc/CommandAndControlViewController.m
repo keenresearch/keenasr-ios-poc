@@ -183,6 +183,7 @@ static float kEndSpeechTimeoutShort = 0.8;
   }
   NSLog(@"Preparing to listen with custom decoding graph '%@'", dgName);
   [self.recognizer prepareForListeningWithCustomDecodingGraphWithName:dgName];
+
   NSLog(@"Ready to start listening");
 
   [self.spinner stopAnimating];
@@ -226,13 +227,13 @@ static float kEndSpeechTimeoutShort = 0.8;
 
 
 - (void)backButtonTapped:(id)sender {
-  if ([self.recognizer listening]) {
+  if (self.recognizer.recognizerState == KIOSRecognizerStateListening ||
+      self.recognizer.recognizerState == KIOSRecognizerStateFinalProcessing)
     [self.recognizer stopListening];
     // if you wanted to obtain the final result for everything processed up to
     // now, you could call this method instead
 //    KIOSResult *result = [self.recognizer stopListeningAndReturnFinalResult];
 //    NSLog(@"Final result (direct) is: %@", result);
-  }
   
   [self dismissViewControllerAnimated:YES completion:^{}];
 }
@@ -241,7 +242,11 @@ static float kEndSpeechTimeoutShort = 0.8;
 
 #pragma mark KIOSRecognizer delegate methods
 
-// This demo relies on the partial results for higlighting,
+- (void)unwindAppAudioBeforeAudioInterrupt {
+  NSLog(@"Unwinding app audio (nothing to do here since app doens't play audio");
+}
+
+
 - (void)recognizerPartialResult:(KIOSResult *)result forRecognizer:(KIOSRecognizer *)recognizer {
   NSLog(@"Partial Result: %@ (%@), conf %@", result.cleanText, result.text, result.confidence);
   

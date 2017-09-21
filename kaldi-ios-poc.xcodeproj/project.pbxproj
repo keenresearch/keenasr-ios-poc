@@ -10,19 +10,17 @@
 		EE10B3D61DBED9D4001AD25A /* FileRecognitionDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE10B3D51DBED9D4001AD25A /* FileRecognitionDemoViewController.m */; };
 		EE2D07371DDF7B470095D90F /* CommandAndControlViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE2D07361DDF7B470095D90F /* CommandAndControlViewController.m */; };
 		EE30E5901DF7CAD800D547B6 /* audio-1.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE30E58F1DF7CAD800D547B6 /* audio-1.wav */; };
-		EE37CA061D0BBAE000F5F3FD /* librispeech-nnet2-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE0D55181CD41DCD00B37356 /* librispeech-nnet2-en-us */; };
 		EE4A6CD71D00B95600BBEB41 /* MusicDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE4A6CD61D00B95600BBEB41 /* MusicDemoViewController.m */; };
 		EE4A6CDA1D00B96F00BBEB41 /* ContactsDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE4A6CD91D00B96F00BBEB41 /* ContactsDemoViewController.m */; };
 		EE4A6CDD1D00B98100BBEB41 /* EduReadingDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE4A6CDC1D00B98100BBEB41 /* EduReadingDemoViewController.m */; };
 		EE64BE6D1E6C7A0A00345A5F /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EE64BE6C1E6C7A0A00345A5F /* libc++.tbd */; };
-		EE7921941ECA57FF00CBAC0D /* aspire-nnet3chain-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE7921931ECA57FE00CBAC0D /* aspire-nnet3chain-en-us */; };
-		EE7921991ECA71D500CBAC0D /* librispeech460-nnet3chain-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE7921981ECA71D500CBAC0D /* librispeech460-nnet3chain-en-us */; };
 		EE8B7FFC1A16A3A9007F455E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B7FFB1A16A3A9007F455E /* main.m */; };
 		EE8B7FFF1A16A3A9007F455E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B7FFE1A16A3A9007F455E /* AppDelegate.m */; };
 		EE8B80021A16A3A9007F455E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B80011A16A3A9007F455E /* ViewController.m */; };
 		EE8B80051A16A3A9007F455E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE8B80031A16A3A9007F455E /* Main.storyboard */; };
 		EE8B800A1A16A3A9007F455E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE8B80081A16A3A9007F455E /* LaunchScreen.xib */; };
 		EE8B80E81A16C92B007F455E /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE8B80E71A16C92B007F455E /* Accelerate.framework */; };
+		EEA2680D1F45771B0013551B /* librispeech-nnet2-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE0D55181CD41DCD00B37356 /* librispeech-nnet2-en-us */; };
 		EEAF90DC1D21CB7800ED0451 /* EduWordsDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAF90DB1D21CB7800ED0451 /* EduWordsDemoViewController.m */; };
 		EEE356D91EAFF52200F9963D /* KeenASR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EEE356D81EAFF52200F9963D /* KeenASR.framework */; };
 /* End PBXBuildFile section */
@@ -41,8 +39,6 @@
 		EE4A6CDB1D00B98100BBEB41 /* EduReadingDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EduReadingDemoViewController.h; sourceTree = "<group>"; };
 		EE4A6CDC1D00B98100BBEB41 /* EduReadingDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EduReadingDemoViewController.m; sourceTree = "<group>"; };
 		EE64BE6C1E6C7A0A00345A5F /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
-		EE7921931ECA57FE00CBAC0D /* aspire-nnet3chain-en-us */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "aspire-nnet3chain-en-us"; sourceTree = "<group>"; };
-		EE7921981ECA71D500CBAC0D /* librispeech460-nnet3chain-en-us */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "librispeech460-nnet3chain-en-us"; sourceTree = "<group>"; };
 		EE8B7FF61A16A3A9007F455E /* kaldi-ios-poc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "kaldi-ios-poc.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE8B7FFA1A16A3A9007F455E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EE8B7FFB1A16A3A9007F455E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -89,8 +85,6 @@
 		EE8B7FED1A16A3A9007F455E = {
 			isa = PBXGroup;
 			children = (
-				EE7921981ECA71D500CBAC0D /* librispeech460-nnet3chain-en-us */,
-				EE7921931ECA57FE00CBAC0D /* aspire-nnet3chain-en-us */,
 				EE0D55181CD41DCD00B37356 /* librispeech-nnet2-en-us */,
 				EE8B7FF81A16A3A9007F455E /* kaldi-ios-poc */,
 				EE8B80121A16A3A9007F455E /* kaldi-ios-pocTests */,
@@ -220,9 +214,7 @@
 			files = (
 				EE8B80051A16A3A9007F455E /* Main.storyboard in Resources */,
 				EE8B800A1A16A3A9007F455E /* LaunchScreen.xib in Resources */,
-				EE7921991ECA71D500CBAC0D /* librispeech460-nnet3chain-en-us in Resources */,
-				EE7921941ECA57FF00CBAC0D /* aspire-nnet3chain-en-us in Resources */,
-				EE37CA061D0BBAE000F5F3FD /* librispeech-nnet2-en-us in Resources */,
+				EEA2680D1F45771B0013551B /* librispeech-nnet2-en-us in Resources */,
 				EE30E5901DF7CAD800D547B6 /* audio-1.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
