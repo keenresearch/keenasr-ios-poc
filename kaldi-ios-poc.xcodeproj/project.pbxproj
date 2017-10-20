@@ -20,13 +20,12 @@
 		EE8B80051A16A3A9007F455E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE8B80031A16A3A9007F455E /* Main.storyboard */; };
 		EE8B800A1A16A3A9007F455E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE8B80081A16A3A9007F455E /* LaunchScreen.xib */; };
 		EE8B80E81A16C92B007F455E /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE8B80E71A16C92B007F455E /* Accelerate.framework */; };
-		EEA2680D1F45771B0013551B /* librispeech-nnet2-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE0D55181CD41DCD00B37356 /* librispeech-nnet2-en-us */; };
 		EEAF90DC1D21CB7800ED0451 /* EduWordsDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAF90DB1D21CB7800ED0451 /* EduWordsDemoViewController.m */; };
 		EEE356D91EAFF52200F9963D /* KeenASR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EEE356D81EAFF52200F9963D /* KeenASR.framework */; };
+		EEE66EEF1F9A75A100B58ECB /* librispeechQT-nnet2-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EEE66EEE1F9A75A100B58ECB /* librispeechQT-nnet2-en-us */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		EE0D55181CD41DCD00B37356 /* librispeech-nnet2-en-us */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "librispeech-nnet2-en-us"; sourceTree = "<group>"; };
 		EE10B3D41DBED9D4001AD25A /* FileRecognitionDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileRecognitionDemoViewController.h; sourceTree = "<group>"; };
 		EE10B3D51DBED9D4001AD25A /* FileRecognitionDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileRecognitionDemoViewController.m; sourceTree = "<group>"; };
 		EE2D07351DDF7B470095D90F /* CommandAndControlViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandAndControlViewController.h; sourceTree = "<group>"; };
@@ -55,6 +54,7 @@
 		EEAF90DA1D21CB7800ED0451 /* EduWordsDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EduWordsDemoViewController.h; sourceTree = "<group>"; };
 		EEAF90DB1D21CB7800ED0451 /* EduWordsDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EduWordsDemoViewController.m; sourceTree = "<group>"; };
 		EEE356D81EAFF52200F9963D /* KeenASR.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = KeenASR.framework; sourceTree = "<group>"; };
+		EEE66EEE1F9A75A100B58ECB /* librispeechQT-nnet2-en-us */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "librispeechQT-nnet2-en-us"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,7 +85,7 @@
 		EE8B7FED1A16A3A9007F455E = {
 			isa = PBXGroup;
 			children = (
-				EE0D55181CD41DCD00B37356 /* librispeech-nnet2-en-us */,
+				EEE66EEE1F9A75A100B58ECB /* librispeechQT-nnet2-en-us */,
 				EE8B7FF81A16A3A9007F455E /* kaldi-ios-poc */,
 				EE8B80121A16A3A9007F455E /* kaldi-ios-pocTests */,
 				EE8B7FF71A16A3A9007F455E /* Products */,
@@ -214,8 +214,8 @@
 			files = (
 				EE8B80051A16A3A9007F455E /* Main.storyboard in Resources */,
 				EE8B800A1A16A3A9007F455E /* LaunchScreen.xib in Resources */,
-				EEA2680D1F45771B0013551B /* librispeech-nnet2-en-us in Resources */,
 				EE30E5901DF7CAD800D547B6 /* audio-1.wav in Resources */,
+				EEE66EEF1F9A75A100B58ECB /* librispeechQT-nnet2-en-us in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
