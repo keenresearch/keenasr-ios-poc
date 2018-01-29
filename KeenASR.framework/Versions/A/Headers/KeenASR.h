@@ -10,3 +10,4 @@
 
 #import "KeenASR/KIOSRecognizer.h"
 #import "KeenASR/KIOSDecodingGraph.h"
+#import "KeenASR/KIOSUploader.h"

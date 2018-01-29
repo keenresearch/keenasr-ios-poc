@@ -88,7 +88,7 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 
 @class KIOSWord;
 
-/**  An instance of the KIOSResult class, called recognition results, provides
+/**  An instance of the KIOSResult class, called recognition result, provides
  results of the recognition.*/
 @interface KIOSResult : NSObject
 
@@ -138,6 +138,8 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
     }
  */
 - (nullable NSString *)toJSON;
+
+- (nullable NSDictionary *)toDictionary;
 
 @end
 
@@ -248,6 +250,15 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 - (void)recognizerReadyToListenAfterInterrupt:(nonnull KIOSRecognizer *)recognizer;
 
 
+///** This method is called after an interrupt has ended and KIOSRecognizer
+// is about to re-init its audio stack. This callback will be called *before*
+// KIOSRecognizer audio stack is reinitialized and you would use it to setup your
+// own audio stack, if necessary.
+// 
+// */
+//- (void)setupAppAudioAfterInterrupt;
+
+
 @end
 
 
@@ -278,7 +289,7 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  Initialization example:
  
      if (! [KIOSRecognizer sharedInstance]) {
-         [KIOSRecognizer initWithASRBundle:@"librispeech-nnet2-en-us"];
+         [KIOSRecognizer initWithASRBundle:@"librispeechQT-nnet2-en-us"];
      }
      // for convenience our class keeps a local reference of the recognizer
      self.recognizer = [KIOSRecognizer sharedInstance];
@@ -332,7 +343,8 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  */
 @property(nonatomic, readonly, nonnull) NSString *asrBundleName;
 
-
+/** Name of the decoding graph currently used by the recognizer */
+@property(nonatomic, readonly, nullable) NSString *currentDecodingGraphName;
 
 /**
  Type of the recognizer. It makes sense to query this property only after the
@@ -353,6 +365,7 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  */
 @property(nonatomic, assign) BOOL rescore;
 
+
 /** @name Initialization, Preparing, Starting, and Stopping Recognition */
 
 
@@ -369,7 +382,7 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  should contain decode.conf configuration file, which can be augmented with 
  additional config params. Currently, that is the only way to pass various 
  settings to the decoder. All path references in config files should be relative 
- to the app root directory (e.g. librispeech-gmm-en-us/mfcc.conf). The init 
+ to the app root directory (e.g. librispeechQT-nnet2-en-us/mfcc.conf). The init 
  method will initiallize appropriate recognizer type based on the name and 
  content of the ASR bundle.
  
@@ -487,7 +500,7 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  FALSE otherwise.
  
  @note The whole audio file will be loaded in the memory, thus we currently
- limit the length to 100sec. If file is longer than 100sec no processing will
+ limit the length to 200sec. If file is longer than 200sec no processing will
  occur and the method will return FALSE.
  */
 - (BOOL)startListeningFromAudioFile:(nonnull NSString *)pathToAudioFile;
@@ -632,20 +645,55 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 /** Set to true if you want to keep audio recordings in the file system. Default is FALSE. */
 @property(nonatomic, assign) BOOL createAudioRecordings;
 
-/** Directory in which recordings will be stored. Default is Library/Cache/KaldiIOS-recordings */
-@property(nonatomic, copy, nonnull) NSString *recordingsDir;
+/** Set to FALSE if you do NOT want to keep response metadata in the file system.
+ *
+ * When set to TRUE, KIOSRecognizer instance will store a JSON file with various
+ * metadata (speech recognition result, basic device info, etc.) on device
+ * filesystem. If you are using Keen Dashboard cloud service via KIOSUploader
+ * this flag needs to be set to true, otherwise no data will be stored locally
+ * on the device, and consequently pushed to the cloud.
+ *
+ * Default is TRUE.
+ */
+@property(nonatomic, assign) BOOL createJSONMetadata;
+
+/** Directory in which recordings and JSON metadata will be stored.
+ Default is Library/Cache/keenasr-data/ */
+@property(nonatomic, copy, readonly, nonnull) NSString *recordingsDir;
 
 /** Filename of the last recording. If createAudioRecordings was set to TRUE, you
  can read the filename of the latest recording via this property. */
 @property(nonatomic, readonly, nullable) NSString *lastRecordingFilename;
 
+/** Filename of the last JSON metadata file. If createJSONMetadata was set to
+ TRUE, you can read the filename of the latest JSON metadata file via this
+ property. */
+@property(nonatomic, readonly, nullable) NSString *lastJSONMetadataFilename;
 
-/** @name Other */
+
+/** @name Audio Handling */
+/**
+ If set to YES (default behavior), SDK will handle various notifications
+ related to app activity. When app goes to background, or a phone call or a
+ audio interrupt comes through, the SDK will stop listening, teardown internal
+ audio stack, and then upon app coming back to foreground/interrupt
+ ending it will reinitialize internal audio stack.
+ 
+ If set to NO, it is developer's responsibility to handle notifications that may
+ affect audio capture. In this case, you will need to stop listening and stop
+ KeenASR audio stack if an audio interrupt comes through, and then
+ reinit the audio stack when the interrupt is over. Setting handleNotifications
+ to NO allows the SDK to work in the background mode; you will still need to
+ properly handle audio interrupts using deactivateAudioSession,
+ activateAudioSession, and stopListening methods.
+ */
+@property(nonatomic, assign, setter=setHandleNotifications:) BOOL handleNotifications;
+
 
 /** The most recent signal input level in dB
 
- @return signal input level in dB
- */
+@return signal input level in dB
+*/
 - (float)inputLevel;
 
 /** Provides information about echo cancellation support on the device.
@@ -656,11 +704,11 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 + (BOOL)echoCancellationAvailable;
 
 
-/** *EXPERIMENTAL* Specifies if echo cancellation should be performed. If value 
+/** *EXPERIMENTAL* Specifies if echo cancellation should be performed. If value
  is set to YES and the device supports echo cancellation, then audio played by
  the application will be removed from the audio captured via the microphone.
  
- @param value set to YES to turn on echo cancellation processing, NO to turn it 
+ @param value set to YES to turn on echo cancellation processing, NO to turn it
  off. Default is NO.
  
  @return TRUE if value was successfully set, FALSE otherwise. If the device does not
@@ -672,6 +720,44 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  */
 - (BOOL)performEchoCancellation:(BOOL)value;
 
+
+
+/** Enables bluetooth output via AVAudioSessionCategoryOptionAllowBluetoothA2DP
+ category option of AVAudioSession.
+ 
+ @warning: This will force AVAudioSession to use A2DP output by disabling
+ general (HPC) Bluetooth This setting is only available in iOS 10 and later.
+ */
+- (void)enableBluetoothA2DPOutput:(BOOL)value;
+
+
+- (void)enableBluetoothOutput:(BOOL)value __attribute__((deprecated("use enableBluetoothA2DPOutput instead")));
+
+
+/**
+ Deactivates audio session and KeenASR audio stack. If handleNotifications is set
+ to YES, you will typically not need to use this method and its counterpart
+ activateAudioStack; KeenASR Framework will handle audio interrupts and
+ notifications when the app goes to background/foreground.
+ 
+ If your app is handling notifications explicitly (handleNotifications is set to
+ NO), you will need to call stopListening, stop any audio output, and then call
+ this method to deactivate audio stack. When the app comes active or audio
+ interrupt finishes, you will need to call the activateAudioStack.
+ */
+- (void)deactivateAudioStack;
+
+
+ /**
+  Activates audio stack that was previously deactivated using
+  deactivateAudioStack method. This method should be called *after* all other
+  audio systems have been setup to make sure AVAudioSession is properly
+  initialized for audio capture.
+ */
+- (BOOL)activateAudioStack;
+
+
+/** @name Other */
 
 /** Version of the KeenASR framework. */
 + (nonnull NSString *)version;

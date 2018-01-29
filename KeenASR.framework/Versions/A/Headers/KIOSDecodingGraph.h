@@ -9,18 +9,26 @@
 #ifndef KIOSDecodingGraph_h
 #define KIOSDecodingGraph_h
 
-
-// LATER
-/** These constants indicate the type of the language model that will be created
- from the sentences you pass to the decoding graph */
-
-//typedef NS_ENUM(NSInteger, KIOSLanguageModelOrder) {
-//  /** Bigram language model */
-//  KIOSLanguageModelOrderBigram = 2,
-//  /** Trigram language model */
-//  KIOSLanguageModelOrderTrigram = 3
+///** KIOSTask defines a type of speaking task that will be handled. It is primarily
+// * used to indicate to methods that create decoding graphs what type of task they
+// * need to handle, so that appropiate customization can be done when creating
+// * language model and decoding graph
+// */
+//typedef NS_ENUM(NSInteger, KIOSSpeakingTask) {
+//  /** Reading aloud in educational context (children, language learning */
+//  KIOSSpeakingTaskEduReading,
+//  /** Keyword spotting among small number (20-30) of words */
+//  KIOSSpeakingTaskKeywordSpotting,
 //};
-
+//
+///** Probability of pauses between words, with values between 0 and 1; default
+// * value is 0.5. You may want to increase this value when users are reading
+// * (especially if they are not proficient readers), or decrease it for fast
+// * conversational speech where pauses between words are unlikely. This parameter
+// * will typically have noticable effect on performance only in extreme
+// * situations, and as such there rarely a need to adjust it.
+// */
+//extern NSString * _Nonnull const DecodingGraphOptionInterwordSilenceProbability;
 
 @class KIOSRecognizer;
 
@@ -53,8 +61,8 @@
  you would augment the lexicon with additional names and their proper 
  pronunciation before releasing your app.
 
- @warning In the current versio of the framework, creating of decoding graph can
- take on the order of 10-30sec (on iPhone 6 and equivalaent devices) for
+ @warning In the current version of the framework, creating of decoding graph can
+ take on the order of 10-30sec (on iPhone 6 and equivalent devices) for
  medium size vocabulary task (more than thousand words). For larger language 
  models we recommend you create decoding graph ahead of time and bundle it with
  your app.
@@ -95,7 +103,7 @@
  recognizer should listen for. These sentences are used to create an ngram 
  language model, from which decoding graph is created. Text in sentences should
  be normalized (e.g. numbers and dates should be represented by words, so 
- 'two hunded dollars' not $200)
+ 'two hundred dollars' not $200)
  
  @param recognizer KIOSRecognizer object that will be used to perform recognition
  with this decoding graph. Note that decoding graph is persisted in the filesystem
@@ -112,6 +120,13 @@
 + (BOOL)createDecodingGraphFromSentences:(nonnull NSArray *)sentences
                            forRecognizer:(nonnull KIOSRecognizer *) recognizer
                             andSaveWithName:(nonnull NSString *)decodingGraphName;
+
+
+//+ (BOOL)createDecodingGraphFromSentences:(nonnull NSArray *)sentences
+//                           forRecognizer:(nonnull KIOSRecognizer *)recognizer
+//                                 forTask:(nonnull NSString *)task
+//                             withOptions:(nullable NSDictionary *)options
+//                         andSaveWithName:(nonnull NSString *)decodingGraphName;
 
 
 + (BOOL)createDecodingGraphForKeywordSpotting:(nonnull NSArray *)keywords
@@ -159,9 +174,9 @@
                                  forRecognizer:(nonnull KIOSRecognizer *)recognizer;
 
 
-+ (nullable NSString *)hclgURLForDecodingGraphAtPath:(nonnull NSString *)absolutePath;
-+ (nullable NSString *)wordSymsURLForDecodingGraphAtPath:(nonnull NSString *)absolutePath;
-+ (nullable NSString *)rescoringConstArpaURLForDecodingGraphAtPath:(nonnull NSString *)absolutePath;
++ (nullable NSString *)hclgFilepathForDecodingGraphAtPath:(nonnull NSString *)absolutePath;
++ (nullable NSString *)wordSymsFilepathForDecodingGraphAtPath:(nonnull NSString *)absolutePath;
++ (nullable NSString *)rescoringConstArpaFilepathForDecodingGraphAtPath:(nonnull NSString *)absolutePath;
 
 + (nullable NSURL *)getDecodingGraphDirURL:(nonnull NSString *)customDecodingGraphName
                              forRecognizer:(nonnull KIOSRecognizer *)recognizer;
