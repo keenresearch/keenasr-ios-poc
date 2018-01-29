@@ -2,7 +2,9 @@
 
 This proof-of-concept app ships with a trial version of KeenASR framework, which will exit (crash) the app 10min after the framework has been initialized. If you would like to obtain a version of the framework without this limitation, contact us at info@keenresearch.com.
 
-**Important:** After cloning the repository, you will need to **set/change the bundle id** for the app (currently set to com.keenresearch.com.kaldi-ios-poc), as well as **signing settings** in XCode project settings. These settings are under project build settings, General tab->Identity.
+**Important:** 
+- You will need [git-lfs](https://git-lfs.github.com/) to checkout the project
+- After cloning the repository, you will need to **set/change the bundle id** for the app (currently set to com.keenresearch.com.kaldi-ios-poc), as well as **signing settings** in XCode project settings. These settings are under project build settings, General tab->Identity.
 
 ## KeenASR Proof-of-Concept App
 
