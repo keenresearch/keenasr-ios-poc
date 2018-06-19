@@ -1,0 +1,37 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "829434440AA0E01503ED31AB49ABC2F54DD7D6E8",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "A39496CB1CF85F68AEFFEDD3C101FE81F3AD9833" : 0,
+    "829434440AA0E01503ED31AB49ABC2F54DD7D6E8" : 0,
+    "8C4AE79F5220DE8E0DAFE4EECDA536DDE93F60AB" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "AD3BDA66-91D3-4986-95E8-AEF27B5FFDCC",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "A39496CB1CF85F68AEFFEDD3C101FE81F3AD9833" : "KaldiIOS\/",
+    "829434440AA0E01503ED31AB49ABC2F54DD7D6E8" : "kaldi-ios-poc\/",
+    "8C4AE79F5220DE8E0DAFE4EECDA536DDE93F60AB" : ""
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "kaldi-ios-poc",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "kaldi-ios-poc.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/keenresearch\/kaldi-ios-poc.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "829434440AA0E01503ED31AB49ABC2F54DD7D6E8"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:ognjentodic\/PearsonELL.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "8C4AE79F5220DE8E0DAFE4EECDA536DDE93F60AB"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:ognjentodic\/KaldiIOS.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "A39496CB1CF85F68AEFFEDD3C101FE81F3AD9833"
+    }
+  ]
+}

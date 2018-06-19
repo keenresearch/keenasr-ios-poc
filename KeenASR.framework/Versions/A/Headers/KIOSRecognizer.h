@@ -684,8 +684,8 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  KeenASR audio stack if an audio interrupt comes through, and then
  reinit the audio stack when the interrupt is over. Setting handleNotifications
  to NO allows the SDK to work in the background mode; you will still need to
- properly handle audio interrupts using deactivateAudioSession,
- activateAudioSession, and stopListening methods.
+ properly handle audio interrupts using deactivateAudioStack,
+ activateAudioStack, and stopListening methods.
  */
 @property(nonatomic, assign, setter=setHandleNotifications:) BOOL handleNotifications;
 
