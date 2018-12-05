@@ -8,7 +8,7 @@ For more details about the SDK see: http://keenresearch.com/keenasr-docs
 
 **Important:** 
 - You will need [git-lfs](https://git-lfs.github.com/) to checkout the project
-- After cloning the repository, you will need to **set/change the bundle id** for the app (currently set to com.keenresearch.com.keenasr-ios-poc), as well as **signing settings** in XCode project settings. These settings are under project build settings, General tab->Identity.
+- You will need to clone the repository, **Zip download WILL NOT WORK since we use git-lfs for large file management**. After cloning the repository, you will need to **set/change the bundle id** for the app (currently set to com.keenresearch.com.keenasr-ios-poc), as well as **signing settings** in XCode project settings. These settings are under project build settings, General tab->Identity.
 
 ## KeenASR Proof-of-Concept App
 
