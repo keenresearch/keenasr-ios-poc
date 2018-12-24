@@ -179,8 +179,10 @@
                                               forRecognizer:self.recognizer
                                             andSaveWithName:dgName]) {
     self.resultsLabel.text = @"Error occured while creating decoding graph from users music library";
-    [self.spinner stopAnimating];
-    self.spinner.alpha = 0;
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self.spinner stopAnimating];
+      self.spinner.alpha = 0;
+    });
     return;
   }
   // Note that this decoding graph doesn't need to be created in this view controller.
@@ -191,15 +193,16 @@
   [self.recognizer prepareForListeningWithCustomDecodingGraphWithName:dgName];
   NSLog(@"Ready to start listening");
   
-  [self.spinner stopAnimating];
-  self.spinner.alpha = 0;
-  
-  self.resultsLabel.textColor = [UIColor lightGrayColor];
-  self.resultsLabel.text = @"Tap the button an then say \"PLAY <ARTIST_NAME>\" or \"PLAY <SONG_NAME>\", or \"PLAY <SONG_NAME> by <ARTIST_NAME>\", where <ARTIST_NAME> and <SONG_NAME> are name of a song or an artist in your music library on this device";
-  
-  self.startListeningButton.alpha = 1;
-  self.startListeningButton.enabled = YES;
-  self.backButton.enabled = YES;
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [self.spinner stopAnimating];
+    self.spinner.alpha = 0;
+    self.resultsLabel.textColor = [UIColor lightGrayColor];
+    self.resultsLabel.text = @"Tap the button an then say \"PLAY <ARTIST_NAME>\" or \"PLAY <SONG_NAME>\", or \"PLAY <SONG_NAME> by <ARTIST_NAME>\", where <ARTIST_NAME> and <SONG_NAME> are name of a song or an artist in your music library on this device";
+    
+    self.startListeningButton.alpha = 1;
+    self.startListeningButton.enabled = YES;
+    self.backButton.enabled = YES;
+  });
 }
 
 
