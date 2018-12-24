@@ -160,9 +160,11 @@
 
   if ([sentences count] == 0) {
     self.statusLabel.text = @"Unable to access contacts";
-    [self.spinner stopAnimating];
-    self.spinner.alpha = 0;
-    self.backButton.enabled = YES;
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self.spinner stopAnimating];
+      self.spinner.alpha = 0;
+      self.backButton.enabled = YES;
+    });
     return;
   }
   
@@ -171,9 +173,11 @@
   if (! [KIOSDecodingGraph createDecodingGraphFromSentences:sentences
                                               forRecognizer:self.recognizer
                                             andSaveWithName:dgName]) {
-    self.resultsLabel.text = @"Error occured while creating decoding graph from users contacts";
-    [self.spinner stopAnimating];
-    self.spinner.alpha = 0;
+    dispatch_async(dispatch_get_main_queue(), ^{
+      self.resultsLabel.text = @"Error occured while creating decoding graph from users contacts";
+      [self.spinner stopAnimating];
+      self.spinner.alpha = 0;
+    });
     return;
   }
   // Note that this decoding graph doesn't need to be created in this view controller.
@@ -184,14 +188,16 @@
   [self.recognizer prepareForListeningWithCustomDecodingGraphWithName:dgName];
   NSLog(@"Ready to start listening");
 
-  [self.spinner stopAnimating];
-  self.spinner.alpha = 0;
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [self.spinner stopAnimating];
+    self.spinner.alpha = 0;
   
-  self.startListeningButton.alpha = 1;
-  self.startListeningButton.enabled = YES;
-  self.backButton.enabled = YES;
-  self.resultsLabel.textColor = [UIColor lightGrayColor];
-  self.resultsLabel.text = @"Tap the button and then say \"CALL <CONTACT_NAME>\" (e.g. Call John, if he is in your contacts)";
+    self.startListeningButton.alpha = 1;
+    self.startListeningButton.enabled = YES;
+    self.backButton.enabled = YES;
+    self.resultsLabel.textColor = [UIColor lightGrayColor];
+    self.resultsLabel.text = @"Tap the button and then say \"CALL <CONTACT_NAME>\" (e.g. Call John, if he is in your contacts)";
+  });
 }
 
 
