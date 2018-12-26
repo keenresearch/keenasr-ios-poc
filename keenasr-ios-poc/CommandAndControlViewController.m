@@ -294,7 +294,6 @@ static float kEndSpeechTimeoutShort = 0.8;
                          @"left",
                          @"go right",
                          @"right",
-                         @"june",
                          @"hint",
                          @"go up",
                          @"up",
