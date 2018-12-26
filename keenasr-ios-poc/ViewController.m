@@ -278,6 +278,7 @@ const static NSArray *demoIntroText;
   [self.fileRecognitionDemoButton addTarget:self action:@selector(selectedDemoButtonTapped:) forControlEvents:UIControlEventTouchDown];
   self.fileRecognitionDemoButton.autoresizingMask = UIViewAutoresizingFlexibleWidth;
   [self.chooseDemoView addSubview:self.fileRecognitionDemoButton];
+  self.fileRecognitionDemoButton.alpha=0; // DISABLE FILE RECOGNITION (SHOULD NOT BE USED IN CONJUCTION WITH LIVE AUDIO)
 
   
   self.chooseDemoView.frame = self.closedMenuFrame;
