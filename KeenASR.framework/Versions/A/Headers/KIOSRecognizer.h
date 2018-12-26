@@ -624,15 +624,6 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  When interrupt ends audio will be automatically reinitialized. You can define
  a callback method recognizerReadyToListenAfterInterrupt: to track when these
  changes happen.
- 
- If necessary, you can also define your own handler for when audio interruption 
- ends. You may want to do this if your app is dealing with multiple audio related
- SDKs, so that you can invoke initalization methods in the correct order.
- 
- If this handler is defined via audioInterruptionEndedHandler , it will be called
- automatically when SDK detects that the audio interrupt has ended. It is your
- responsibilty to invoke reinitAudioPath in this custom handler.
- 
 */
 
 /**
@@ -680,12 +671,12 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  ending it will reinitialize internal audio stack.
  
  If set to NO, it is developer's responsibility to handle notifications that may
- affect audio capture. In this case, you will need to stop listening and stop
+ affect audio capture. In this case, you will need to stop listening and deactivate
  KeenASR audio stack if an audio interrupt comes through, and then
  reinit the audio stack when the interrupt is over. Setting handleNotifications
  to NO allows the SDK to work in the background mode; you will still need to
  properly handle audio interrupts using deactivateAudioStack,
- activateAudioStack, and stopListening methods.
+ activateAudioStack or reinitAudioStack, and stopListening methods.
  */
 @property(nonatomic, assign, setter=setHandleNotifications:) BOOL handleNotifications;
 
@@ -736,14 +727,15 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 
 /**
  Deactivates audio session and KeenASR audio stack. If handleNotifications is set
- to YES, you will typically not need to use this method and its counterpart
+ to YES, you will not need to use this method and its counterpart
  activateAudioStack; KeenASR Framework will handle audio interrupts and
  notifications when the app goes to background/foreground.
  
  If your app is handling notifications explicitly (handleNotifications is set to
- NO), you will need to call stopListening, stop any audio output, and then call
- this method to deactivate audio stack. When the app comes active or audio
- interrupt finishes, you will need to call the activateAudioStack.
+ NO), you may want to call this method when an audio interrupt occurs. If recognizer
+ is listening, this method will automatically stop listening, and then deactivate the
+ audio stack. When the app comes active or audio interrupt finishes, you will need to
+ call the activateAudioStack.
  */
 - (void)deactivateAudioStack;
 
@@ -755,6 +747,13 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
   initialized for audio capture.
  */
 - (BOOL)activateAudioStack;
+
+/**
+ Reinitializes audio stack. Calling this method is equaivalent to calling
+ deactivateAudioStack followed by activateAudioStack method.
+ */
+- (void) reinitAudioStack;
+
 
 
 /** @name Other */
@@ -775,7 +774,7 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 
 /** @name Config Parameters */
 
-/** Set any of KIOSVadParameter Voice Activity Detection parameters. These 
+/** Set any of KIOSVadParameter Voice Activity Detection parameters. These
  parameters can be set at any time and they will go into effect immediately.
  
  @param parameter one of KIOSVadParameter
