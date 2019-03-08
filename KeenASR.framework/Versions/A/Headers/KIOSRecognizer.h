@@ -210,9 +210,18 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 /** @name Optional callback methods */
 
 @optional
+/** This method is called when trigger phrase has been recognized (in case decoding graph was
+ built with trigger phrase support).
+ 
+ @param recognizer recognizer that recognized the trigger phrase
+ 
+ */
+- (void)recognizerTriggerPhraseDetectedForRecognizer:(nonnull KIOSRecognizer *)recognizer;
+
+
 /** This method is called when recognizer has a new (different than before)
- partial recognition result. Internal timer that runs every 100ms checks for the 
- partial results and calls this method if result is different than before.
+ partial recognition result. If decoding graph was built with trigger phrase support
+ this method will not be called until trigger phrase occurs.
  
  @param result partial result of the recognition
  @param recognizer recognizer that produced the result
@@ -472,6 +481,11 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  
  When the recognizer stops listening due to audio interrupt, *no callback methods*
  will be triggered until audio interrupt is over.
+ 
+ If decoding graph was created with the trigger phrase support recognizer will listen
+ continuously until the trigger phrase is recognized, then it will switch over to the
+ standard mode with partial results being reported via
+ [recognizerPartialResult:forRecognizer:]([KIOSRecognizerDelegate recognizerPartialResult:forRecognizer:]) callback.
  
  VAD settings can be modified via setVADParameter:toValue: method.
  

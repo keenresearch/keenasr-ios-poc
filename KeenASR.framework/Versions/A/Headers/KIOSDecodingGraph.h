@@ -121,6 +121,10 @@
                            forRecognizer:(nonnull KIOSRecognizer *) recognizer
                             andSaveWithName:(nonnull NSString *)decodingGraphName;
 
++ (BOOL)createDecodingGraphFromSentences:(nonnull NSArray *)sentences
+                       withTriggerPhrase:(nonnull NSString *)triggerPhrase
+                           forRecognizer:(nonnull KIOSRecognizer *) recognizer
+                         andSaveWithName:(nonnull NSString *)decodingGraphName;
 
 //+ (BOOL)createDecodingGraphFromSentences:(nonnull NSArray *)sentences
 //                           forRecognizer:(nonnull KIOSRecognizer *)recognizer
@@ -177,6 +181,7 @@
 + (nullable NSString *)hclgFilepathForDecodingGraphAtPath:(nonnull NSString *)absolutePath;
 + (nullable NSString *)wordSymsFilepathForDecodingGraphAtPath:(nonnull NSString *)absolutePath;
 + (nullable NSString *)rescoringConstArpaFilepathForDecodingGraphAtPath:(nonnull NSString *)absolutePath;
++ (nullable NSString *)triggerPhraseFilepathForDecodingGraphAtPath:(nonnull NSString *)absolutePath;
 
 + (nullable NSURL *)getDecodingGraphDirURL:(nonnull NSString *)customDecodingGraphName
                              forRecognizer:(nonnull KIOSRecognizer *)recognizer;
