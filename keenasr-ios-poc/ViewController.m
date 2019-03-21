@@ -115,10 +115,6 @@ const static NSArray *demoIntroText;
 
   // Init can occur here or in the AppDelegate
   if (! [KIOSRecognizer sharedInstance]) {
-//    // contact us for more robust ASR Bundles
-//        [KIOSRecognizer initWithASRBundle:@"librispeechQT-nnet2-en-us"];
-//            [KIOSRecognizer initWithASRBundle:@"aspireQT-nnet3chain-en-us"];
-//      [KIOSRecognizer initWithASRBundle:@"keenB1-nnet3chain-en-us"];
     [KIOSRecognizer initWithASRBundle:@"keenB2mQT-nnet3chain-en-us"];
   }
   self.recognizer = [KIOSRecognizer sharedInstance];
