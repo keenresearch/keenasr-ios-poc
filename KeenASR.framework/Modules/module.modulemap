@@ -1,0 +1,6 @@
+framework module KeenASR {
+  umbrella header "KeenASR.h"
+
+  export *
+  module * { export * }
+}
