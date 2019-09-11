@@ -15,6 +15,7 @@
 		EE4A6CDA1D00B96F00BBEB41 /* ContactsDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE4A6CD91D00B96F00BBEB41 /* ContactsDemoViewController.m */; };
 		EE4A6CDD1D00B98100BBEB41 /* EduReadingDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE4A6CDC1D00B98100BBEB41 /* EduReadingDemoViewController.m */; };
 		EE64BE6D1E6C7A0A00345A5F /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EE64BE6C1E6C7A0A00345A5F /* libc++.tbd */; };
+		EE784C502328C45A00197FF8 /* KeenASR.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EEE356D81EAFF52200F9963D /* KeenASR.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EE8B7FFC1A16A3A9007F455E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B7FFB1A16A3A9007F455E /* main.m */; };
 		EE8B7FFF1A16A3A9007F455E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B7FFE1A16A3A9007F455E /* AppDelegate.m */; };
 		EE8B80021A16A3A9007F455E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B80011A16A3A9007F455E /* ViewController.m */; };
@@ -22,8 +23,21 @@
 		EE8B800A1A16A3A9007F455E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE8B80081A16A3A9007F455E /* LaunchScreen.xib */; };
 		EE8B80E81A16C92B007F455E /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE8B80E71A16C92B007F455E /* Accelerate.framework */; };
 		EEAF90DC1D21CB7800ED0451 /* EduWordsDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAF90DB1D21CB7800ED0451 /* EduWordsDemoViewController.m */; };
-		EEE356D91EAFF52200F9963D /* KeenASR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EEE356D81EAFF52200F9963D /* KeenASR.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		EE784C512328C45B00197FF8 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				EE784C502328C45A00197FF8 /* KeenASR.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		EE08B1D220D81DF200A764D7 /* keenB2mQT-nnet3chain-en-us */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "keenB2mQT-nnet3chain-en-us"; sourceTree = "<group>"; };
@@ -62,7 +76,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EEE356D91EAFF52200F9963D /* KeenASR.framework in Frameworks */,
 				EE64BE6D1E6C7A0A00345A5F /* libc++.tbd in Frameworks */,
 				EE8B80E81A16C92B007F455E /* Accelerate.framework in Frameworks */,
 			);
@@ -164,6 +177,7 @@
 				EE8B7FF21A16A3A9007F455E /* Sources */,
 				EE8B7FF31A16A3A9007F455E /* Frameworks */,
 				EE8B7FF41A16A3A9007F455E /* Resources */,
+				EE784C512328C45B00197FF8 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -194,6 +208,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
