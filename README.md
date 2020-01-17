@@ -1,3 +1,5 @@
+**WE ARE HIRING:** https://keenresearch.com/careers.html
+
 ## Note
 
 This proof-of-concept app ships with a trial version of KeenASR framework, which will exit (crash) the app 15min after the framework has been initialized. If you would like to obtain a version of the framework without this limitation, contact us at info@keenresearch.com.
