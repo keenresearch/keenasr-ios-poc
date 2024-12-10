@@ -12,9 +12,7 @@ For more details about the SDK see: http://keenresearch.com/keenasr-docs
 
 A proof-of-concept app that shows how to run KeenASR automatic speech recognition framework. For detailed information on all classes and methods, consult the [SDK reference documentation](http://keenresearch.com/keenasr-docs). If starting with the framework from scratch, check our [Quick Start](http://keenresearch.com/keenasr-docs/docs/additional-docs/Quick-Start.html) document.
 
-This demo app uses acoustic models in keenB2mQT-nnet3chain-en-us directory. Keen Research provides variety of custom acoustic models to its clients.
-
-Six different demos are provided in this proof of concept app:
+Three different demos are provided in this proof of concept app:
 
 1. Educational Reading Demo: demonstrates ASR use for following users reading aloud, by highlighting words as they are read. Oral reading rate of speech is computed in real time. Additional information related to oral reading fluency will be available in future releases.
 
