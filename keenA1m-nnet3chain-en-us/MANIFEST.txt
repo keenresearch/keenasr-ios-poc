@@ -1,0 +1,19 @@
+# Created on 2024-10-11 06:38:13
+global_cmvn.stats                        1088       56c10d7b888973a99c0ab224b27aea6e854b2eedd620b622a441af9a42be2e9a
+mfcc.conf                                667        d98e9294900230c08eb496326878f9cd9a333e93485f99fa278ef9a3810be467
+lang/lexicon.txt                         5284379    039ed9e4927689e7c82ed70df5cf8f3e251162078099f82b6269988bc9fde4b3
+lang/unk_inv.fst                         440166     acc0a9c31af8fbb8737ee52b5a77cbfaceec62499ff093d1ada3a3832f6d95e4
+lang/phones.txt                          3136       fe97f0956d4b9f2bb39fbf457767a0dccad98729452943eb6de028b76fe3b364
+lang/tree                                994400     423cc4c3bdd7a640b01ad9c8be99daabfa9a06916dd78e2458fe1db7b279a3ea
+MANIFEST.txt                             735        a258d87051463d4e6d7b29095a72a090576d6caff80bbc656f9d66f979f6c9cc
+words.txt                                1837951    723e5aedf649473bf7210559a367cb8dfa869d547da93099c2bed485509e2fc3
+final.mdl                                24104491   63154b09f0e75f3bf7d9321fd65dca9bb38b0aaf032649d37d55562a79ff54f1
+decode.conf                              460        c5ac157684b716b04f2da0101028efd3566808059d986ca58f777acf1576281e
+ivector_extractor.conf                   291        9ffb69e0b7904e06a322b80e8ae3f0b877823411a73acc8b0945e267273d30b5
+splice.conf                              35         9f0c5f7c82d18eaf25d8bce470efa9f7741f88411fe428774bc0a9bb69a24756
+splice_opts                              35         0c7038d5c0dda2b307d27fc9f6aaef3eda2257bfdbce95f333e2077a5ff0a222
+final.dubm                               168048     136be49aa1d72d069497e3dbaf1cfac36491e29a5c6cafe051d83c00780e90d5
+final.mat                                44975      ee7eea9c8589e5b98db944ce068e476bb10437ddd1dc201f810839b932c859ed
+online_cmvn.conf                         19         d1c628c8f822785fdc3c10bf3d15c9cc961b54eeb0d522adfd51b56ab5432008
+wordBoundaries.int                       3786       e1ab45e9b75ba2c6ebb85cb1112c8a61b878b3f13d0b42c8b5a3a4ed03294ed4
+final.ie                                 19757687   8db78b6d3342d43e078cf2dd12f8146c4c86ee0bfbd843efb9e08074ce70ebe6

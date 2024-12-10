@@ -3,18 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EE08B1D320D81DF300A764D7 /* keenB2mQT-nnet3chain-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE08B1D220D81DF200A764D7 /* keenB2mQT-nnet3chain-en-us */; };
-		EE10B3D61DBED9D4001AD25A /* FileRecognitionDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE10B3D51DBED9D4001AD25A /* FileRecognitionDemoViewController.m */; };
 		EE2D07371DDF7B470095D90F /* CommandAndControlViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE2D07361DDF7B470095D90F /* CommandAndControlViewController.m */; };
-		EE30E5901DF7CAD800D547B6 /* audio-1.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE30E58F1DF7CAD800D547B6 /* audio-1.wav */; };
-		EE4A6CD71D00B95600BBEB41 /* MusicDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE4A6CD61D00B95600BBEB41 /* MusicDemoViewController.m */; };
-		EE4A6CDA1D00B96F00BBEB41 /* ContactsDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE4A6CD91D00B96F00BBEB41 /* ContactsDemoViewController.m */; };
 		EE4A6CDD1D00B98100BBEB41 /* EduReadingDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE4A6CDC1D00B98100BBEB41 /* EduReadingDemoViewController.m */; };
-		EE64BE6D1E6C7A0A00345A5F /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EE64BE6C1E6C7A0A00345A5F /* libc++.tbd */; };
+		EE74FC712D07B323008298A5 /* keenA1m-nnet3chain-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE74FC702D07B323008298A5 /* keenA1m-nnet3chain-en-us */; };
 		EE784C502328C45A00197FF8 /* KeenASR.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EEE356D81EAFF52200F9963D /* KeenASR.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EE8B7FFC1A16A3A9007F455E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B7FFB1A16A3A9007F455E /* main.m */; };
 		EE8B7FFF1A16A3A9007F455E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B7FFE1A16A3A9007F455E /* AppDelegate.m */; };
@@ -40,19 +35,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		EE08B1D220D81DF200A764D7 /* keenB2mQT-nnet3chain-en-us */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "keenB2mQT-nnet3chain-en-us"; sourceTree = "<group>"; };
-		EE10B3D41DBED9D4001AD25A /* FileRecognitionDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileRecognitionDemoViewController.h; sourceTree = "<group>"; };
-		EE10B3D51DBED9D4001AD25A /* FileRecognitionDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileRecognitionDemoViewController.m; sourceTree = "<group>"; };
 		EE2D07351DDF7B470095D90F /* CommandAndControlViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandAndControlViewController.h; sourceTree = "<group>"; };
 		EE2D07361DDF7B470095D90F /* CommandAndControlViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommandAndControlViewController.m; sourceTree = "<group>"; };
-		EE30E58F1DF7CAD800D547B6 /* audio-1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "audio-1.wav"; sourceTree = "<group>"; };
-		EE4A6CD51D00B95600BBEB41 /* MusicDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicDemoViewController.h; sourceTree = "<group>"; };
-		EE4A6CD61D00B95600BBEB41 /* MusicDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicDemoViewController.m; sourceTree = "<group>"; };
-		EE4A6CD81D00B96F00BBEB41 /* ContactsDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactsDemoViewController.h; sourceTree = "<group>"; };
-		EE4A6CD91D00B96F00BBEB41 /* ContactsDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsDemoViewController.m; sourceTree = "<group>"; };
 		EE4A6CDB1D00B98100BBEB41 /* EduReadingDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EduReadingDemoViewController.h; sourceTree = "<group>"; };
 		EE4A6CDC1D00B98100BBEB41 /* EduReadingDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EduReadingDemoViewController.m; sourceTree = "<group>"; };
 		EE64BE6C1E6C7A0A00345A5F /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		EE74FC702D07B323008298A5 /* keenA1m-nnet3chain-en-us */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "keenA1m-nnet3chain-en-us"; sourceTree = "<group>"; };
+		EE74FC992D07DDD0008298A5 /* libc++.1.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.1.tbd"; path = "usr/lib/libc++.1.tbd"; sourceTree = SDKROOT; };
 		EE8B7FF61A16A3A9007F455E /* keenasr-ios-poc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "keenasr-ios-poc.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE8B7FFA1A16A3A9007F455E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EE8B7FFB1A16A3A9007F455E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -63,7 +52,6 @@
 		EE8B80041A16A3A9007F455E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		EE8B80091A16A3A9007F455E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		EE8B80141A16A3A9007F455E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EE8B80151A16A3A9007F455E /* kaldi_ios_pocTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = kaldi_ios_pocTests.m; sourceTree = "<group>"; };
 		EE8B80E71A16C92B007F455E /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		EEA6E01E1D5C42F900778A66 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		EEAF90DA1D21CB7800ED0451 /* EduWordsDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EduWordsDemoViewController.h; sourceTree = "<group>"; };
@@ -76,7 +64,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE64BE6D1E6C7A0A00345A5F /* libc++.tbd in Frameworks */,
 				EE8B80E81A16C92B007F455E /* Accelerate.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -87,6 +74,7 @@
 		1C0F6B99CB4912B9BC38DDED /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EE74FC992D07DDD0008298A5 /* libc++.1.tbd */,
 				EEE356D81EAFF52200F9963D /* KeenASR.framework */,
 				EE64BE6C1E6C7A0A00345A5F /* libc++.tbd */,
 				EEA6E01E1D5C42F900778A66 /* Metal.framework */,
@@ -98,7 +86,7 @@
 		EE8B7FED1A16A3A9007F455E = {
 			isa = PBXGroup;
 			children = (
-				EE08B1D220D81DF200A764D7 /* keenB2mQT-nnet3chain-en-us */,
+				EE74FC702D07B323008298A5 /* keenA1m-nnet3chain-en-us */,
 				EE8B7FF81A16A3A9007F455E /* keenasr-ios-poc */,
 				EE8B80121A16A3A9007F455E /* keenasr-ios-pocTests */,
 				EE8B7FF71A16A3A9007F455E /* Products */,
@@ -117,21 +105,14 @@
 		EE8B7FF81A16A3A9007F455E /* keenasr-ios-poc */ = {
 			isa = PBXGroup;
 			children = (
-				EE30E58F1DF7CAD800D547B6 /* audio-1.wav */,
 				EE8B7FFD1A16A3A9007F455E /* AppDelegate.h */,
 				EE8B7FFE1A16A3A9007F455E /* AppDelegate.m */,
 				EE8B80001A16A3A9007F455E /* ViewController.h */,
 				EE8B80011A16A3A9007F455E /* ViewController.m */,
-				EE4A6CD51D00B95600BBEB41 /* MusicDemoViewController.h */,
-				EE4A6CD61D00B95600BBEB41 /* MusicDemoViewController.m */,
-				EE4A6CD81D00B96F00BBEB41 /* ContactsDemoViewController.h */,
-				EE4A6CD91D00B96F00BBEB41 /* ContactsDemoViewController.m */,
 				EE4A6CDB1D00B98100BBEB41 /* EduReadingDemoViewController.h */,
 				EE4A6CDC1D00B98100BBEB41 /* EduReadingDemoViewController.m */,
 				EEAF90DA1D21CB7800ED0451 /* EduWordsDemoViewController.h */,
 				EEAF90DB1D21CB7800ED0451 /* EduWordsDemoViewController.m */,
-				EE10B3D41DBED9D4001AD25A /* FileRecognitionDemoViewController.h */,
-				EE10B3D51DBED9D4001AD25A /* FileRecognitionDemoViewController.m */,
 				EE2D07351DDF7B470095D90F /* CommandAndControlViewController.h */,
 				EE2D07361DDF7B470095D90F /* CommandAndControlViewController.m */,
 				EE8B80031A16A3A9007F455E /* Main.storyboard */,
@@ -153,7 +134,6 @@
 		EE8B80121A16A3A9007F455E /* keenasr-ios-pocTests */ = {
 			isa = PBXGroup;
 			children = (
-				EE8B80151A16A3A9007F455E /* kaldi_ios_pocTests.m */,
 				EE8B80131A16A3A9007F455E /* Supporting Files */,
 			);
 			path = "keenasr-ios-pocTests";
@@ -194,7 +174,8 @@
 		EE8B7FEE1A16A3A9007F455E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1030;
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1530;
 				ORGANIZATIONNAME = "Keen Research";
 				TargetAttributes = {
 					EE8B7FF51A16A3A9007F455E = {
@@ -226,10 +207,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE08B1D320D81DF300A764D7 /* keenB2mQT-nnet3chain-en-us in Resources */,
 				EE8B80051A16A3A9007F455E /* Main.storyboard in Resources */,
+				EE74FC712D07B323008298A5 /* keenA1m-nnet3chain-en-us in Resources */,
 				EE8B800A1A16A3A9007F455E /* LaunchScreen.xib in Resources */,
-				EE30E5901DF7CAD800D547B6 /* audio-1.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -242,9 +222,6 @@
 			files = (
 				EE8B80021A16A3A9007F455E /* ViewController.m in Sources */,
 				EEAF90DC1D21CB7800ED0451 /* EduWordsDemoViewController.m in Sources */,
-				EE4A6CD71D00B95600BBEB41 /* MusicDemoViewController.m in Sources */,
-				EE10B3D61DBED9D4001AD25A /* FileRecognitionDemoViewController.m in Sources */,
-				EE4A6CDA1D00B96F00BBEB41 /* ContactsDemoViewController.m in Sources */,
 				EE4A6CDD1D00B98100BBEB41 /* EduReadingDemoViewController.m in Sources */,
 				EE8B7FFF1A16A3A9007F455E /* AppDelegate.m in Sources */,
 				EE8B7FFC1A16A3A9007F455E /* main.m in Sources */,
@@ -279,7 +256,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -297,6 +274,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -307,7 +285,8 @@
 				ENABLE_BITCODE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = c17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -327,7 +306,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -339,7 +318,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -357,6 +336,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -367,7 +347,8 @@
 				ENABLE_BITCODE = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = c17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"HAVE_POSIX_MEMALIGN=1",
@@ -379,7 +360,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -390,7 +371,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = 2M983EKR69;
@@ -399,7 +380,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_C_LANGUAGE_STANDARD = c17;
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -408,8 +389,13 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "keenasr-ios-poc/Info.plist";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs to access microphone for ASR";
 				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -425,7 +411,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = 2M983EKR69;
@@ -434,7 +420,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_C_LANGUAGE_STANDARD = c17;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -443,8 +429,13 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "keenasr-ios-poc/Info.plist";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs to access microphone for ASR";
 				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",

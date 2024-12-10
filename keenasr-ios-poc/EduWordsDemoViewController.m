@@ -10,12 +10,7 @@
 
 #import "EduWordsDemoViewController.h"
 
-// end speech timeout if we recognized something that looks like a relevant word
-static float kEndSpeechTimeoutShort = 0.5;
-// default (much longer) end speech timeout, which allows user to hesitate/pause
-// e.g. "How to you spell..... winter"
-static float kEndSpeechTimeoutLong = 2;
-
+static float kEndSpeechTimeout = 0.8;
 
 @interface EduWordsDemoViewController()
 @property (nonatomic, strong) UIButton *startListeningButton, *backButton;
@@ -43,7 +38,7 @@ static float kEndSpeechTimeoutLong = 2;
   
   // back button
   self.backButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  self.backButton.frame = CGRectMake(20, 5, 100, 20);
+  self.backButton.frame = CGRectMake(35, 5, 100, 20);
   self.backButton.titleLabel.font = [UIFont systemFontOfSize:18];
   self.backButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
   self.backButton.backgroundColor = [UIColor clearColor];
@@ -87,7 +82,7 @@ static float kEndSpeechTimeoutLong = 2;
   
   
   // spinner
-  self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+  self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
   float spWidth = 100, spHeight = 100;
   self.spinner.frame = CGRectMake(CGRectGetWidth(self.view.frame)/2 - spWidth/2,
                                   CGRectGetHeight(self.view.frame)/2 - spHeight/2,
@@ -123,24 +118,15 @@ static float kEndSpeechTimeoutLong = 2;
   [self.recognizer setVADParameter:KIOSVadTimeoutForNoSpeech toValue:10];
   // we never run recognition longer than this many seconds
   [self.recognizer setVADParameter:KIOSVadTimeoutMaxDuration toValue:20];
-  // end silence timeouts (somewhat arbitrary); too long and it may be weird
-  // if the user finished. Too short and we may cut them off if they pause for a
-  // while.
-  // In this demo we will dynamically change the end timeouts. Initially we set
-  // them to a fairly large values, but in partialResult callbacks we will reduce
-  // them significantly if we spotted a correct word. That way user could say
-  // "SPELL...." and if they hesitate for a while to say the word we won't cut
-  // them off. But, if they say the right word (actually, we think they said the
-  // right word, then we timeout faster.
+  
   [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForGoodMatch
-                           toValue:kEndSpeechTimeoutLong];
+                           toValue:kEndSpeechTimeout];
   // use the same setting here as for the good match, although this could be
   // slightly longer
   [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForAnyMatch
-                           toValue:kEndSpeechTimeoutLong];
+                           toValue:kEndSpeechTimeout];
   
   self.startListeningButton.enabled = NO;
-  self.recognizer.createAudioRecordings = YES;
 }
 
 
@@ -161,9 +147,9 @@ static float kEndSpeechTimeoutLong = 2;
   
   // we'll create decoding graph based on the sentences in the paragraph presented
   // to the user
-  NSArray *sentences = [self createSentences];
-  if ([sentences count] == 0) {
-    self.statusLabel.text = @"Unable to create a list of sentences for the decoding graph";
+  NSArray *phrases = [self getPhrases];
+  if ([phrases count] == 0) {
+    self.statusLabel.text = @"Unable to create a list of phrases for the decoding graph";
     return;
   }
   
@@ -180,18 +166,20 @@ static float kEndSpeechTimeoutLong = 2;
     NSLog(@"Decoding graph '%@' doesn't exist", dgName);
   }
   
-  // create custom decoding graph with (arbitraty) name 'reading' using
-  // sentences obtained above
-  if (! [KIOSDecodingGraph createDecodingGraphFromSentences:sentences
-                                              forRecognizer:self.recognizer
-                                            andSaveWithName:dgName]) {
+  // create decoding graph with phrases obtained above
+  if (! [KIOSDecodingGraph createDecodingGraphFromPhrases:phrases
+                                            forRecognizer:self.recognizer
+                           usingAlternativePronunciations:nil
+                                                  andTask:KIOSSpeakingTaskDefault
+                                          andSaveWithName:dgName]) {
     self.textLabel.text = @"Error occured while creating decoding graph from the text";
     [self.spinner stopAnimating];
     self.spinner.alpha = 0;
     return;
   }
   NSLog(@"Preparing to listen with custom decoding graph '%@'", dgName);
-  [self.recognizer prepareForListeningWithCustomDecodingGraphWithName:dgName];
+  [self.recognizer prepareForListeningWithDecodingGraphWithName:dgName
+                                             withGoPComputation:true];
   NSLog(@"Ready to start listening");
 
   [self.spinner stopAnimating];
@@ -205,7 +193,7 @@ static float kEndSpeechTimeoutLong = 2;
   // reference it when starting to listen
   
   self.textLabel.textColor = [UIColor lightGrayColor];
-  self.textLabel.textAlignment = UIControlContentHorizontalAlignmentLeft;
+  self.textLabel.textAlignment = NSTextAlignmentLeft;
   self.textLabel.text = @"Tap the button and then say \"How do you spell <WORD>\" or \"Spell <WORD> \". Only 1000 most frequently used words are recognized (real app can allow parents to add additional words of interest)";
   
   self.startListeningButton.alpha = 1;
@@ -215,11 +203,6 @@ static float kEndSpeechTimeoutLong = 2;
 
 
 - (void)viewWillDisappear:(BOOL)animated {
-  // We save speaker profile when view is about to disappear. You can do this
-  // on other events as well if needed. The main reason we are doing this is so
-  // that on subsequent starts of the app we can reuse the speaker profile and
-  // not start from the baseline
-  [self.recognizer saveSpeakerAdaptationProfile];
   self.startListeningButton.enabled = NO;
 
   [super viewWillDisappear:animated];
@@ -233,7 +216,7 @@ static float kEndSpeechTimeoutLong = 2;
   self.statusLabel.text = @"Listening...";
   
   
-  [self.recognizer startListening];
+  [self.recognizer startListening:nil];
 }
 
 
@@ -246,34 +229,6 @@ static float kEndSpeechTimeoutLong = 2;
 }
 
 
-- (NSString *)spotKeyword:(NSString *)phrase {
-  // strip prefix, if exists (not the most efficient way to do this)
-  // TODO
-  //
-  // if more than one word: remove non-relevant words one by one
-  // TODO handle situation "SPELL SPELL",
-  // also two or more relevant keywords (either show the first one or all of them)
-  
-  phrase = [phrase stringByReplacingOccurrencesOfString:@"HOW DO YOU SPELL" withString:@""];
-  phrase = [phrase stringByReplacingOccurrencesOfString:@"HOW DO YOU" withString:@""];
-  phrase = [phrase stringByReplacingOccurrencesOfString:@"HOW DO" withString:@""];
-  phrase = [phrase stringByReplacingOccurrencesOfString:@"SPELL" withString:@""];
-  
-  if ([phrase length]==0)
-    return nil;
-  
-  phrase = [phrase stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-  NSLog(@"Phrase is '%@'", phrase);
-  
-  for (NSString *word in self.words) {
-//    NSLog(@"Comparing to %@", word);
-    if ([word isEqualToString:phrase])
-      return word;
-  }
-  
-  return nil;
-}
-
 
 #pragma mark KIOSRecognizer delegate methods
 
@@ -283,57 +238,24 @@ static float kEndSpeechTimeoutLong = 2;
 
 
 - (void)recognizerPartialResult:(KIOSResult *)result forRecognizer:(KIOSRecognizer *)recognizer {
-  NSLog(@"Partial Result: %@ (%@), conf %@", result.cleanText, result.text, result.confidence);
-  
-  NSString *keyword = [self spotKeyword:result.cleanText];
-  NSLog(@"Got '%@'", keyword);
-  if (keyword == nil) {  // no match
-    self.textLabel.text = @"";
-    return;
+  NSLog(@"Partial Result: %@", result.text);
+  self.textLabel.text = result.text;
   }
-  
-  [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForGoodMatch
-                           toValue:kEndSpeechTimeoutShort];
-  [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForAnyMatch
-                           toValue:kEndSpeechTimeoutShort];
-  self.textLabel.text = keyword;
-  
-  // we could also just call stop listening; this way we let the recognizer stop
-  // listening when there is no more speech (but with shorter end timeouts)
-}
 
 
-- (void)recognizerFinalResult:(KIOSResult *)result forRecognizer:(KIOSRecognizer *)recognizer {
-  NSLog(@"Final Result: %@", result);
+- (void)recognizerFinalResponse:(KIOSResponse *)response
+                  forRecognizer:(KIOSRecognizer *)recognizer {
+  NSLog(@"Final Result: %@", response.result);
+  KIOSResult *result = response.result;
   
-  NSString *keyword = [self spotKeyword:result.cleanText];
-  
-  if ([result.confidence floatValue] < 0.7) { //
-    self.textLabel.text = @"";
-    NSLog(@"Ignoring recognized phrase due to low confidence");
-//    // TODO if we got here bcs something was recognized in partial callback but now
-//    // based on confidence we are ignoring it, we should probably continue listening
-//    // i.e. call startListening from here
-  } else if  (keyword != nil) {
-    self.textLabel.text = keyword;
-  }
+  self.textLabel.text = result.text;
 
   self.textLabel.textColor = [UIColor blackColor];
   // maybe we should restart listening if the keyword wasn't spotted
   // in a real app that would be tied to the UX, which we are not dealing with here
   
-  if (recognizer.createAudioRecordings)
-    NSLog(@"Audio recording is in %@", recognizer.lastRecordingFilename);
-  
   self.statusLabel.text = @"Done Listening";
   self.startListeningButton.enabled = YES;
-
-  //revert back to original timeouts
-  [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForGoodMatch
-                           toValue:kEndSpeechTimeoutLong];
-  [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForAnyMatch
-                           toValue:kEndSpeechTimeoutLong];
-
 }
 
 
@@ -349,23 +271,13 @@ static float kEndSpeechTimeoutLong = 2;
 
 
 
-- (NSArray *)createSentences {
-  NSMutableArray *sentences = [NSMutableArray new];
+- (NSArray *)getPhrases {
+  NSMutableArray *phrases = [NSMutableArray new];
 
-  [sentences addObject:@"HOW DO YOU SPELL"];
-  [sentences addObject:@"SPELL"];
-  [sentences addObjectsFromArray:self.words];
-  for (NSString *word in self.words) {
-    NSString *s = [NSString stringWithFormat:@"How do you spell %@", word];
-    [sentences addObject:s];
-
-    NSString *s1 = [NSString stringWithFormat:@"spell %@", word];
-    [sentences addObject:s1];
-    
-    [sentences addObject:word];
-  }
-  
-  return sentences;
+  [phrases addObject:@"HOW DO YOU SPELL"];
+  [phrases addObject:@"SPELL"];
+  [phrases addObjectsFromArray:self.words];
+  return phrases;
 }
 
 

@@ -35,7 +35,7 @@ static float kEndSpeechTimeoutShort = 0.8;
   
   // back button
   self.backButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  self.backButton.frame = CGRectMake(20, 5, 100, 20);
+  self.backButton.frame = CGRectMake(35, 5, 100, 20);
   self.backButton.titleLabel.font = [UIFont systemFontOfSize:18];
   self.backButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
   self.backButton.backgroundColor = [UIColor clearColor];
@@ -69,17 +69,16 @@ static float kEndSpeechTimeoutShort = 0.8;
                             (CGRectGetHeight(self.view.frame)-h)/2,
                             w, h);
   self.textLabel = [[UILabel alloc] initWithFrame:frame];
-  self.textLabel.textAlignment = NSTextAlignmentLeft;
+  self.textLabel.textAlignment = NSTextAlignmentCenter;
   self.textLabel.font = [UIFont systemFontOfSize:45];
   self.textLabel.numberOfLines = 0;
   [self.textLabel setAdjustsFontSizeToFitWidth:YES];
-  self.textLabel.textColor = [UIColor blackColor];
   self.textLabel.backgroundColor = [UIColor clearColor];
   [self.view addSubview:self.textLabel];
   
   
   // spinner
-  self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+  self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
   float spWidth = 100, spHeight = 100;
   self.spinner.frame = CGRectMake(CGRectGetWidth(self.view.frame)/2 - spWidth/2,
                                   CGRectGetHeight(self.view.frame)/2 - spHeight/2,
@@ -153,9 +152,9 @@ static float kEndSpeechTimeoutShort = 0.8;
   
   // we'll create decoding graph based on the sentences in the paragraph presented
   // to the user
-  NSArray *sentences = [self createSentences];
-  if ([sentences count] == 0) {
-    self.statusLabel.text = @"Unable to create a list of sentences for the decoding graph";
+  NSArray *phrases = [self getCommands];
+  if ([phrases count] == 0) {
+    self.statusLabel.text = @"Unable to create a list of phrases for the decoding graph";
     return;
   }
   
@@ -173,16 +172,19 @@ static float kEndSpeechTimeoutShort = 0.8;
   }
   
   // create custom decoding graph using sentences obtained above
-  if (! [KIOSDecodingGraph createDecodingGraphFromSentences:sentences
-                                              forRecognizer:self.recognizer
-                                            andSaveWithName:dgName]) {
+  if (! [KIOSDecodingGraph createDecodingGraphFromPhrases:phrases
+                                            forRecognizer:self.recognizer
+                           usingAlternativePronunciations:nil
+                                                  andTask:KIOSSpeakingTaskDefault
+                                          andSaveWithName:dgName]) {
     self.textLabel.text = @"Error occured while creating decoding graph from the text";
     [self.spinner stopAnimating];
     self.spinner.alpha = 0;
     return;
   }
   NSLog(@"Preparing to listen with custom decoding graph '%@'", dgName);
-  [self.recognizer prepareForListeningWithCustomDecodingGraphWithName:dgName];
+  [self.recognizer prepareForListeningWithDecodingGraphWithName:dgName
+                                             withGoPComputation:false];
 
   NSLog(@"Ready to start listening");
 
@@ -194,8 +196,6 @@ static float kEndSpeechTimeoutShort = 0.8;
   // It could have been created any time; we just need to know the name so we can
   // reference it when starting to listen
   
-  self.textLabel.textColor = [UIColor lightGrayColor];
-  self.textLabel.textAlignment = UIControlContentHorizontalAlignmentLeft;
   self.textLabel.text = @"Tap the button and then say a command (left, right, up, down, run, lay down, jump, stop, spin, follow me)";
   
   self.startListeningButton.alpha = 1;
@@ -222,7 +222,7 @@ static float kEndSpeechTimeoutShort = 0.8;
   self.statusLabel.text = @"Listening...";
   
   // start listening using decoding graph we created in viewDidAppear
-  [self.recognizer startListening];
+  [self.recognizer startListening:nil];
 }
 
 
@@ -248,29 +248,17 @@ static float kEndSpeechTimeoutShort = 0.8;
 
 
 - (void)recognizerPartialResult:(KIOSResult *)result forRecognizer:(KIOSRecognizer *)recognizer {
-  NSLog(@"Partial Result: %@ (%@), conf %@", result.cleanText, result.text, result.confidence);
-  
-  self.textLabel.text = result.cleanText;
+  NSLog(@"Partial Result: %@", result.text);
+  self.textLabel.text = result.text;
 }
 
 
-- (void)recognizerFinalResult:(KIOSResult *)result forRecognizer:(KIOSRecognizer *)recognizer {
-  NSLog(@"Final Result: %@", result);
+- (void)recognizerFinalResponse:(KIOSResponse *)response forRecognizer:(KIOSRecognizer *)recognizer {
+  NSLog(@"Final Result: %@", response.result);
+  KIOSResult *result = response.result;
   
-  self.textLabel.text = result.cleanText;
-  if ([result.confidence floatValue] < 0.7) { //
-    self.textLabel.textColor = [UIColor redColor];
-  //    self.textLabel.text = @"";
-  //    NSLog(@"Ignoring recognized phrase due to low confidence");
-  //    // TODO if we got here bcs something was recognized in partial callback but now
-  //    // based on confidence we are ignoring it, we should probably continue listening
-  //    // i.e. call startListening from here
-  } else {
-    self.textLabel.textColor = [UIColor blackColor];
-  }
-  
-  if (recognizer.createAudioRecordings)
-    NSLog(@"Audio recording is in %@", recognizer.lastRecordingFilename);
+  self.textLabel.text = result.text;
+  self.textLabel.textColor = [UIColor blackColor];
   
   self.statusLabel.text = @"Done Listening";
   self.startListeningButton.enabled = YES;
@@ -289,7 +277,7 @@ static float kEndSpeechTimeoutShort = 0.8;
 
 
 
-- (NSArray *)createSentences {
+- (NSArray *)getCommands {
   NSArray *sentences = @[
                          @"left",
                          @"go right",

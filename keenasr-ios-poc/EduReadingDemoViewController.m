@@ -42,7 +42,7 @@
   
   // back button
   self.backButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  self.backButton.frame = CGRectMake(20, 5, 100, 20);
+  self.backButton.frame = CGRectMake(35, 5, 100, 20);
   self.backButton.titleLabel.font = [UIFont systemFontOfSize:18];
   self.backButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
   self.backButton.backgroundColor = [UIColor clearColor];
@@ -86,7 +86,7 @@
   
   
   // spinner
-  self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+  self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
   float spWidth = 100, spHeight = 100;
   self.spinner.frame = CGRectMake(CGRectGetWidth(self.view.frame)/2 - spWidth/2,
                                   CGRectGetHeight(self.view.frame)/2 - spHeight/2,
@@ -170,9 +170,9 @@
   
   // we'll create decoding graph based on the sentences in the paragraph presented
   // to the user
-  NSArray *sentences = [self createReadingSentences];
-  if ([sentences count] == 0) {
-    self.statusLabel.text = @"Unable to create a list of sentences for decoding graph";
+  NSArray *phrases = [self createPhrases];
+  if ([phrases count] == 0) {
+    self.statusLabel.text = @"Unable to create a list of phrases for decoding graph";
     return;
   }
   
@@ -190,22 +190,24 @@
   }
   
   // create custom decoding graph with (arbitraty) name 'reading' using
-  // sentences obtained above
-  if (! [KIOSDecodingGraph createDecodingGraphFromSentences:sentences
-                                              forRecognizer:self.recognizer
-                                            andSaveWithName:dgName]) {
+  // phrases obtained above
+  if (! [KIOSDecodingGraph createDecodingGraphFromPhrases:phrases
+                                            forRecognizer:self.recognizer
+                           usingAlternativePronunciations:nil
+                                                  andTask:KIOSSpeakingTaskOralReading
+                                          andSaveWithName:dgName]) {
     self.textLabel.text = @"Error occured while creating decoding graph from the text";
     [self.spinner stopAnimating];
     self.spinner.alpha = 0;
     return;
   }
-  NSLog(@"Preparing to listen with custom decoding graph '%@'", dgName);
-  [self.recognizer prepareForListeningWithCustomDecodingGraphWithName:dgName];
+  NSLog(@"Preparing to listen with decoding graph '%@'", dgName);
+  [self.recognizer prepareForListeningWithDecodingGraphWithName:dgName withGoPComputation:true];
   NSLog(@"Ready to start listening");
 
   [self.spinner stopAnimating];
   self.spinner.alpha = 0;
-  self.statusLabel.text = @"Completed decoding graph"; // TODO - add num songs/artists
+  self.statusLabel.text = @"Completed decoding graph";
   
   [self.spinner stopAnimating];
   self.spinner.alpha = 0;
@@ -214,7 +216,7 @@
   // reference it when starting to listen
   
   self.textLabel.textColor = [UIColor lightGrayColor];
-  self.textLabel.textAlignment = UIControlContentHorizontalAlignmentLeft;
+  self.textLabel.textAlignment = NSTextAlignmentLeft;
   self.textLabel.text = @"Tap the button and then read the paragraph aloud. Words will be highlighted as you read them (for example, try to skip some words)";
   
   self.startListeningButton.alpha = 1;
@@ -244,7 +246,7 @@
   self.rosUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(updateRosUILabel:) userInfo:nil repeats:YES];
   
   // start listening using decoding graph we created in viewDidAppear
-  [self.recognizer startListening]; 
+  [self.recognizer startListening:nil];
 }
 
 
@@ -284,13 +286,13 @@
 // similar words when comparing any given word -- that way false alarms will not
 // affect user experience
 - (void)recognizerPartialResult:(KIOSResult *)result forRecognizer:(KIOSRecognizer *)recognizer {
-  NSLog(@"Partial Result: %@ (%@)", result.cleanText, result.text);
+  NSLog(@"Partial Result: %@", result.text);
 
-  self.numWords = [result.cleanText length] - [[result.cleanText stringByReplacingOccurrencesOfString:@" " withString:@""] length];
+  self.numWords = [result.text length] - [[result.text stringByReplacingOccurrencesOfString:@" " withString:@""] length];
 
-  NSLog(@"Partial Result (%lu words): %@", self.numWords, result.cleanText);
+  NSLog(@"Partial Result (%lu words): %@", self.numWords, result.text);
 
-  NSArray *rangesToHiglight = [self getMatchedRangesForString:result.cleanText
+  NSArray *rangesToHiglight = [self getMatchedRangesForString:result.text
                                                  withinString:self.text];
   NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:self.text];
   [attrStr addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor] range:NSMakeRange(0, [self.text length])];
@@ -298,7 +300,7 @@
     NSRange range;
     [[rangesToHiglight objectAtIndex:i] getValue:&range];
     [attrStr addAttribute:NSBackgroundColorAttributeName value:[[UIColor yellowColor] colorWithAlphaComponent:.3] range:range];
-    [attrStr addAttribute:NSUnderlineColorAttributeName value:[UIColor redColor] range:range];
+    [attrStr addAttribute:NSUnderlineColorAttributeName value:[UIColor greenColor] range:range];
     [attrStr addAttribute:NSUnderlineStyleAttributeName value:[NSNumber numberWithInt:NSUnderlineStyleDouble] range:range];
 //    NSLog(@"Highlighting range %@", NSStringFromRange(range));
   }
@@ -310,21 +312,22 @@
 
 
 // NOTE: we update ROS label here as well, but it will be sligtly off because
-// we are including endTimeout silence as well. In the future, KIOSResult class
-// will provide start/end times for individual words; then, we could look up the
-// end time of the last word to do a final ROS estimation
-- (void)recognizerFinalResult:(KIOSResult *)result forRecognizer:(KIOSRecognizer *)recognizer {
+// we are including endTimeout silence as well (ie silence after the last word).
+// We could look alternatively up the end time of the last word to properly
+// estimate the duration
+- (void)recognizerFinalResponse:(KIOSResponse *)response forRecognizer:(KIOSRecognizer *)recognizer {
+  KIOSResult *result = response.result;
   NSLog(@"Final Result: %@", result);
   [self.rosUpdateTimer invalidate];
 
-  unsigned long numWords = [result.cleanText length] - [[result.cleanText stringByReplacingOccurrencesOfString:@" " withString:@""] length];
-  NSLog(@"Final Result (%lu words): %@", numWords, result.cleanText); 
+  unsigned long numWords = [result.text length] - [[result.text stringByReplacingOccurrencesOfString:@" " withString:@""] length];
+  NSLog(@"Final Result (%lu words): %@", numWords, result.text);
   NSTimeInterval minSinceStart = -1*[self.startTime timeIntervalSinceNow]/60;
   self.rateOfSpeech = numWords/minSinceStart;
   self.rateOfSpeechLabel.text = [NSString stringWithFormat:@"Words per minute: %.0f", self.rateOfSpeech];
 
-  if (recognizer.createAudioRecordings)
-    NSLog(@"Audio recording is in %@", recognizer.lastRecordingFilename);
+  // this is where we can also save audio and json from KIOSResponse into an
+  // arbitrary directory, if desired
   self.statusLabel.text = @"Done Listening";
   self.startListeningButton.enabled = YES;
 }
@@ -376,7 +379,7 @@
   self.startListeningButton.enabled = YES;
   self.rateOfSpeechLabel.text = @"";
   self.textLabel.textColor = [UIColor lightGrayColor];
-  self.textLabel.textAlignment = UIControlContentHorizontalAlignmentLeft;
+  self.textLabel.textAlignment = NSTextAlignmentLeft;
   self.textLabel.text = @"Tap the button and then read the paragraph aloud. Words will be highlighted as you read them (for example, try to skip some words)";
 }
 
@@ -388,7 +391,7 @@
 
 
 
-- (NSArray *)createReadingSentences {
+- (NSArray *)createPhrases {
   NSMutableArray *sentences = [NSMutableArray new];
 //  [sentences addObject:self.text];
   [sentences addObject:@"Once upon a time there were three little pigs"];

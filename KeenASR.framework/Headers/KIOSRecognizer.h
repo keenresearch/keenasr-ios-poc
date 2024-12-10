@@ -10,6 +10,7 @@
 #define KIOSRecognizer_h
 
 @class KIOSRecognizer;
+@class KIOSResponse;
 
 // @name Constants
 
@@ -47,16 +48,25 @@ typedef NS_ENUM(NSInteger, KIOSRecognizerState) {
   KIOSRecognizerStateReadyToListen,
   /** Recognizer is actively listening. Any calls to startListening will be ignored */
   KIOSRecognizerStateListening,
-  /** Recognizer is not acquiring incoming audio any more, it is processing the 
+  /** Recognizer is not acquiring incoming audio any more, it is computing the
    final result.
-   Note that in realistic scenarios recognizer is not likely to be in this state 
-   for a long time (usuaully 200-300ms). Long processing times may indicate that
-   the SDK is running on devices which cannot keep up with the processing, or
-   some type of misconfiguration.
+   Recognizer is not likely to be in this state for a long time; approximately 100-300ms, depending on the
+   device and the CPU speed.
    */
   KIOSRecognizerStateFinalProcessing,
 };
 
+/** These constants indicate the type of information that is passed to the response JSON metadata.
+ 
+ */
+//typedef NS_ENUM(NSInteger, KIOSResponseDataKey) {
+  /** Expected response from the user */
+//  KIOSResponseDataKeyExpectedResult,
+  /** Prompt for the response */
+//  KIOSResponseDataKeyPrompt,
+  /** Custom JSON data */
+//  KIOSResponseDataKeyCustomJSONData,
+//};
 
 /** These constants correspond to different Voice Activity Detection parameters
  that are used for endpointing during recognition.
@@ -95,24 +105,11 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 /** recognition result text */
 @property(nonatomic, readonly, nonnull) NSString *text;
 
-/** recognition result clean text; all tokens of type \<TOKEN\> are removed
- (e.g. <SPOKEN_NOISE>, etc.)  */
-@property(nonatomic, readonly, nonnull) NSString *cleanText;
+/** An array of KIOSWord objects that comprise this result */
+@property(nonatomic, strong, readonly, nullable) NSArray<KIOSWord *> *words;
 
-/** Confidence of the overall result */
-@property(nonatomic, readonly, nullable) NSNumber *confidence;
+@property(nonatomic, readonly, nullable) NSNumber *confidence DEPRECATED_MSG_ATTRIBUTE("Deprecated");
 
-/** Array of KIOSWord objects */
-@property(nonatomic, strong, nullable) NSArray<KIOSWord *> *words;
-
-/** Name of the decoding graph used to perform recognition */
-@property(nonatomic, copy, nullable) NSString *decodingGraphName;
-
-/** Name of the ASR bunde used to perform recognition */
-@property(nonatomic, copy, nullable) NSString *asrBundle;
-
-/** Returns TRUE if recognition result is empty, FALSE otherwise */
-- (BOOL)isEmpty;
 
 - (nonnull NSString *)description;
 
@@ -143,12 +140,13 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 
 @end
 
+
+@class KIOSPhone;
 /** An instance of the KIOSWord class, called word, provides word text, timing
  information, and the confidence of the word 
  
  Note that in certain circumstances startTime, duration, and confidence may be
  nil.
- 
  */
 @interface KIOSWord : NSObject
 /** Text of the word */
@@ -160,19 +158,35 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 /** Duration of the word, in seconds */
 @property (nonatomic, strong, nullable, readonly) NSNumber *duration;
 
-/** Confidence in the range 0 to 1 for the word. Higher value corresponds to
- better confidence that the recognized text matches what was said. */
-@property (nonatomic, strong, nullable, readonly) NSNumber *confidence;
+@property (nonatomic, strong, nullable, readonly) NSNumber *confidence
+__deprecated_msg("Deprecated. Result will most likely contain <SPOKEN_NOISE> word");
+
+/** Array of KIOSPhone objects */
+@property(nonatomic, strong, nullable) NSArray<KIOSPhone *> *phones;
+
 
 /** False for real words, TRUE for tags, e.g. <SPOKEN_NOISE>, <LAUGHTER> */
-@property (nonatomic, assign, readonly, getter=isTag) BOOL tag;
-
-- (nullable id)initWithText:(nonnull NSString *)text
-               andStartTime:(nullable NSNumber *)startTime
-                andDuration:(nullable NSNumber *)duration
-              andConfidence:(nullable NSNumber *)confidence;
+@property (nonatomic, assign, readonly, getter=isTag) BOOL tag
+__deprecated_msg("Temporarily deprecated");
 
 - (nonnull NSString *)description;
+
+@end
+
+/** An instance of the KIOSPhone class, called phone, provides phone text, timing
+ information, and optionally a pronunciation score.
+ 
+ Note that in certain circumstances startTime, duration, and confidence may be
+ nil.
+ */
+@interface KIOSPhone : NSObject
+@property (nonatomic, readonly, nonnull) NSString *text;
+
+@property (nonatomic, strong, nullable, readonly) NSNumber *startTime;
+
+@property (nonatomic, strong, nullable, readonly) NSNumber *duration;
+
+@property (nonatomic, strong, nullable, readonly) NSNumber *pronunciationScore;
 
 @end
 
@@ -214,9 +228,12 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  built with trigger phrase support).
  
  @param recognizer recognizer that recognized the trigger phrase
- 
  */
-- (void)recognizerTriggerPhraseDetectedForRecognizer:(nonnull KIOSRecognizer *)recognizer;
+- (void)triggerPhraseDetected:(nonnull KIOSRecognizer *)recognizer;
+
+- (void)recognizerTriggerPhraseDetectedForRecognizer:(nonnull KIOSRecognizer *)recognizer
+__deprecated_msg("Please see triggerPhraseDetected");
+;
 
 
 /** This method is called when recognizer has a new (different than before)
@@ -235,10 +252,10 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  own because one of the VAD rules has triggered. At this time, recognizer is not
  listening any more.
  
- @param result final result of the recognition
+ @param response final response of the recognition
  @param recognizer recognizer that produced the result
  */
-- (void)recognizerFinalResult:(nonnull KIOSResult *)result
+- (void)recognizerFinalResponse:(nonnull KIOSResponse *)response
                 forRecognizer:(nonnull KIOSRecognizer *)recognizer;
 
 
@@ -297,24 +314,25 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  
  Initialization example:
  
-     if (! [KIOSRecognizer sharedInstance]) {
-         [KIOSRecognizer initWithASRBundle:@"librispeechQT-nnet2-en-us"];
-     }
-     // for convenience our class keeps a local reference of the recognizer
-     self.recognizer = [KIOSRecognizer sharedInstance];
+ ```
+    if (! [KIOSRecognizer sharedInstance]) {
+      // keenAK3-nnet3chain-en-us is the name of the ASR Bundle (it might be
+      // different in your setup
+      [KIOSRecognizer initWithASRBundle: @"keenAK3-nnet3chain-en-us"];
+    }
+    // for convenience our class keeps a local reference of the recognizer
+    self.recognizer = [KIOSRecognizer sharedInstance];
  
-     // this class will also be implementing methods from KIOSRecognizerDelegate 
-     // protocol
-     self.recognizer.delegate = self;
+    // this class will also be implementing methods from KIOSRecognizerDelegate
+    // protocol
+    self.recognizer.delegate = self;
  
-     // recordings will be saved on the device
-     self.recognizer.createAudioRecordings = YES;
- 
-     // after 0.8sec of silence, recognizer will automatically stop listening
-     [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForGoodMatch toValue:.8];
+    // after 0.8sec of silence, recognizer will automatically stop listening
+    [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForGoodMatch toValue:.8];
+    [self.recognizer setVADParameter:KIOSVadTimeoutEndSilenceForAnyMatch toValue:.8];
 
-     // define callbacks for KIOSRecognizerDelegate
- 
+    // TODO define callback methods for KIOSRecognizerDelegate
+ ```
  After initialization, audio data from all sessions when recognizer is listening
  will be used for online speaker adaptation. You can name speaker adaptation
  profiles via adaptToSpeakerWithName:, persist profiles in the filesystem via
@@ -322,14 +340,14 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  
  @warning Only a single instance of the recognizer can exist at any given time.
  */
-@interface KIOSRecognizer : NSObject 
+@interface KIOSRecognizer : NSObject
 
 
 /** @name Properties */
 
 /** Returns shared instance of the recognizer
  @return The shared recognizer instance
- @warning if the engine has not been initialized by calling 
+ @warning if the engine has not been initialized by calling
  `+initWithASRBundle:`, this method will return nil
  */
 + (nullable KIOSRecognizer *)sharedInstance;
@@ -346,7 +364,7 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  */
 @property(nonatomic, readonly, nonnull) NSString *asrBundlePath;
 
-/** Name of the ASR Bundle (name of the directory that contains all the ASR 
+/** Name of the ASR Bundle (name of the directory that contains all the ASR
  resources. This will be the last component of the asrBundlePath.
  */
 @property(nonatomic, readonly, nonnull) NSString *asrBundleName;
@@ -354,17 +372,19 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 /** Name of the decoding graph currently used by the recognizer */
 @property(nonatomic, readonly, nullable) NSString *currentDecodingGraphName;
 
-/**
- Type of the recognizer. It makes sense to query this property only after the
- recognizer has been initialized.
- */
-@property(nonatomic, assign, readonly) KIOSRecognizerType recognizerType;
+/** Path to the directory where audio/json files will be saved */
+@property(nonatomic, readonly, nullable) NSString *dataDirectory;
+
+/** Path to the directory where miscelaneous data will be saved */
+@property(nonatomic, readonly, nullable) NSString *miscDataDirectory;
+
+@property(nonatomic, copy, readonly, nonnull) NSString *recordingsDir;
 
 /**
  Two-letter language code that defines language of the ASR Bundle used to initialize
  the recognizer. For example: @"en", @"es", etc.
  */
-@property(nonatomic, readonly, nonnull) NSString *langCode;
+//@property(nonatomic, readonly, nonnull) NSString *langCode; // TODO
 
 /**
  If set to YES, recognizer will perform rescoring for the final result, using
@@ -374,7 +394,7 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  Default is YES.
  
  @warning If the resources necessary for rescoring are not available in the custom
- decoding graph directory bundled with the app, and rescore is set to YES, 
+ decoding graph directory bundled with the app, and rescore is set to YES,
  rescoring step will be skipped.
  */
 @property(nonatomic, assign) BOOL rescore;
@@ -384,28 +404,28 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 
 
 /** Initialize ASR engine with the ASR Bundle, which provides all the
- resources necessary for initialization. You will use this initalization method 
+ resources necessary for initialization. You will use this initalization method
  if you included ASR bundle with your application. See also initWithASRBundleAtPath:
  for scenarios when ASR Bundle is not included with the app, but downloaded after
  the app has been installed. SDK initialization needs to occur before any  other
  work can be performed.
  
  @param bundleName name of the ASR Bundle. A directory containing all the resources
- necessary for the specific recognizer type. This will typically include all 
- acoustic model related files, and configuration files. The bundle directory 
- should contain decode.conf configuration file, which can be augmented with 
- additional config params. Currently, that is the only way to pass various 
- settings to the decoder. All path references in config files should be relative 
- to the app root directory (e.g. librispeechQT-nnet2-en-us/mfcc.conf). The init 
- method will initiallize appropriate recognizer type based on the name and 
+ necessary for the specific recognizer type. This will typically include all
+ acoustic model related files, and configuration files. The bundle directory
+ should contain decode.conf configuration file, which can be augmented with
+ additional config params. Currently, that is the only way to pass various
+ settings to the decoder. All path references in config files should be relative
+ to the app root directory (e.g. librispeechQT-nnet2-en-us/mfcc.conf). The init
+ method will initiallize appropriate recognizer type based on the name and
  content of the ASR bundle.
  
  @return TRUE if succesful, FALSE otherwise.
  
  @warning When initializing the recognizer, you need to make sure that bundle
- directory contains all the necessary resources needed for the specific 
- recognizer type. If your app is dynamically creating decoding graphs, ASR 
- bundle directory needs to contain lang subdirectory with relevant resources 
+ directory contains all the necessary resources needed for the specific
+ recognizer type. If your app is dynamically creating decoding graphs, ASR
+ bundle directory needs to contain lang subdirectory with relevant resources
  (lexicon, etc.).
  */
 
@@ -418,7 +438,7 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  app has been installed. SDK initialization needs to occur before any  other
  work can be performed.
  
- @param pathToASRBundle full path to the ASR Bundle. For more details about ASR 
+ @param pathToASRBundle full path to the ASR Bundle. For more details about ASR
  Bundles see initWithASRBundle:
  
  @return TRUE if succesful, FALSE otherwise.
@@ -434,7 +454,7 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 
 //+ (instancetype) alloc  __attribute__((unavailable("alloc not available, call sharedInstance instead")));
 //- (instancetype) init   __attribute__((unavailable("init not available, call sharedInstance instead")));
-+ (nullable instancetype) new    __attribute__((unavailable("new not available, call sharedInstance instead")));
++ (nullable instancetype) new __attribute__((unavailable("new not available, call sharedInstance instead")));
 
 /** Teardown recognizer and all the related resources. This method would typically be
  called when you want to create a new recognizer that uses different ASR Bundle (currently
@@ -452,122 +472,187 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 
 + (BOOL)teardown;
 
-/** Prepare for recognition by loading custom decoding graph that was prepared
- via [KIOSDecodingGraph createDecodingGraphFromSentences:forRecognizer:andSaveWithName:] 
- or [KIOSDecodingGraph createDecodingGraphFromArpaFileAtURL:forRecognizer:andSaveWithName:] methods.
+
+/**
+ Sets Voice Activity Detection to either FALSE or TRUE. If set to TRUE recognizer will utilize a simple
+ Voice Activity Detection module and no recognition will occur until voice activity is detected. From the moment
+ voice activity is detected, recognizer operates in a standard mode.
  
- After calling this method, recognizer will load the decoding graph into memory
- and it will be ready to start listening via startListening method.
+ All the information in KIOSResponse (audio file, ASR result, etc.) is based from the moment of voice activity
+ detection, NOT from the moment of startListening call.
  
- @param dgName name of the custom decoding graph
+ This should be set to YES primarily in always-on listening mode to minimize the number of listening restarts
+ as well as to minimize battery utilization.
+ 
+ @param value TRUE or FALSE
+ 
+ */
+- (void) setVadGating:(BOOL)value;
+
+
+/** Prepare for recognition by loading decoding graph that was prepared via
+ [createDecodingGraphFromPhrases:forRecognizer:usingAlternativePronunciations:andTask:
+ andSaveWithName: family of  methods:] family of methods.
+ 
+ After calling this method, recognizer will load the decoding graph into memory and it will be ready to
+ start listening via startListening method.
+ 
+ Goodness of pronunciation scoring  (GoP) requires ASR Bundle with relevant models; if such models are not
+ available in the ASR Bundle, GoP scores will not be computed regardless of the computeGoP setting.
+ 
+ @param dgName name of the decoding graph
+ 
+ @param computeGoP goodness of pronunciation scores will be computed if this parameter is set to TRUE
+ 
  @return TRUE if successful, FALSE otherwise
  */
-- (BOOL)prepareForListeningWithCustomDecodingGraphWithName:(nonnull NSString *)dgName;
+- (BOOL)prepareForListeningWithDecodingGraphWithName:(nonnull NSString *)dgName
+                                  withGoPComputation:(BOOL)computeGoP;
 
 
-/** Prepare for recognition by loading custom decoding graph that was bundled 
- with the application. You will typically use this approach for large vocabulary
- tasks, where it would take too long to build the decoding graph on the mobile
- device.
+/** Prepare for recognition by loading custom decoding graph that was typically bundled
+ with the application. You will typically use this approach for large vocabulary tasks, where it would take too
+ long to build the decoding graph on the mobile device.
  
- After calling this method, recognizer will load the decoding graph into memory
- and it will be ready to start listening via startListening method.
+ After calling this method, recognizer will load the decoding graph into memory and it will be ready to start
+ listening via startListening method.
+ 
+ Goodness of pronunciation scoring  (GoP) requires ASR Bundle with relevant models; if such models are not
+ available in the ASR Bundle, GoP scores will not be computed regardless of the computeGoP setting.
  
  @param pathToDecodingGraphDirectory absolute path to the custom decoding graph
  directory which was created ahead of time and packaged with the app.
  
+ @param computeGoP goodness of pronunciation scores will be computed if this parameter is set to TRUE
+ 
  @return TRUE if successful, FALSE otherwise.
  
- @warning If custom decoding graph was built with rescoring capability, all the 
+ @warning If custom decoding graph was built with rescoring capability, all the
  resources will be loaded regardless of how rescore paramater is set.
  */
-- (BOOL)prepareForListeningWithCustomDecodingGraphAtPath:(nonnull NSString *)pathToDecodingGraphDirectory;
+- (BOOL)prepareForListeningWithDecodingGraphAtPath:(nonnull NSString *)pathToDecodingGraphDirectory
+                                withGoPComputation:(BOOL)computeGoP;
+
+/** Prepare for recognition by loading decoding graph that was prepared via
+ [createContextualDecodingGraphFromPhrases:forRecognizer:usingAlternativePronunciations:andTask:andSaveWithName:]
+ family of  methods.
+ 
+ After calling this method, recognizer will load the decoding graph into memory and it will be ready to
+ start listening via startListening method.
+ 
+ Goodness of pronunciation scoring  (GoP) requires ASR Bundle with relevant models; if such models are not
+ available in the ASR Bundle, GoP scores will not be computed regardless of the computeGoP setting.
+ 
+ @param dgName name of the decoding graph
+ 
+ @param contextId id of the context that should be used. This number will be in range of
+ 0 - contextualPhrases.length, where contextualPhrases is an <NSArray<NSArray *>> used to build contextual
+ graph.
+ 
+ @param computeGoP goodness of pronunciation scores will be computed if this parameter is set to TRUE
+ 
+ @return TRUE if successful, FALSE otherwise
+ */
+- (BOOL)prepareForListeningWithContextualDecodingGraphWithName:(nonnull NSString *)dgName
+                                                  andContextId:(nonnull NSNumber *) contextId
+                                            withGoPComputation:(BOOL)computeGoP;
+
+/** Prepare for recognition by loading custom decoding graph that was typically bundled
+ with the application.
+ 
+ After calling this method, recognizer will load the decoding graph into memory and it will be ready to start
+ listening via startListening method.
+ 
+ Goodness of pronunciation scoring  (GoP) requires ASR Bundle with relevant models; if such models are not
+ available in the ASR Bundle, GoP scores will not be computed regardless of the computeGoP setting.
+ 
+ @param dgPath  absolute path to the decoding graph directory which was created ahead of time and
+ packaged with the app.
+ 
+ @param contextId id of the context that should be used. This number will be in range of
+ 0 - contextualPhrases.length, where contextualPhrases is an <NSArray<NSArray *>> used to build contextual
+ graph.
+ 
+ @param computeGoP goodness of pronunciation scores will be computed if this parameter is set to TRUE
+ 
+ @return TRUE if successful, FALSE otherwise.
+ 
+ @warning If custom decoding graph was built with rescoring capability, all the
+ resources will be loaded regardless of how rescore paramater is set.
+ */
+- (BOOL)prepareForListeningWithContextualDecodingGraphAtPath:(nonnull NSString *)dgPath
+                                                andContextId:(nonnull NSNumber *)contextId
+                                          withGoPComputation:(BOOL)computeGoP;
 
 
-/** Start processing incoming audio.
+
+/** Start processing audio from the microphone.
  @return TRUE if successful, FALSE otherwise
  
  After calling this method, recognizer will listen to and decode audio coming
- through the microphone using decoding graph you specified via one of the 
- prepareForListening methods. The listening process will stop either by: a) an 
- explicit call to stopListening or b) if one of the Voice Activity Detection 
- module rules are triggered (for example, max duration without speech, or 
- end-silence, etc.), c) if audio interrupt occurs (phone call, audible
- notification, app goes to background, etc.).
+ through the microphone using decoding graph you specified via one of the
+ prepareForListening methods.
  
- When the recognizer stops listening due to VAD triggering, it will call 
- [recognizerFinalResult:forRecognizer:]([KIOSRecognizerDelegate recognizerFinalResult:forRecognizer:]) 
+ For example:
+ 
+ ```
+ NSString *responseId;
+ if ([recognizer startListening: &responseId]) {
+ NSLog(@"Started listening; responseId: %@", responseId);
+ }
+ ```
+ 
+ The listening process will stop after:
+ 
+ - an explicit call to [KIOSRecognizer stopListening] is made
+ - one of the VAD tresholds set via [KIOSRecognizer setVADParameter:toValue:] are triggered (for example,
+ max duration without speech, or end-silence, etc.),
+ - if audio interrupt occurs (phone call, audible notification, app goes to background, etc.).
+ 
+ When the recognizer stops listening due to VAD triggering, it will call
+ [recognizerFinalResponse:forRecognizer:]([KIOSRecognizerDelegate recognizerFinalResponse:forRecognizer:])
  callback method.
  
  When the recognizer stops listening due to audio interrupt, *no callback methods*
  will be triggered until audio interrupt is over.
  
- If decoding graph was created with the trigger phrase support recognizer will listen
- continuously until the trigger phrase is recognized, then it will switch over to the
- standard mode with partial results being reported via
+ If decoding graph was created with the trigger phrase support, recognizer will listen continuously until the
+ trigger phrase is recognized, then it will switch over to the  standard mode with partial results being reported
+ via
  [recognizerPartialResult:forRecognizer:]([KIOSRecognizerDelegate recognizerPartialResult:forRecognizer:]) callback.
  
  VAD settings can be modified via setVADParameter:toValue: method.
  
- @warning You will need to call either [prepareForListeningWithCustomDecodingGraphWithName]([KIOSRecognizer prepareForListeningWithCustomDecodingGraphWithName:])
- or [prepareForListeningWithCustomDecodingGraphAtPath]([KIOSRecognizer prepareForListeningWithCustomDecodingGraphAtPath:]) before calling this method.
+ @param responseId address of the pointer to an NSString, which will be set to a responseId if
+ startListening is successful.  responseId is a unique identifier of the response. You can pass NULL to this
+ method if you don't need responseId.
+ 
+ @note You will need to call one of the prepareForListening methods before calling this method.
  You will also need to make sure that user has granted audio recording permission
- before calling this method; see AVAudioSessionRecordPermission and [AVAudioSession requestRecordPermission:] in AVFoundation framework for details.
-*/
-- (BOOL)startListening;
-
-
-
-
-/**
- Performs speech recognition on the audio file. This is an asynchronious method,
- which will perform basic validation (valid wav file, sampling frequency of the 
- audio matches that of the ASR Bundle), and then start recognition in the 
- background and return. Recognition results can be obtained via [recognizerFinalResult:forRecognizer:]([KIOSRecognizerDelegate recognizerFinalResult:forRecognizer:]) and [recognizerPartialResult:forRecognizer:]([KIOSRecognizerDelegate recognizerPartialResult:forRecognizer:]) methods.
- 
- @param pathToAudioFile full path to the audio file in WAV format. Files should
- be mono (single channel) and its sampling frequency should match the sampling
- frequency used for the ASR bundle training (typically 16kHz).
- 
- @return TRUE if the audio file is valid WAV file, its sampling frequency
- matches the one in ASR Bundle, and recording duration is less than 100ms,
- FALSE otherwise.
- 
- @note The whole audio file will be loaded in the memory, thus we currently
- limit the length to 200sec. If file is longer than 200sec no processing will
- occur and the method will return FALSE.
+ before calling this method; see AVAudioSessionRecordPermission and AVAudioSession requestRecordPermission:
+ in AVFoundation framework for details.
  */
-- (BOOL)startListeningFromAudioFile:(nonnull NSString *)pathToAudioFile;
+- (BOOL)startListening:(NSString *_Nullable*_Nullable) responseId;
+
+
 
 
 /** Stop the recognizer from processing incoming audio.
- @warning Calling this method will not trigger recognizerFinalResult
- delegate call. Use stopListeningAndReturnFinalResult if you are interested in 
- obtaining the final result directly.
+ @warning Calling this method will not trigger recognizerFinalResponse
+ delegate call. If you would like to obtain the final result, you can dynamically set VAD timeout thresholds to
+ trigger finalResponseCallback:.
  */
 - (void)stopListening;
 
 
-/** Stop the recognizer from processing incoming audio and return the final result.
-
- @return Final result of the recognition.
- 
- @warning This method runs synchroniously. For large decoding graphs there may be
- noticable delay (few hundred ms) on lower-end devices. This method will return nil
- if recognizer is already in KIOSRecognizerStateFinalProcessing (due to VAD rules
- automatically triggering for example).
- */
-- (nullable KIOSResult *)stopListeningAndReturnFinalResult;
-
-
-/** @name Speaker Adaptation 
+/** @name Speaker Adaptation
  */
 
-/** Defines the name that will be used to uniquely identify speaker adaptation 
+/** Defines the name that will be used to uniquely identify speaker adaptation
  profile. When recognizer starts to listen, it will try to find a matching
- speaker profile in the filesystem (profiles are matched based on speakername, 
- asrbundle, and audio route). When saveSpeakerAdaptationProfile method is called, 
- it uses the name to uniquely identify the profile file that will be saved in 
+ speaker profile in the filesystem (profiles are matched based on speakername,
+ asrbundle, and audio route). When saveSpeakerAdaptationProfile method is called,
+ it uses the name to uniquely identify the profile file that will be saved in
  the filesystem.
  
  @param speakerName (pseduo)name of the speaker for which adaptation is to be
@@ -578,50 +663,50 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  match the value to the specific user in your app. For example, you could use
  'user1', 'user2', etc..
  
- @warning If you cannot match names to your users, it's recommended to not use 
- this method, and to not save adaptation profiles between sessions. Adaptation 
- will still be performed throughout the session, but each new session (activity 
+ @warning If you cannot match names to your users, it's recommended to not use
+ this method, and to not save adaptation profiles between sessions. Adaptation
+ will still be performed throughout the session, but each new session (activity
  after initialization of recognizer) will start from the baseline models.
  
- In-memory speaker adaptation profile can always be reset by calling 
+ In-memory speaker adaptation profile can always be reset by calling
  resetSpeakerAdaptation.
  
- If this method is called while recognizer is listening, it will only affect 
+ If this method is called while recognizer is listening, it will only affect
  subsequent calls to startListening methods.
  */
 - (void)adaptToSpeakerWithName:(nonnull NSString *)speakerName;
 
 
 /** Resets speaker adaptation profile in the current recognizer session. Calling
- this method will also reset the speakerName to 'default'. If the corresponding 
- speaker adaptation profile exists in the filesystem for 'default' speaker, it 
+ this method will also reset the speakerName to 'default'. If the corresponding
+ speaker adaptation profile exists in the filesystem for 'default' speaker, it
  will be used. If not, initial models from the ASR Bundle will be the baseline.
-
+ 
  You would typically use this method id there is a new start of a certain
  activity in your app that may entail new speaker. For example, a practice view
  is started and there is a good chance a different user may be using the app.
  
  If speaker (pseudo)identities are known, you don't need to call this method, you
- can just switch speakers by calling adaptToSpeakerWithName: with the 
+ can just switch speakers by calling adaptToSpeakerWithName: with the
  appropriate speakerName
  
  Following are the tradeoffs when using this method:
  
-   - the downside of resetting user profile for the existing user is that ASR
-     performance will be reset to the baseline (no adaptation), which may 
-     slightly degrade performance in the first few interactions
+ - the downside of resetting user profile for the existing user is that ASR
+ performance will be reset to the baseline (no adaptation), which may
+ slightly degrade performance in the first few interactions
  
-   - the downside of NOT resetting user profile for a new user is that, depending
-     on the characteristics of the new user's voice, ASR performance may 
-     initially be degraded slightly (when comparing to the baseline case of no 
-     adaptation)
+ - the downside of NOT resetting user profile for a new user is that, depending
+ on the characteristics of the new user's voice, ASR performance may
+ initially be degraded slightly (when comparing to the baseline case of no
+ adaptation)
  
  Calls to this method will be ignored if recognizer is in LISTENING state.
  
- If you are resetting adaptation profile and you know user's (pseudo)identity, 
- you may want to call saveSpeakerAdaptationProfile method prior to calling this 
- method so that on subsequent user switches, adaptation profiles can be reloaded 
- and recognition starts with the speaker profile trained on previous sessions 
+ If you are resetting adaptation profile and you know user's (pseudo)identity,
+ you may want to call saveSpeakerAdaptationProfile method prior to calling this
+ method so that on subsequent user switches, adaptation profiles can be reloaded
+ and recognition starts with the speaker profile trained on previous sessions
  audio.
  
  */
@@ -630,7 +715,7 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 
 /** Saves speaker profile (used for adaptation) in the filesystem.
  
- Speaker profile will be saved in the file system, 
+ Speaker profile will be saved in the file system,
  in Caches/KaldiIOS-speaker-profiles/ directory. Profile filename is composed of
  the speakerName, asrBundle, and audioRoute.
  */
@@ -658,55 +743,11 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  When interrupt ends audio will be automatically reinitialized. You can define
  a callback method recognizerReadyToListenAfterInterrupt: to track when these
  changes happen.
-*/
+ */
 
 /**
  */
 //- (void)audioInterruptionEndedHandler:(nonnull void (^)(void))callbackBlock;
-
-
-/** @name File Audio Recording Management */
-
-/** Set to true if you want to keep audio recordings in the file system. Default is FALSE. */
-@property(nonatomic, assign) BOOL createAudioRecordings;
-
-/** Set to FALSE if you do NOT want to keep response metadata in the file system.
- *
- * When set to TRUE, KIOSRecognizer instance will store a JSON file with various
- * metadata (speech recognition result, basic device info, etc.) on device
- * filesystem. If you are using Keen Dashboard cloud service via KIOSUploader
- * this flag needs to be set to true, otherwise no data will be stored locally
- * on the device, and consequently pushed to the cloud.
- *
- * Default is FALSE.
- */
-@property(nonatomic, assign) BOOL createJSONMetadata;
-
-/** Directory in which recordings and JSON metadata will be stored.
- Default is Library/Cache/keenasr-data/ */
-@property(nonatomic, copy, readonly, nonnull) NSString *recordingsDir;
-
-/** Filename of the last recording. If createAudioRecordings was set to TRUE, you
- can read the filename of the latest recording via this property.
- 
- This value is set upon calling startListening, if createAudioRecordings was set to true.
- Audio file is created as soon as recognizer starts listening, it's continuosly updated
- while recognizer is listening, and closed after recogizer stopped listening. Accessing
- or modifying current audio file while recognizer is listening can result in
- unpredictable behavior.
- */
-@property(nonatomic, readonly, nullable) NSString *lastRecordingFilename;
-
-/** Filename of the last JSON metadata file. If createJSONMetadata was set to
- TRUE, you can read the filename of the latest JSON metadata file via this
- property.
- 
- This value is set upon calling startListening, if createJSONMetadata was set to true.
- JSON file is created only after recognizer stops listening, when all the relevant
- information is available.
- 
- */
-@property(nonatomic, readonly, nullable) NSString *lastJSONMetadataFilename;
 
 
 /** @name Audio Handling */
@@ -728,10 +769,14 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 @property(nonatomic, assign, setter=setHandleNotifications:) BOOL handleNotifications;
 
 
-/** The most recent signal input level in dB
-
-@return signal input level in dB
-*/
+/**
+ * Retrieves the peak RMS audio level computed from the most recent audio buffer that's been
+ * processed by the recognizer. RMS is computed on a 25ms chunks of audio and peak value from the
+ * most recent audio buffer is returned.
+ *
+ * If recognizer is not listening, or if no valid RMS level has been computer, returns NaN (see std::nan).
+ * @return The peak RMS level in dB from the most recent audio buffer, or NaN if not available.
+ */
 - (float)inputLevel;
 
 /** Provides information about echo cancellation support on the device.
@@ -760,13 +805,13 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 
 
 
-/** Enables bluetooth output via AVAudioSessionCategoryOptionAllowBluetoothA2DP
+/** Enables or disables bluetooth output via AVAudioSessionCategoryOptionAllowBluetoothA2DP
  category option of AVAudioSession.
-  */
-- (void)enableBluetoothA2DPOutput:(BOOL)value;
+ 
+ @param value set to true to enable Bluetooth A2DPOutput or to false to disabled it.
+ */
+- (void)setBluetoothA2DPOutput:(BOOL)value;
 
-
-- (void)enableBluetoothOutput:(BOOL)value __attribute__((deprecated("use enableBluetoothA2DPOutput instead")));
 
 
 /**
@@ -789,13 +834,13 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 - (BOOL)deactivateAudioStack;
 
 
- /**
-  Activates audio stack that was previously deactivated using
-  deactivateAudioStack method. This method should be called *after* all other
-  audio systems have been setup to make sure AVAudioSession is properly
-  initialized for audio capture.
-  
-  @return TRUE if audio stack was successfully activated, FALSE otherwise.
+/**
+ Activates audio stack that was previously deactivated using
+ deactivateAudioStack method. This method should be called *after* all other
+ audio systems have been setup to make sure AVAudioSession is properly
+ initialized for audio capture.
+ 
+ @return TRUE if audio stack was successfully activated, FALSE otherwise.
  */
 - (BOOL)activateAudioStack;
 
@@ -804,6 +849,22 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
  deactivateAudioStack followed by activateAudioStack method.
  */
 - (void) reinitAudioStack;
+
+/** @name Config Parameters */
+
+/** Set any of KIOSVadParameter Voice Activity Detection parameters. These
+ parameters can be set at any time. If they are set while the recognizer is listening, they will be used
+ immediately.
+ 
+ @param parameter one of KIOSVadParameter
+ @param value duration in seconds for the parameter
+ 
+ @warning Setting VAD rules in the config file within the ASR bundle will **NOT**
+ have any effect. Values for these parameters are set to their defaults upon
+ initialization of KIOSRecognizer. They can only be changed programmatically,
+ using this method.
+ */
+- (void)setVADParameter:(KIOSVadParameter)parameter toValue:(float)value;
 
 
 
@@ -823,29 +884,33 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 + (void)setLogLevel:(KIOSRecognizerLogLevel)logLevel;
 
 
-/** @name Config Parameters */
-
-/** Set any of KIOSVadParameter Voice Activity Detection parameters. These
- parameters can be set at any time and they will go into effect immediately.
- 
- @param parameter one of KIOSVadParameter
- @param value duration in seconds for the parameter
- 
- @warning Setting VAD rules in the config file within the ASR bundle will **NOT**
- have any effect. Values for these parameters are set to their defaults upon
- initialization of KIOSRecognizer. They can only be changed programmatically, 
- using this method.
-*/
-- (void)setVADParameter:(KIOSVadParameter)parameter toValue:(float)value;
 
 /** @name Deprecated methods and properties */
 
-/** Is recognizer listening to and decoding the incoming audio. 
- This property has been deprecated and replaced by recognizerState.
- */
-@property(assign, readonly) BOOL listening __attribute__((deprecated("use recognizerState method")));
+@property(nonatomic, readonly, nullable) NSString *lastRecordingFilename
+__deprecated_msg("Please see KIOSResponse for more details");
+
+@property(nonatomic, readonly, nullable) NSString *lastJSONMetadataFilename
+__deprecated_msg("Please see KIOSResponse for more details");
+
+- (BOOL)prepareForListeningWithCustomDecodingGraphWithName:(nonnull NSString *)dgName
+__deprecated_msg("Please use prepareForListeningWithDecodingGraphWithName");
+
+- (BOOL)prepareForListeningWithCustomDecodingGraphAtPath:(nonnull NSString *)pathToDecodingGraphDirectory
+__deprecated_msg("Please use prepareForListeningWithDecodingGraphAtPath");
+
+- (BOOL)startListeningFromAudioFile:(nonnull NSString *)pathToAudioFile
+__deprecated_msg("Temporarily deprecated; methods to feed audio directly to the recognizer will be provided in the future");
 
 
+//- (BOOL)setResponseDataForKey:(KIOSResponseDataKey) key
+//                        value:(nonnull NSObject *) value
+//__deprecated_msg("Temporarily disabled");
+
+
+- (void)enableBluetoothOutput:(BOOL)value __attribute__((deprecated("use setBluetoothA2DPOutput instead")));
+
+- (void)enableBluetoothA2DPOutput:(BOOL)value __attribute__((deprecated("use setBluetoothA2DPOutput instead")));
 
 @end
 

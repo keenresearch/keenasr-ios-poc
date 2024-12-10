@@ -45,12 +45,6 @@
  If provided appKey cannot be matched via cloud API, upload requests will be
  ignored.
  
- If KIOSRecognizer.createJSONMetadata is set to NO, response json files
- will not be created on the device and there will be no metadata to transfer to
- the Dashboard. KIOSRecognizer.createAudioRecordings also needs be set to YES
- (future releases will provide ways to upload only metadata, even when audio
- recordings are not stored on the device).
- 
  KIOSUploader will currently upload data as long as there is internet
  connectivity regardless of its type (WiFi, LTE, etc.). Future releases will
  provide finer control over the type of internet connectivity channels that
@@ -63,9 +57,11 @@
 /** Pause uploads in already created upload thread. If upload thread was not
  created prior to calling this method, the call to this method will be ignored.
  Once uploads have* been paused they can be resumed at any time by calling
- resume.
+ [KIOSUploader resume].
+ 
+ @return YES if uploader thread was paused successfully, NO otherwise.
  */
-+ (void)pause;
++ (BOOL)pause;
 
 
 /** Resume uploads in already created upload thread.
@@ -76,9 +72,16 @@
 + (BOOL)resume;
 
 
+/** Schedules uploader thread to be stopped as soon as possible.
+ 
+ @return YES if uploader thread was successfully schedule for stopping, false otherwise.
+ */
++ (BOOL)stop;
+
+
 /** Returns YES is upload thread is paused, NO if it's running.
  */
-+ (BOOL)isPaused;
+//+ (BOOL)isPaused;
 
 
 /** Returns number of upload errors since the upload thread was created.
