@@ -195,6 +195,7 @@
                                             forRecognizer:self.recognizer
                            usingAlternativePronunciations:nil
                                                   andTask:KIOSSpeakingTaskOralReading
+                               withSpokenNoiseProbability:0.9
                                           andSaveWithName:dgName]) {
     self.textLabel.text = @"Error occured while creating decoding graph from the text";
     [self.spinner stopAnimating];

@@ -176,6 +176,7 @@ static float kEndSpeechTimeoutShort = 0.8;
                                             forRecognizer:self.recognizer
                            usingAlternativePronunciations:nil
                                                   andTask:KIOSSpeakingTaskDefault
+                               withSpokenNoiseProbability:0.9
                                           andSaveWithName:dgName]) {
     self.textLabel.text = @"Error occured while creating decoding graph from the text";
     [self.spinner stopAnimating];
