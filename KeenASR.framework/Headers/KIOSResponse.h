@@ -77,6 +77,19 @@
  */
 - (BOOL)saveAudioFile:(nonnull NSURL *) dirpath;
 
+/**
+ * Queues audio and json from this response for an upload to Dashboard. This method will
+ * save audio and json in an internal directory that's scanned by the KASRUploder background
+ * thread.
+ *
+ * If KIOSUploader background thread is not setup, the files will never be removed. With
+ * KIOSUploader background thread running, the files will be uploaded to the Keen Research
+ * Dashboard service as long as internet connectivity is available.
+ *
+ * @return true if files were queued for the upload, false otherwise.
+ */
+- (BOOL)queueForUpload;
+
 @end
 
 #endif /* KIOSResponse_h */

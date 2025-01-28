@@ -372,13 +372,11 @@ __deprecated_msg("Please see triggerPhraseDetected");
 /** Name of the decoding graph currently used by the recognizer */
 @property(nonatomic, readonly, nullable) NSString *currentDecodingGraphName;
 
-/** Path to the directory where audio/json files will be saved */
-@property(nonatomic, readonly, nullable) NSString *dataDirectory;
+/** Path to the directory where audio/json files will be saved for Dashboard uploads */
+@property(nonatomic, readonly, nullable) NSString *recordingsDir;
 
 /** Path to the directory where miscelaneous data will be saved */
 @property(nonatomic, readonly, nullable) NSString *miscDataDirectory;
-
-@property(nonatomic, copy, readonly, nonnull) NSString *recordingsDir;
 
 /**
  Two-letter language code that defines language of the ASR Bundle used to initialize

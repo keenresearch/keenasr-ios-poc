@@ -18,15 +18,6 @@
   */
 @interface KIOSUploader : NSObject
 
-/** If set to TRUE, data will be deleted from the device after it has been
- succesfully uploaded to the cloud. If FALSE, data will be kept on the device
- after it's been uploaded, it will just be renamed to the files with additional
- extension .BKP.
-
- Default is TRUE.
- */
-@property (class) BOOL removeDataAfterUpload;
-
 
 /** Creates a background thread which periodically scans recognizer data
  directory and uploads audio recordings and speech recognition metadata to

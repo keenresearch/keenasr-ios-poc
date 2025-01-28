@@ -321,6 +321,10 @@
   NSLog(@"Final Result: %@", result);
   [self.rosUpdateTimer invalidate];
 
+  // if we wanted to leverage Dashboard to upload responses for further analysis
+  // we would queue them for upload here. Note that KIOSUploader should be setup
+  // as well, otherwise we will just be filling up the disk on the device.
+  //  [response queueForUpload];
   unsigned long numWords = [result.text length] - [[result.text stringByReplacingOccurrencesOfString:@" " withString:@""] length];
   NSLog(@"Final Result (%lu words): %@", numWords, result.text);
   NSTimeInterval minSinceStart = -1*[self.startTime timeIntervalSinceNow]/60;
