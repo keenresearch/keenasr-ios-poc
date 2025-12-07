@@ -8,7 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+#import <KeenASR/KIOSAudioQualityResult.h>
 #import <KeenASR/KIOSResponse.h>
 #import <KeenASR/KIOSRecognizer.h>
 #import <KeenASR/KIOSDecodingGraph.h>
 #import <KeenASR/KIOSUploader.h>
+#import <KeenASR/KIOSWordPronunciation.h>

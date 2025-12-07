@@ -9,6 +9,7 @@
 #ifndef KIOSResponse_h
 #define KIOSResponse_h
 
+@class KIOSAudioQualityResult;
 @class KIOSResult;
 
 /**  An instance of the KIOSResponse class, called  response provides
@@ -36,6 +37,9 @@
 /** BOOL value that's set to true if echo cancellation was used during recognition of this response,
  or false if it wasn't (the value is captured and persisted at the end of recognition) */
 @property(nonatomic, readonly) BOOL echoCancellation;
+
+/** audio quality result */
+@property(nonatomic, readonly) KIOSAudioQualityResult *audioQualityResult;
 
 
 /** @name File saving

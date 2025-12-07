@@ -23,50 +23,8 @@ typedef NS_ENUM(NSInteger, KIOSSpeakingTask) {
 //  KIOSSpeakingTaskKeywordSpotting,
 };
 
-/** AlternativePronunciation is a class that defines mapping beween a word and its phonetic
- pronunciation. Phonetic pronunciation is a space separated string of phonemes that define how the word is
- pronounced. The names of the phonemes are defined in ASR Bundle lang/phones.txt file. For some languages
- for which this mapping is not deterministic, ASR Bundle will contain a large lookup table in lang/lexicon.txt file.
- 
- You can use AlternativePronunciations to provide alternatives to existing pronunciations, to define
- pronunciations for the words that are not in the lexicon.txt file (including made-up words), or to provide
- common mispronunciations (which can be useful in some scenarios such as language learning and reading
- instruction); For the latter, you can also provide a tag when defining AlternativePronunciation; if such
- alternative pronunciation is recognized by the recognizer, the # symbol and the provided tag will be appended
- to the word in the result (e.g. "PEAK#WRONG", if the tag was set to "WRONG").
- 
- Example:
- 
- ```
-    KIOSAlternativePronunciation *ap = [KIOSAlternativePronunciation new];
-    ap.word = @"PEAK";
-    ap.pronunciation = @"P IH0 K";
-    ap.tag = @"WRONG";
- ```
- 
- */
-@interface KIOSAlternativePronunciation : NSObject
-
-/**
- Name of the word.
- */
-@property(nonatomic, strong, nonnull) NSString *word;
-
-/**
- Phonetic transcription of a word, provided as a space-separated sequence of phones.
- */
-@property(nonatomic, strong, nonnull) NSString *pronunciation;
-
-/**
-Optional value, which, if provided, will be appended together with the # symbol to the word if the variation of
- the word with the provided pronunciation is recognized. For example, PEAK#WRONG.
- */
-@property(nonatomic, strong, nullable) NSString *tag;
-
-@end
-
-
 @class KIOSRecognizer;
+@class KIOSWordPronunciation;
 
 /** KIOSDecodingGraph class manages decoding graphs in the filesystem.
  
@@ -113,7 +71,7 @@ Optional value, which, if provided, will be appended together with the # symbol 
  long as such recognizer uses the same ASR bundle as the KIOSRecognizer object
  used to create the decoding graph.
  
- @param alternativePronunciations an NSArray of AlternativePronunciations specifying alternative
+ @param alternativePronunciations an NSArray of { @link KIOSWordPronunciation } objects specifying alternative
  pronunciations that should be used when building this decoding graph.
 
  @param task KIOSSpeakingTask specyfing the type of task this decoding graph corresponds to. Calling this
@@ -128,7 +86,7 @@ Optional value, which, if provided, will be appended together with the # symbol 
  */
 + (BOOL)createDecodingGraphFromPhrases:(nonnull NSArray *)phrases
                            forRecognizer:(nonnull KIOSRecognizer *) recognizer
-          usingAlternativePronunciations:(nullable NSArray<KIOSAlternativePronunciation *> *) alternativePronunciations
+          usingAlternativePronunciations:(nullable NSArray<KIOSWordPronunciation *> *) alternativePronunciations
                                  andTask:(KIOSSpeakingTask) task
                          andSaveWithName:(nonnull NSString *)decodingGraphName;
 
@@ -147,7 +105,7 @@ Optional value, which, if provided, will be appended together with the # symbol 
  long as such recognizer uses the same ASR bundle as the KIOSRecognizer object
  used to create the decoding graph.
  
- @param alternativePronunciations an NSArray of AlternativePronunciations specifying alternative
+ @param alternativePronunciations an NSArray of { @link KIOSWordPronunciation } objects specifying alternative
  pronunciations that should be used when building this decoding graph.
 
  @param task KIOSSpeakingTask specyfing the type of task this decoding graph corresponds to. Calling this
@@ -166,7 +124,7 @@ Optional value, which, if provided, will be appended together with the # symbol 
  */
 + (BOOL)createDecodingGraphFromPhrases:(nonnull NSArray *)phrases
                            forRecognizer:(nonnull KIOSRecognizer *) recognizer
-          usingAlternativePronunciations:(nullable NSArray<KIOSAlternativePronunciation *> *) alternativePronunciations
+          usingAlternativePronunciations:(nullable NSArray<KIOSWordPronunciation *> *) alternativePronunciations
                                  andTask:(KIOSSpeakingTask) task
               withSpokenNoiseProbability:(float) spokenNoiseProbability
                          andSaveWithName:(nonnull NSString *)decodingGraphName;
@@ -205,7 +163,7 @@ Optional value, which, if provided, will be appended together with the # symbol 
  long as such recognizer uses the same ASR bundle as the KIOSRecognizer object
  used to create the decoding graph.
  
- @param alternativePronunciations an  optional NSArray of AlternativePronunciations specifying
+ @param alternativePronunciations an  optional NSArray of { @link KIOSWordPronunciation } objects specifying
  alternative pronunciations that should be used when building this decoding graph.
  
  @param task KIOSSpeakingTask specyfing the type of task this decoding graph corresponds to. Calling this
@@ -220,7 +178,7 @@ Optional value, which, if provided, will be appended together with the # symbol 
  */
 + (BOOL)createContextualDecodingGraphFromPhrases:(nonnull NSArray<NSArray *> *) contextualPhrases
                                    forRecognizer:(nonnull KIOSRecognizer *) recognizer
-                  usingAlternativePronunciations:(nullable NSArray<KIOSAlternativePronunciation *> *) alternativePronunciations
+                  usingAlternativePronunciations:(nullable NSArray<KIOSWordPronunciation *> *) alternativePronunciations
                                          andTask:(KIOSSpeakingTask) task
                                  andSaveWithName:(nonnull NSString *)decodingGraphName;
 
@@ -256,7 +214,7 @@ Optional value, which, if provided, will be appended together with the # symbol 
  long as such recognizer uses the same ASR bundle as the KIOSRecognizer object
  used to create the decoding graph.
 
- @param alternativePronunciations an optional NSArray of AlternativePronunciations specifying
+ @param alternativePronunciations an optional NSArray of { @link KIOSWordPronunciation } objects specifying
  alternative pronunciations that should be used when building this decoding graph.
 
  @param task KIOSSpeakingTask specyfing the type of task this decoding graph corresponds to. Calling this
@@ -275,7 +233,7 @@ Optional value, which, if provided, will be appended together with the # symbol 
  */
 + (BOOL)createContextualDecodingGraphFromPhrases:(nonnull NSArray<NSArray *> *) contextualPhrases
                                    forRecognizer:(nonnull KIOSRecognizer *) recognizer
-                  usingAlternativePronunciations:(nullable NSArray<KIOSAlternativePronunciation *> *) alternativePronunciations
+                  usingAlternativePronunciations:(nullable NSArray<KIOSWordPronunciation *> *) alternativePronunciations
                                          andTask:(KIOSSpeakingTask) task
                       withSpokenNoiseProbability:(float)spokenNoiseProbability
                                  andSaveWithName:(nonnull NSString *)decodingGraphName;
@@ -313,19 +271,6 @@ Optional value, which, if provided, will be appended together with the # symbol 
 
 /** @name Helper methods */
 
-/** Verify if pronunciation speciifed in the input string is composed of valid phones that are supported for the
- given recognizer. Returns TRUE if pronunciation is valid, FALSE otherwise.
- 
- @param pronunciation string that represents pronunciation of a word. For example @"k ae t"
- 
- @param recognizer KIOSRecognizer object equivalent to the KIOSRecognizer object
- that was used to create the decoding graph.
-
- @return  Returns TRUE if pronunciation is valid, false otherwise
- */
-+ (BOOL)validatePronunciation:(nonnull NSString *) pronunciation
-                forRecognizer:(nonnull KIOSRecognizer *) recognizer
-__deprecated_msg("This method is temporarily deprecated");
 
 /** Returns TRUE if valid custom decoding graph with the given name exists in
  the filesystem.
@@ -401,7 +346,7 @@ __deprecated_msg("Please use createDecodingGraphFromPhrases methods");
 
 + (BOOL)createContextualDecodingGraphFromSentences:(nonnull NSArray<NSArray *> *) contextualSentences
                                      forRecognizer:(nonnull KIOSRecognizer *) recognizer
-                    usingAlternativePronunciations:(nullable NSArray<KIOSAlternativePronunciation *> *) alternativePronunciations
+                    usingAlternativePronunciations:(nullable NSArray<KIOSWordPronunciation *> *) alternativePronunciations
                                            andTask:(KIOSSpeakingTask) task
                                    andSaveWithName:(nonnull NSString *)decodingGraphName
 __deprecated_msg("Please use createContextualDecodingGraphFromPhrases methods");
@@ -416,7 +361,7 @@ __deprecated_msg("Please use createDecodingGraphFromPhrases: withTriggerPhrase m
 
 + (BOOL)createDecodingGraphFromSentences:(nonnull NSArray *)sentences
                            forRecognizer:(nonnull KIOSRecognizer *) recognizer
-          usingAlternativePronunciations:(nullable NSArray<KIOSAlternativePronunciation *> *) alternativePronunciations
+          usingAlternativePronunciations:(nullable NSArray<KIOSWordPronunciation *> *) alternativePronunciations
                                  andTask:(KIOSSpeakingTask) task
                             andSaveWithName:(nonnull NSString *)decodingGraphName
 __deprecated_msg("Please use createDecodingGraphFromPhrases methods");

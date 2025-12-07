@@ -105,6 +105,9 @@ typedef NS_ENUM(NSInteger, KIOSVadParameter) {
 /** recognition result text */
 @property(nonatomic, readonly, nonnull) NSString *text;
 
+/** clean recognition result text, i.e. removes all 'special words' (e.g. <SPOKEN_NOISE> or any other token inside <>)  */
+@property(nonatomic, readonly, nonnull) NSString *cleanText;
+
 /** An array of KIOSWord objects that comprise this result */
 @property(nonatomic, strong, readonly, nullable) NSArray<KIOSWord *> *words;
 
@@ -295,7 +298,7 @@ __deprecated_msg("Please see triggerPhraseDetected");
  recognizer resources and provides speech recognition capabilities to your 
  application.
  
- You typically initialize the engine at the app startup time by calling
+ You typically initialize the engine at the app startup time by calling
  `+initWithASRBundle:` or `+initWithASRBundleAtPath:` method, and
  then use sharedInstance method when you need to access the recognizer.
  
@@ -398,7 +401,11 @@ __deprecated_msg("Please see triggerPhraseDetected");
 @property(nonatomic, assign) BOOL rescore;
 
 
-/** @name Initialization, Preparing, Starting, and Stopping Recognition */
+/** 
+ * @name Initialization, Preparing, Starting, and Stopping Recognition 
+ * @anchor init_prepare_start_stop_recognition
+ * 
+ */
 
 
 /** Initialize ASR engine with the ASR Bundle, which provides all the
