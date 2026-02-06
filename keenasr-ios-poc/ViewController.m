@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 
-#import "KeenASR/KeenASR.h"
+@import KeenASR;
 
 #import "EduReadingDemoViewController.h"
 #import "EduWordsDemoViewController.h"

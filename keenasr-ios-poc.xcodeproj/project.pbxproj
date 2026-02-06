@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4CDE8A572F10864B00109770 /* KeenASR.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4CDE8A562F10864B00109770 /* KeenASR.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EE2D07371DDF7B470095D90F /* CommandAndControlViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE2D07361DDF7B470095D90F /* CommandAndControlViewController.m */; };
 		EE4A6CDD1D00B98100BBEB41 /* EduReadingDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE4A6CDC1D00B98100BBEB41 /* EduReadingDemoViewController.m */; };
 		EE74FC712D07B323008298A5 /* keenA1m-nnet3chain-en-us in Resources */ = {isa = PBXBuildFile; fileRef = EE74FC702D07B323008298A5 /* keenA1m-nnet3chain-en-us */; };
-		EE784C502328C45A00197FF8 /* KeenASR.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EEE356D81EAFF52200F9963D /* KeenASR.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EE8B7FFC1A16A3A9007F455E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B7FFB1A16A3A9007F455E /* main.m */; };
 		EE8B7FFF1A16A3A9007F455E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B7FFE1A16A3A9007F455E /* AppDelegate.m */; };
 		EE8B80021A16A3A9007F455E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE8B80011A16A3A9007F455E /* ViewController.m */; };
@@ -27,7 +27,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				EE784C502328C45A00197FF8 /* KeenASR.framework in Embed Frameworks */,
+				4CDE8A572F10864B00109770 /* KeenASR.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -35,6 +35,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4CDE8A562F10864B00109770 /* KeenASR.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = KeenASR.xcframework; sourceTree = "<group>"; };
 		EE2D07351DDF7B470095D90F /* CommandAndControlViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandAndControlViewController.h; sourceTree = "<group>"; };
 		EE2D07361DDF7B470095D90F /* CommandAndControlViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommandAndControlViewController.m; sourceTree = "<group>"; };
 		EE4A6CDB1D00B98100BBEB41 /* EduReadingDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EduReadingDemoViewController.h; sourceTree = "<group>"; };
@@ -86,6 +87,7 @@
 		EE8B7FED1A16A3A9007F455E = {
 			isa = PBXGroup;
 			children = (
+				4CDE8A562F10864B00109770 /* KeenASR.xcframework */,
 				EE74FC702D07B323008298A5 /* keenA1m-nnet3chain-en-us */,
 				EE8B7FF81A16A3A9007F455E /* keenasr-ios-poc */,
 				EE8B80121A16A3A9007F455E /* keenasr-ios-pocTests */,
@@ -180,7 +182,6 @@
 				TargetAttributes = {
 					EE8B7FF51A16A3A9007F455E = {
 						CreatedOnToolsVersion = 6.1;
-						DevelopmentTeam = 2M983EKR69;
 					};
 				};
 			};
@@ -374,7 +375,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = 2M983EKR69;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -404,6 +405,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.keenresearch.keenasr-ios-poc";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -414,7 +418,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = 2M983EKR69;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -444,6 +448,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.keenresearch.keenasr-ios-poc";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

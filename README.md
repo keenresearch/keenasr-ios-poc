@@ -10,7 +10,7 @@ For more details about the SDK see: http://keenresearch.com/keenasr-docs
 
 ## KeenASR Proof-of-Concept App
 
-A proof-of-concept app that shows how to run KeenASR automatic speech recognition framework. For detailed information on all classes and methods, consult the [SDK reference documentation](http://keenresearch.com/keenasr-docs). If starting with the framework from scratch, check our [Quick Start](http://keenresearch.com/keenasr-docs/docs/additional-docs/Quick-Start.html) document.
+A proof-of-concept app that shows how to run KeenASR automatic speech recognition framework. For detailed information on all classes and methods, consult the [SDK reference documentation](http://keenresearch.com/keenasr-docs). If starting with the framework from scratch, check our [Quick Start](https://keenresearch.com/keenasr-docs/keenasr-ios-quick-start.html) document.
 
 Three different demos are provided in this proof of concept app:
 

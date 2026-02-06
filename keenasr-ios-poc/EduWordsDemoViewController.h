@@ -19,7 +19,7 @@
 
 #import <UIKit/UIKit.h>
 
-#import "KeenASR/KeenASR.h"
+@import KeenASR;
 
 // We setup this controller to follow KIOSRecognizerDelegate protocol so we can
 // receive notifications about partial and final recognition results

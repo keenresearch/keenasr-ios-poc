@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "KeenASR/KeenASR.h"
 
 @interface ViewController : UIViewController
 
