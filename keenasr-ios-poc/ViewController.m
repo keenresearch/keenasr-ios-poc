@@ -116,10 +116,10 @@ const static NSArray *demoIntroText;
   // if you are using Dashboard to push data for further debugging, you would
   // setup a data upload thread here. You would need Dashboard account and
   // an app key.
-//  if (! [KIOSUploader createDataUploadThreadForRecognizer:self.recognizer
-//                                              usingAppKey:@"YOUR_APP_KEY_FOR_DASHBOARD"]) {
-//    NSLog(@"Failed to create KIOSUploader background thread");
-//  }
+  if (! [KIOSUploader createDataUploadThreadForRecognizer:self.recognizer
+                                              usingAppKey:@"YOUR_APP_KEY"]) {
+    NSLog(@"Failed to create KIOSUploader background thread");
+  }
   self.startButton.alpha = 0;
 }
 

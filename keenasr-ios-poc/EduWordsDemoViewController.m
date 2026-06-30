@@ -255,6 +255,7 @@ static float kEndSpeechTimeout = 0.8;
   // maybe we should restart listening if the keyword wasn't spotted
   // in a real app that would be tied to the UX, which we are not dealing with here
   
+  [response queueForUpload];
   self.statusLabel.text = @"Done Listening";
   self.startListeningButton.enabled = YES;
 }

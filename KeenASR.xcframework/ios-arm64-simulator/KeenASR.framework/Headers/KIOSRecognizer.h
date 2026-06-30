@@ -372,6 +372,19 @@ __deprecated_msg("Please see triggerPhraseDetected");
  */
 @property(nonatomic, readonly, nonnull) NSString *asrBundleName;
 
+/**
+ * @brief Language code of the ASR Bundle backing this recognizer.
+ *
+ * Parsed from the bundle name's trailing two-segment suffix, e.g.
+ * `keenAK3m-nnet3chain-en-us` yields `"en-us"`. Useful when constructing
+ * language-aware utilities such as `KIOSTextAligner` — pass the recognizer's
+ * `asrBundleLang` so reference and recognized sides share canonical
+ * normalization rules.
+ *
+ * Returns nil if the recognizer is not initialized.
+ */
+@property(nonatomic, readonly, copy, nullable) NSString *asrBundleLang;
+
 /** Name of the decoding graph currently used by the recognizer */
 @property(nonatomic, readonly, nullable) NSString *currentDecodingGraphName;
 

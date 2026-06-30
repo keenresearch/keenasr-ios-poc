@@ -14,11 +14,15 @@
 		</data>
 		<key>Headers/KIOSRecognizer.h</key>
 		<data>
-		GqUiOE4TkpdUPkWsfZFp0ZkpEYY=
+		XoC0Ly4d2kAH16lMRhbIbyaMGVk=
 		</data>
 		<key>Headers/KIOSResponse.h</key>
 		<data>
-		ktE8+SNcxR5/R2zd9SSfxT+3AWA=
+		QTizkBQkJiUf/5uA9TiOrBNeIWo=
+		</data>
+		<key>Headers/KIOSTextAligner.h</key>
+		<data>
+		abTkzBmG1blH382XXF2SlL3Yz2E=
 		</data>
 		<key>Headers/KIOSUploader.h</key>
 		<data>
@@ -30,11 +34,11 @@
 		</data>
 		<key>Headers/KeenASR.h</key>
 		<data>
-		BQB+xV7WrMe4ZWFC5kAdhB7pE5Q=
+		74UiUkNH+59ehb9/LXtPO7qhGVU=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		11/EFV1Rycn5rFbkwn9ZmotdkLA=
+		anyOBGwZd49FL3vyOCLsQ8fkB6Q=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -65,14 +69,21 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Q3k/6DTTnfncnlNsV4xSDurOICtZgld/r0DrFc0mFl0=
+			7Myloy3cJYVSxI9hLd4rPMcssrE3sv1e1BrKCC5qM9w=
 			</data>
 		</dict>
 		<key>Headers/KIOSResponse.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			gQojj53dzrvpWcImuTjByAlfzNxTh/1dN4rq0LPjp34=
+			YC3T5F1PH845shVYpVgZ4s+YuKLeaFoSofaHz+4IkI0=
+			</data>
+		</dict>
+		<key>Headers/KIOSTextAligner.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			dX5JsyZ72pLgvmcICHyFiCw4gYxP2YQCxiUd9SnCH40=
 			</data>
 		</dict>
 		<key>Headers/KIOSUploader.h</key>
@@ -93,7 +104,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			XUK3EV+d0wSA1Y4sE5iqbdFyqS6eSJDlgEcHpWK19b8=
+			iWexY4T7iA7WBRMryawyC4kpZtE6YCi+eHV6VA3lRZQ=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

@@ -14,3 +14,4 @@
 #import <KeenASR/KIOSDecodingGraph.h>
 #import <KeenASR/KIOSUploader.h>
 #import <KeenASR/KIOSWordPronunciation.h>
+#import <KeenASR/KIOSTextAligner.h>

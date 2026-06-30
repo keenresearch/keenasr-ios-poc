@@ -1,4 +1,4 @@
-Built on: Thu Feb  5 23:52:54 UTC 2026
-Version: v2.1.2
-Githash: 8c2653e
+Built on: Fri Jun 26 14:40:59 UTC 2026
+Version: v2.2
+Githash: c662ac9
 LicensedIds: 

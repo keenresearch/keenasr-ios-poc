@@ -195,7 +195,7 @@
                                             forRecognizer:self.recognizer
                            usingAlternativePronunciations:nil
                                                   andTask:KIOSSpeakingTaskOralReading
-                               withSpokenNoiseProbability:0.9
+                               withSpokenNoiseProbability:0.5
                                           andSaveWithName:dgName]) {
     self.textLabel.text = @"Error occured while creating decoding graph from the text";
     [self.spinner stopAnimating];
@@ -320,11 +320,11 @@
   KIOSResult *result = response.result;
   NSLog(@"Final Result: %@", result);
   [self.rosUpdateTimer invalidate];
-
+  //[response setCustomJson:@"{\"test\":  \"string\",  \"intval\": 3}"];
   // if we wanted to leverage Dashboard to upload responses for further analysis
   // we would queue them for upload here. Note that KIOSUploader should be setup
   // as well, otherwise we will just be filling up the disk on the device.
-  //  [response queueForUpload];
+  //[response queueForUpload];
   unsigned long numWords = [result.text length] - [[result.text stringByReplacingOccurrencesOfString:@" " withString:@""] length];
   NSLog(@"Final Result (%lu words): %@", numWords, result.text);
   NSTimeInterval minSinceStart = -1*[self.startTime timeIntervalSinceNow]/60;

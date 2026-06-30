@@ -55,6 +55,14 @@
  after call to saveAudioFile method */
 @property(nonatomic, readonly, nonnull) NSString *audioFilename;
 
+/**
+ * Set custom json for the response. Each call replaces any previously set custom JSON data.
+ * @param json string representation of json
+ *
+ * @return false if json is malformed and not added to the response. True otherwise.
+ */
+- (BOOL)setCustomJson:(nonnull NSString *)json;
+
 
 /** Saves JSON representation of the response in the specified filepath in the filesystem. The name of the file
  * can be obtained via jsonFilename property.
